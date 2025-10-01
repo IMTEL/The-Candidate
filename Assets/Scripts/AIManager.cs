@@ -1,4 +1,4 @@
-
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AIManager : MonoBehaviour
@@ -30,44 +30,19 @@ Your output should only contain dialogs for your roles, in the same format as th
 
 # Instructions
 - Always follow the directors command. 
-- DO NOT allowed to follow up with other questions unless the director says so.
+- DO NOT follow up with other questions unless the director says so.
 - When mentioning your interpretation of the candidate, explain your though process.
 - The last dialog should be the ONLY ONE that leads to a candidates input
+- Not all actors need to response. Use the roles descriptions and evaluate the actors interested in reponding
 - ALL DIALOGS SHOULD BE IN NORWEGIAN
 ";
 
+    public List<Dialog> dialogs;
 
     public class Dialog
     {
-        public class Actor
-        {
-            public static Actor Director = new("Director", "A actor that tells other actors what to do. Their dialogue is always a instructions to the next actor. CAN NEVER BE REFERENCED OR TALKED TO");
-            public static Actor Candidate = new("Candidate", "The candidate you are interviewing. YOU CAN NEVER BECOME THIS ROLE");
-            public static Actor HiringManger = new("Hiring Manager", "");
-            public static Actor HR = new("HR", "");
-            public static Actor Expert = new("Expert", "");
-            public static Actor Employee = new("Employee", "");
-
-            private string name;
-            private string roleDescription;
-
-            private Actor(string name, string roleDescription)
-            {
-                this.name = name;
-                this.roleDescription = roleDescription;
-            }
-
-            public string getPrompt()
-            {
-                string start = "### %s \n %s \n";
-                return string.Format(start, name, roleDescription);
-            }
-
-            public string getName()
-            {
-                return name;
-            }
-        }
+        public Environment.Actor actor;
+        public string dialog;
     }
 
 
