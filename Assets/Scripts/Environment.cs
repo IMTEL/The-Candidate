@@ -8,8 +8,7 @@ using System.Linq;
 /// Enviroment -> Jobs -> Actors
 /// This is to create dependencies so a shop or resturants can't have for example farmers. 
 /// </summary>
-public class Environment
-{
+public class Environment{
     private string name = "";
     private HashSet<Job> jobs = new();
 
@@ -39,7 +38,7 @@ public class Environment
         {
             if (name == null || name == "")
             {
-                throw new ArgumentNullException("EYOO, THis is not allowed. Fix you name");
+                throw new ArgumentException("EYOO, THis is not allowed. Fix you name");
             }
             if (actors == null || !actors.Any() || actors.Any((actor) => actor == null))
             {
