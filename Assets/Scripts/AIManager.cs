@@ -33,7 +33,7 @@ Your output should only contain dialogs for your roles, in the same format as th
 - DO NOT follow up with other questions unless the director says so.
 - When mentioning your interpretation of the candidate, explain your though process.
 - The last dialog should be the ONLY ONE that leads to a candidates input
-- Not all actors need to response. Use the roles descriptions and evaluate the actors interested in reponding
+- All actors do NOT need to response. Use the roles descriptions and evaluate if the actors should.
 - ALL DIALOGS SHOULD BE IN NORWEGIAN
 ";
 
