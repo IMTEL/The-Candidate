@@ -10,6 +10,9 @@ using System.Linq;
 /// </summary>
 public class Environment{
     private string name = "";
+    private string description = "";
+
+
     private HashSet<Job> jobs = new();
 
     private Environment(string name, List<Job> jobs)
@@ -23,9 +26,14 @@ public class Environment{
     /// </summary>
     public class Job
     {
+        public static Job Store = new("Store worker", new() { Actor.Manager });
+        public static Job Sales = new("Phone Seller", new() { Actor.Manager });
+        public static Job Post = new("Postal Serice", new() {Actor.Manager});
+        public static Job Cleaner = new("Cleaner", new() { Actor.Manager });
+        public static Job Assistant = new("Assistant", new() {Actor.Manager});
+        public static List<Job> All = new() { Cleaner, Store, Post, Sales };
         private string name = "";
-
-        private string description = "";
+        private string description = "s";
         private HashSet<Actor> actors = new();
         /// <summary>
         /// Creates a Job. Only meant to be called by the class itself to create static job
@@ -38,7 +46,7 @@ public class Environment{
         {
             if (name == null || name == "")
             {
-                throw new ArgumentException("EYOO, THis is not allowed. Fix you name");
+                throw new ArgumentException("EYOO, This is not allowed. Fix you name");
             }
             if (actors == null || !actors.Any() || actors.Any((actor) => actor == null))
             {
