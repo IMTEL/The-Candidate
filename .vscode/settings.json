@@ -56,6 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "The-Candidate.sln",
+    "dotnet.defaultSolution": "The-Candidate.slnx",
     "dotnet.projects.enableFileBasedPrograms": false
 }
