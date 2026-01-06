@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.spoiledcat.git": "1.0.44",
+    "com.annulusgames.alchemy": "https://github.com/annulusgames/Alchemy.git?path=/Alchemy/Assets/Alchemy",
     "com.unity.collab-proxy": "2.10.2",
     "com.unity.feature.development": "1.0.2",
     "com.unity.inputsystem": "1.17.0",
