@@ -1,8 +1,12 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class AIManager : MonoBehaviour
 {
+
+
 
     private const string startPrompt = @"
 # Context
@@ -38,6 +42,10 @@ Your output should only contain dialogs for your roles, in the same format as th
 - ALL DIALOGS SHOULD BE IN NORWEGIAN
 ";
 
+    public string apiKey;
+
+    public string url = "https://ai.hpc.ntnu.no/api/gpt-oss-120b/v1";
+
     public List<Dialog> dialogs;
 
     public class Dialog
@@ -58,4 +66,35 @@ Your output should only contain dialogs for your roles, in the same format as th
     {
 
     }
-}
+
+
+    string BuildPrompt(Environment environment, Environment.Job job, List<Dialog> dialogHistory)
+    {
+        string setting = environment.ToString();
+        string role = job.ToString();
+        string actors = string.Join("\n", job.Actors.Select(actor => actor.ToString()));
+        string dialogHistoryStr = string.Join("\n", dialogHistory.Select(d => $"[{d.actor.Name}]{{{d.dialog}}}"));
+
+        string prompt = startPrompt
+            .Replace("%s", setting)
+            .Replace("%s", role)
+            .Replace("%s", actors)
+            .Replace("%s", dialogHistoryStr);
+
+        return prompt;
+    }
+
+    async Task<string> getAIResponse(string prompt)
+    {
+        UnityWebRequest request = new(url, "POST");
+        request.SetRequestHeader("Authorization", $"Bearer {apiKey}");
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.uploadHandler = new UploadHandlerRaw(prompt);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        await request.SendWebRequest();
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError($"Error: {request.error}");
+            return null;
+        }
+    }
