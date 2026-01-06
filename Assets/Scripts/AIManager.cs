@@ -1,12 +1,31 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class AIManager : MonoBehaviour
+public class Dialog
+{
+    public Environment.Actor actor {get; private set;}
+    public string dialog {get; private set;}
+
+    public AudioClip audioClip;
+
+    public Dialog(Environment.Actor actor, string dialog, AudioClip audioClip = null)
+    {
+        this.actor = actor;
+        this.dialog = dialog;
+    }
+}
+
+public class AIManager
 {
 
+    readonly SemaphoreSlim semaphore = new(1);
 
+    static AIManager _instance = new();
 
     private const string startPrompt = @"
 # Context
@@ -42,59 +61,48 @@ Your output should only contain dialogs for your roles, in the same format as th
 - ALL DIALOGS SHOULD BE IN NORWEGIAN
 ";
 
-    public string apiKey;
+    public static AIManager GetInstance()
+    {
+        _instance ??= new();
+        return _instance;
+    }
+
+    public string apiKey = "";
 
     public string url = "https://ai.hpc.ntnu.no/api/gpt-oss-120b/v1";
 
-    public List<Dialog> dialogs;
-
-    public class Dialog
+    string BuildPrompt(Environment.Job job, Environment.Actor actor)
     {
-        public Environment.Actor actor;
-        public string dialog;
+        string setting = job.ToString();
+        string actors = string.Join("\n - ", job.actors.Select(actor => actor.ToString()));
+        return string.Format(startPrompt, setting, actor.getPrompt(), actors);
     }
 
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public async Awaitable<string> getAIResponse(Environment.Job job, Environment.Actor aiActor, List<Dialog> dialogs)
     {
-
-    }
-
-    void CallAi(string dialog)
-    {
-
-    }
-
-
-    string BuildPrompt(Environment environment, Environment.Job job, List<Dialog> dialogHistory)
-    {
-        string setting = environment.ToString();
-        string role = job.ToString();
-        string actors = string.Join("\n", job.Actors.Select(actor => actor.ToString()));
-        string dialogHistoryStr = string.Join("\n", dialogHistory.Select(d => $"[{d.actor.Name}]{{{d.dialog}}}"));
-
-        string prompt = startPrompt
-            .Replace("%s", setting)
-            .Replace("%s", role)
-            .Replace("%s", actors)
-            .Replace("%s", dialogHistoryStr);
-
-        return prompt;
-    }
-
-    async Task<string> getAIResponse(string prompt)
-    {
-        UnityWebRequest request = new(url, "POST");
+        await semaphore.WaitAsync();
+        string dialogHistory = "[";
+        dialogHistory += string.Format("{{\"role\": \"%s\", \"content\": \"%s\"}}", "developer", BuildPrompt(job, aiActor));
+        foreach (Dialog dialog in dialogs){
+            dialogHistory += string.Format("{{\"role\": \"%s\", \"content\": \"%s\"}}", Environment.Actor.Candidate.Equals(dialog.actor) ? "user" : "assistant", dialog.dialog);
+        }
+        dialogHistory += "]";
+        UnityWebRequest request = new(url, "POST")
+        {
+            uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(string.Format("{\"model\": \"gpt-5-nano\", \"messages\": %s}", dialogHistory))),
+            downloadHandler = new DownloadHandlerBuffer()
+        };
         request.SetRequestHeader("Authorization", $"Bearer {apiKey}");
         request.SetRequestHeader("Content-Type", "application/json");
-        request.uploadHandler = new UploadHandlerRaw(prompt);
-        request.downloadHandler = new DownloadHandlerBuffer();
         await request.SendWebRequest();
+        semaphore.Release();
         if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError($"Error: {request.error}");
             return null;
         }
+        //TODO: Need to change from string to a dialogue at then end. We will see what we are gonna do with the prompting
+        return DownloadHandlerBuffer.GetContent(request);
+
     }
+}

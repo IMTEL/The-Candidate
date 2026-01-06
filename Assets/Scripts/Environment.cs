@@ -12,10 +12,9 @@ public class Environment{
     private string name = "";
     private string description = "";
 
-
     private HashSet<Job> jobs = new();
 
-    private Environment(string name, List<Job> jobs)
+    public Environment(string name, List<Job> jobs)
     {
         jobs.ForEach(job => this.jobs.Add(job));
         this.name = name;
@@ -34,7 +33,7 @@ public class Environment{
         public static List<Job> All = new() { Cleaner, Store, Post, Sales };
         private string name = "";
         private string description = "s";
-        private HashSet<Actor> actors = new();
+        public HashSet<Actor> actors {get;} = new();
         /// <summary>
         /// Creates a Job. Only meant to be called by the class itself to create static job
         /// The candidate and the director is automatically added to the list 
@@ -42,7 +41,7 @@ public class Environment{
         /// <param name="name">Name of the job</param>
         /// <param name="actors">The different Actors that could be in the interview panel</param>
         /// <param name="description">A Description of the role, not mandatory</param>
-        private Job(string name, List<Actor> actors, string description = "")
+        public Job(string name, List<Actor> actors, string description = "")
         {
             if (name == null || name == "")
             {
