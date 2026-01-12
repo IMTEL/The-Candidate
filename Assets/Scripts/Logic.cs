@@ -7,9 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Threading;
-using NUnit.Framework.Interfaces;
-using UnityEditor.Playables;
-using System;
+/// <summary>
+/// The logic system. Currently contains the dialogue system, so should probably be renamed and changed to something else later.s
+/// </summary>
 [RequireComponent(typeof(WhisperManager))]
 [RequireComponent(typeof(MicrophoneRecord))]
 [DisallowMultipleComponent]
@@ -17,11 +17,20 @@ public class Logic : MonoBehaviour
 {
     WhisperManager whisper;
     MicrophoneRecord microphoneRecord;
-    AIManager aIManager {get;} = AIManager.GetInstance();
-    TTService ttsService {get;} = TTService.GetInstance();
+    AIManager AIManager {get;} = AIManager.GetInstance();
+    TTService TTService {get;} = TTService.GetInstance();
     
+    /// <summary>
+    /// Counter to keep track of the amount of dialogues since last user input
+    /// </summary>
     private int dialogueCounter = 0;
+    /// <summary>
+    /// The amount of played dialogues since last user input
+    /// </summary>
     private int playedCounter = 0;
+    /// <summary>
+    /// Changed to the 
+    /// </summary>
     private int userCounter = 0;
 
     [ShowInInspector]
@@ -35,7 +44,7 @@ public class Logic : MonoBehaviour
 
     ConcurrentStack<Dialog> dialogs {get;} = new();
     
-    SemaphoreSlim semaphore = new(1);
+    SemaphoreSlim simulatnousVoiceRequests = new(2);
 
     public Environment.Job job;
 
@@ -70,33 +79,47 @@ public class Logic : MonoBehaviour
         WhisperResult userDialog = await whisper.GetTextAsync(recordedAudio.Data, recordedAudio.Frequency, recordedAudio.Channels);
         //TODO: Double check that the audio for this is not mangled to bits
         AudioClip test = AudioClip.Create("User-"+userCounter,1,recordedAudio.Channels,recordedAudio.Channels, false);
+        userCounter++;
         test.SetData(recordedAudio.Data,0);
         dialogs.Append(new(Environment.Actor.Candidate, userDialog.Result, test));
         foreach(NPC npc in NPCs)
         {
-            string npcDialogue = await aIManager.getAIResponse(job, npc.actor, dialogs.ToList());
+            string npcDialogue = await AIManager.getAIResponse(job, npc.actor, dialogs.ToList());
             Dialog dialog = new(npc.actor, npcDialogue);
             token.ThrowIfCancellationRequested();
             dialogs.Append(dialog);
+            voiceQueue.Enqueue((npc,dialog));
             dialogueCounter++;
             createAudioClip(npc,dialog, token).Start();
         }
     }
 
-    private async Task createAudioClip(NPC nPC, Dialog dialog, CancellationToken token)
+    /// <summary>
+    /// Create a Audioclip trough the TTService and links it to the dialog in question.
+    /// 
+    /// Limited trough the use a simulatnousVoiceRequests attribute to x amount a the same time and can be cancelled trough a cancellationToken
+    /// </summary>
+    /// <param name="nPC">The NPC that is gonna talk</param>
+    /// <param name="dialog">The dialog object to be created</param>
+    /// <param name="token">A cancellation token if the it should stop</param>
+    /// <returns></returns>
+    private async Task createAudioClip(NPC npc, Dialog dialog, CancellationToken token)
     {
-        await semaphore.WaitAsync();
+        await simulatnousVoiceRequests.WaitAsync();
         if (token.IsCancellationRequested)
         {
-            semaphore.Release();
+            simulatnousVoiceRequests.Release();
             return;
         }
-        dialog.audioClip = await ttsService.getAudioClip(nPC.voice, dialog.dialog);
-        semaphore.Release();
-        token.ThrowIfCancellationRequested();
-        voiceQueue.Enqueue((nPC,dialog));
+        dialog.audioClip = await TTService.getAudioClip(npc.voice, dialog.dialog);
+        simulatnousVoiceRequests.Release();
     }
 
+    /// <summary>
+    /// Function to be called when the recording start. 
+    /// It will clear out the voice queue as well as remove dialogs that did not get played.
+    /// </summary>
+    [Button]
     private async void OnRecordStart()
     {
         tokenSource?.Cancel();
@@ -104,14 +127,18 @@ public class Logic : MonoBehaviour
         Thread.Sleep(10);
         int difference = dialogueCounter-playedCounter;
         (dialogueCounter, playedCounter) = (0,0);
-        dialogs.TryPopRange(null, 0, difference);
+        for(int i=0; i< difference; i++)
+        {
+            dialogs.TryPop(out _);
+        }
         voiceQueue = new();
     }
 
     void Update()
     {
-        if(voiceQueue.Count < 1 || microphoneRecord.IsRecording || NPCs.Any(npc => npc.audioSource.isPlaying)) return;
-        if (voiceQueue.TryDequeue(out (NPC, Dialog) nextVoiceLine))
+        //If the next voice line is not ready or if either the user or the npc's are talking, do not run anything
+        if(!(voiceQueue.TryPeek(out (NPC, Dialog) nextVoiceLine) && nextVoiceLine.Item2.audioClip) || microphoneRecord.IsRecording || NPCs.Any(npc => npc.audioSource.isPlaying)) return;
+        if (voiceQueue.TryDequeue(out _))
         {
             playedCounter++;
             nextVoiceLine.Item1.audioSource.clip = nextVoiceLine.Item2.audioClip;
