@@ -8,10 +8,16 @@ public class NPC : MonoBehaviour
     public TTService.Voice voice;
     public Environment.Actor actor;
     public AudioSource audioSource {get; private set;}
+    public GameObject head;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+    }
+
+    void Update()
+    {
+        audioSource.transform.position = head.transform.position;
     }
 
     public void talk(AudioClip clip)

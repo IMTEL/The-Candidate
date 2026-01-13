@@ -143,6 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
   voice: 0
+  head: {fileID: 0}
 --- !u!1 &6685602297755913791
 GameObject:
   m_ObjectHideFlags: 0

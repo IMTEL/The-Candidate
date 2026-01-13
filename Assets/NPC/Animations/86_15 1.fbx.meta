@@ -55,15 +55,93 @@ ModelImporter:
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
+      keepOriginalPositionY: 0
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 1
       mirror: 0
-      bodyMask: 01000000010000000100000000000000000000000100000001000000010000000100000001000000010000000100000001000000
+      bodyMask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000000000000000000
       curves: []
       events: []
-      transformMask: []
-      maskType: 3
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Hips
+        weight: 1
+      - path: Hips/LHipJoint
+        weight: 1
+      - path: Hips/LHipJoint/LeftUpLeg
+        weight: 1
+      - path: Hips/LHipJoint/LeftUpLeg/LeftLeg
+        weight: 1
+      - path: Hips/LHipJoint/LeftUpLeg/LeftLeg/LeftFoot
+        weight: 1
+      - path: Hips/LHipJoint/LeftUpLeg/LeftLeg/LeftFoot/LeftToeBase
+        weight: 1
+      - path: Hips/LHipJoint/LeftUpLeg/LeftLeg/LeftFoot/LeftToeBase/LeftToeBase_End
+        weight: 0
+      - path: Hips/LowerBack
+        weight: 1
+      - path: Hips/LowerBack/Spine
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/LeftShoulder
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/LeftShoulder/LeftArm
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/LeftShoulder/LeftArm/LeftForeArm
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/LeftShoulder/LeftArm/LeftForeArm/LeftHand
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/LeftShoulder/LeftArm/LeftForeArm/LeftHand/LeftFingerBase
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/LeftShoulder/LeftArm/LeftForeArm/LeftHand/LeftFingerBase/LeftHandIndex1
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/LeftShoulder/LeftArm/LeftForeArm/LeftHand/LeftFingerBase/LeftHandIndex1/LeftHandIndex1_End
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/LeftShoulder/LeftArm/LeftForeArm/LeftHand/LThumb
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/LeftShoulder/LeftArm/LeftForeArm/LeftHand/LThumb/LThumb_End
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/Neck
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/Neck/Neck1
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/Neck/Neck1/Head
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/Neck/Neck1/Head/Head_End
+        weight: 0
+      - path: Hips/LowerBack/Spine/Spine1/RightShoulder
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/RightShoulder/RightArm
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/RightShoulder/RightArm/RightForeArm
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/RightShoulder/RightArm/RightForeArm/RightHand
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/RightShoulder/RightArm/RightForeArm/RightHand/RightFingerBase
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/RightShoulder/RightArm/RightForeArm/RightHand/RightFingerBase/RightHandIndex1
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/RightShoulder/RightArm/RightForeArm/RightHand/RightFingerBase/RightHandIndex1/RightHandIndex1_End
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/RightShoulder/RightArm/RightForeArm/RightHand/RThumb
+        weight: 1
+      - path: Hips/LowerBack/Spine/Spine1/RightShoulder/RightArm/RightForeArm/RightHand/RThumb/RThumb_End
+        weight: 1
+      - path: Hips/RHipJoint
+        weight: 1
+      - path: Hips/RHipJoint/RightUpLeg
+        weight: 1
+      - path: Hips/RHipJoint/RightUpLeg/RightLeg
+        weight: 1
+      - path: Hips/RHipJoint/RightUpLeg/RightLeg/RightFoot
+        weight: 1
+      - path: Hips/RHipJoint/RightUpLeg/RightLeg/RightFoot/RightToeBase
+        weight: 1
+      - path: Hips/RHipJoint/RightUpLeg/RightLeg/RightFoot/RightToeBase/RightToeBase_End
+        weight: 0
+      maskType: 0
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     isReadable: 0
