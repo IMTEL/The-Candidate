@@ -8,7 +8,7 @@ using System.Linq;
 /// Enviroment -> Jobs -> Actors
 /// This is to create dependencies so a shop or resturants can't have for example farmers. 
 /// </summary>
-public class Environment{
+public class Environment {
     private string name = "";
     private string description = "";
 
@@ -27,12 +27,12 @@ public class Environment{
     {
         public static Job Store = new("Store worker", new() { Actor.Manager });
         public static Job Sales = new("Phone Seller", new() { Actor.Manager });
-        public static Job Post = new("Postal Serice", new() {Actor.Manager});
+        public static Job Post = new("Postal Serice", new() {Actor.Manager, Actor.Employee});
         public static Job Cleaner = new("Cleaner", new() { Actor.Manager });
-        public static Job Assistant = new("Assistant", new() {Actor.Manager});
-        public static List<Job> All = new() { Cleaner, Store, Post, Sales };
-        private string name = "";
-        private string description = "s";
+        public static Job Assistant = new("Assistant", new() {Actor.Manager, Actor.Expert});
+        public static HashSet<Job> All = new() { Cleaner, Store, Post, Sales, Assistant };
+        public string name {get; private set;} = ""; 
+        public string description {get; private set;} = "s";
         public HashSet<Actor> actors {get;} = new();
         /// <summary>
         /// Creates a Job. Only meant to be called by the class itself to create static job
@@ -51,8 +51,6 @@ public class Environment{
             {
                 throw new ArgumentException("EYOO, fix your list of actors. It should not contain null, be null or be empty"); 
             }
-            this.actors.Add(Actor.Candidate);
-            this.actors.Add(Actor.Director);
             actors.ForEach(actor => this.actors.Add(actor));
             this.name = name;
             this.description = description;
