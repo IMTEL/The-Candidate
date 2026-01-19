@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TEst
+  m_Name: Eyes
   m_Shader: {fileID: -6465566751694194690, guid: 805df72bc1092a941be5ac491d267bc2, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
