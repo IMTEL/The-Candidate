@@ -7,9 +7,19 @@
       "dependencies": {},
       "hash": "ab6e1c7121dba17fda6ddaec43eb0fecf00d8eee"
     },
+    "com.hecomi.ulipsync": {
+      "version": "https://github.com/hecomi/uLipSync.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.burst": "1.4.11",
+        "com.unity.mathematics": "1.2.5"
+      },
+      "hash": "ece3272762f2148dd8d3e658ec04fcbd79d4d97e"
+    },
     "com.unity.burst": {
       "version": "1.8.26",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.2.1",
