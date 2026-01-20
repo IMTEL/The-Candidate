@@ -50,11 +50,23 @@ public class Logic : MonoBehaviour
 
     private CancellationTokenSource tokenSource;
 
+    private ScenarioSettings scenarioSettings;
+
     private void Awake()
     {
         whisper = GetComponent<WhisperManager>();
         microphoneRecord = GetComponent<MicrophoneRecord>();
         microphoneRecord.OnRecordStop += OnRecordStop;
+    }
+
+    /// <summary>
+    /// Start is called on the frame when a script is enabled just before
+    /// any of the Update methods is called the first time.
+    /// </summary>
+    void Start()
+    {
+        scenarioSettings = ScenarioSettings.getInstance();
+        
     }
 
     /// <summary>
