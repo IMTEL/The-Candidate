@@ -1,7 +1,13 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-public class SpawnManager : MonoBehaviour
+public class DialogUI : MonoBehaviour
 {
+
+    public int wordperMinute = 20;
+    private float timer;
+    private Text text;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -12,5 +18,10 @@ public class SpawnManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void SetText(string newText)
+    {
+        text.text = newText;
     }
 }

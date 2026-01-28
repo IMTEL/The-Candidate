@@ -10,6 +10,9 @@ using UnityEngine.Networking;
 public class TTService
 {
 
+    string url;
+    string apiKey;
+
     [Serializable]
     private class TTSRequestBody
     {
@@ -25,16 +28,12 @@ public class TTService
         }
     }
 
-    private static TTService _instance;
-
     private readonly SemaphoreSlim semaphore = new(1);
 
-    private TTService(){}
-
-    public static TTService GetInstance()
+    public TTService(string apiKey, string url)
     {
-        _instance ??= new TTService();
-        return _instance;
+        this.apiKey = apiKey;
+        this.url = url;
     }
     
     public enum Voice
@@ -43,7 +42,7 @@ public class TTService
         Ola
     }
 
-    private static string getVoiceId(Voice voice)
+    private string getVoiceId(Voice voice)
     {
         return voice switch
         {
@@ -65,13 +64,13 @@ public class TTService
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonPayload);
 
         // Create request
-        UnityWebRequest request = new("https://api.elevenlabs.io/v1/text-to-speech/" + voiceid, "POST")
+        UnityWebRequest request = new(url + voiceid, "POST")
         {
             uploadHandler = new UploadHandlerRaw(bodyRaw),
-            downloadHandler = new DownloadHandlerAudioClip("https://api.elevenlabs.io/v1/text-to-speech/" + voiceid, AudioType.MPEG)
+            downloadHandler = new DownloadHandlerAudioClip(url + voiceid, AudioType.MPEG)
         };
         request.SetRequestHeader("Content-Type", "application/json");
-        request.SetRequestHeader("xi-api-key", "");
+        request.SetRequestHeader("xi-api-key", apiKey);
         await request.SendWebRequest();
         semaphore.Release();
         if (request.result != UnityWebRequest.Result.Success)

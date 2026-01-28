@@ -1,28 +1,10 @@
 using UnityEngine;
 
-public class ScenarioSettings : MonoBehaviour {
+public class ScenarioSettings {
 
     public Environment.Job job {get; private set;} = Environment.Job.Store;
 
     public int amountOfPeople {get; private set;}
-
-    private static ScenarioSettings scenarioSettings;
-
-
-    /// <summary>
-    /// Awake is called when the script instance is being loaded.
-    /// </summary>
-    void Awake()
-    {
-        if (scenarioSettings)
-        {
-            Destroy(this);
-            return;
-        }
-        DontDestroyOnLoad(this);
-        scenarioSettings = this;
-    }
-
 
     public void SetAmountOfPeople(int amount)
     {
@@ -41,10 +23,5 @@ public class ScenarioSettings : MonoBehaviour {
         {
             SetAmountOfPeople(job.actors.Count);
         }
-    }
-
-    public static ScenarioSettings getInstance()
-    {
-        return scenarioSettings;
     }
 }

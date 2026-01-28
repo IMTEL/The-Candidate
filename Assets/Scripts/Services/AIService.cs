@@ -2,69 +2,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Alchemy.Inspector;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
-/// <summary>
-/// A Dialog represents a dialog which is played within the game.
-/// 
-/// It contains the information of who, what and how the dialog got said trough the attributes
-/// </summary>
-public class Dialog
-{
-    /// <summary>
-    /// The actor that said the dialog
-    /// </summary>
-    public Environment.Actor actor {get; private set;}
-    
-    /// <summary>
-    /// The content of the dialog
-    /// </summary>
-    public string dialog {get; private set;}
-
-    /// <summary>
-    /// The audioclip of the dialog if created.
-    /// </summary>
-    public AudioClip audioClip;
-
-    /// <summary>
-    /// Constructor of the dialog
-    /// </summary>
-    /// <param name="actor">The actor of the dialog</param>
-    /// <param name="dialog">The content of the dialog</param>
-    /// <param name="audioClip">A optional audioclip</param>
-    public Dialog(Environment.Actor actor, string dialog, AudioClip audioClip = null)
-    {
-        this.actor = actor;
-        this.dialog = dialog;
-        this.audioClip = audioClip;
-    }
-}
 
 /// <summary>
 /// A single instance manager that allows for prompting to a LLM system to fetch a response.
 /// Uses the chatgpt structure of request
 /// To access, call the GetInstance function on the class
 /// </summary>
-public class AIManager
+public class AIService
 {
 
     /// <summary>
     /// A limiter used to only allow a certain amount of requests at the same time.
     /// This is to limit the amount of necassery traffic
     /// </summary>
-    readonly SemaphoreSlim simulationousRequests = new(1);
-
+    private readonly SemaphoreSlim simulationousRequests = new(1);
     /// <summary>
-    /// The instance of the AiManager. There should only 
+    /// The url that should be sent to
     /// </summary>
-    static AIManager _instance = new();
+    private string url = "https://ai.hpc.ntnu.no/api/gpt-oss-120b/v1";
+
+    private string apiKey = "";
+
+    public AIService(string url, string apiKey)
+    {
+        this.url ??= url;
+        this.apiKey ??= apiKey;
+    }
 
     /// <summary>
     /// The starting prompt within the message
     /// </summary>
-    private const string startPrompt = @"
+    private readonly string startPrompt = @"
 # Context
 You are an actor within a movie where you are with different other people to interview a potential candidate. 
 
@@ -98,24 +71,7 @@ Your output should only contain dialogs for your roles, in the same format as th
 - ALL DIALOGS SHOULD BE IN NORWEGIAN
 ";
 
-    /// <summary>
-    /// Fetches the singleton instance to be used
-    /// </summary>
-    /// <returns></returns>
-    public static AIManager GetInstance()
-    {
-        _instance ??= new();
-        return _instance;
-    }
-    /// <summary>
-    /// The apiKey that will be used within the service
-    /// </summary>
-    public string apiKey = "";
 
-    /// <summary>
-    /// The url that should be sent to
-    /// </summary>
-    public string url = "https://ai.hpc.ntnu.no/api/gpt-oss-120b/v1";
 
     /// <summary>
     /// Builds the prompt
@@ -123,6 +79,7 @@ Your output should only contain dialogs for your roles, in the same format as th
     /// <param name="job"></param>
     /// <param name="actor"></param>
     /// <returns></returns>
+    [Button]
     string BuildPrompt(Environment.Job job, Environment.Actor actor)
     {
         string setting = job.ToString();
