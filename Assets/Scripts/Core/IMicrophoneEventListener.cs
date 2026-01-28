@@ -1,6 +1,6 @@
 using Whisper.Utils;
 
-public interface MicrophoneEventListener
+public interface IMicrophoneEventListener
 {
     /// <summary>
     /// Calls when the microphone has started recording

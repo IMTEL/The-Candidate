@@ -10,7 +10,7 @@ using Whisper.Utils;
 /// <summary>
 /// Creates dialogues with the AI moduel and
 /// </summary>
-public class DialogueSystem : MicrophoneEventListener
+public class DialogueSystem : IMicrophoneEventListener
 {
     private int userCounter;
     private AIService aIService;

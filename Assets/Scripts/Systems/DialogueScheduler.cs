@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Whisper.Utils;
 
-public class DialogueScheduler : MonoBehaviour, MicrophoneEventListener
+public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener
 {
     private Queue<(NPC,Dialog)> voiceQueue;
     private NPC lastNPC;
