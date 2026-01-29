@@ -48,7 +48,7 @@ public class ModelImporterWindow : EditorWindow
         GameObject modelInstance = (GameObject)PrefabUtility.InstantiatePrefab(model);
         possibleBlendShape = modelInstance.GetComponentsInChildren<SkinnedMeshRenderer>().FirstOrDefault(renderer => renderer.sharedMesh.blendShapeCount > 0);
         //Reset the blendshapes to 0
-        for(int i = 0; i > possibleBlendShape.sharedMesh.blendShapeCount; i++) possibleBlendShape.SetBlendShapeWeight(i,0f);
+        for(int i = 0; i < possibleBlendShape.sharedMesh.blendShapeCount; i++) possibleBlendShape.SetBlendShapeWeight(i,0f);
 
         //Create a prefab variant
         modelInstance.transform.SetParent(prefabRoot.transform);
