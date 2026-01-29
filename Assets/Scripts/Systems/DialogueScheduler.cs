@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Whisper.Utils;
 
@@ -30,5 +31,10 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener
     public void onMicrophoneStopRecording(AudioChunk audioChunk)
     {
         micRecording = false;
+    }
+    
+    public void onDialogueReady((NPC,Dialog) queueItem)
+    {
+        voiceQueue.Append(queueItem);
     }
 }

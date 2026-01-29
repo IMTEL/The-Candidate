@@ -20,7 +20,7 @@ public class DialogueSystem : IMicrophoneEventListener
     private NPCRegistry NPCRegistry;
 
     private List<Dialog> dialogs;
-    public static Action<(NPC, Dialog)> onDialogueReady;
+    public Action<(NPC, Dialog)> onDialogueReady;
 
     public DialogueSystem(AIService aIService, ScenarioSettings scenario, WhisperManager whisper, TTService ttService, NPCRegistry nPCRegistry)
     {
@@ -51,7 +51,7 @@ public class DialogueSystem : IMicrophoneEventListener
         dialogs.Add(new(Environment.Actor.Candidate, userDialog.Result, test));
         foreach(NPC npc in NPCRegistry.GetNPCs())
         {
-            string npcDialogue = await Services.AIService.getAIResponse(scenario.job, npc.actor, dialogs);
+            string npcDialogue = await aIService.getAIResponse(scenario.job, npc.actor, dialogs);
             Dialog dialog = new(npc.actor, npcDialogue);
             token.ThrowIfCancellationRequested();
             dialogs.Add(dialog);

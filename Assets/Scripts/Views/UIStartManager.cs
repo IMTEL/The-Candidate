@@ -29,7 +29,7 @@ public class UIStartManager : MonoBehaviour
             jobNames.Add(new(job.name));
         });
         jobs.AddOptions(jobNames);
-        scenarioSettings = ScenarioSettings.getInstance();
+        scenarioSettings = Services.scenarioSettings;
         scenarioSettings.SetAmountOfPeople(jobList[0].actors.Count);
         scenarioSettings.SetJob(jobList[0]);
         updateAmountDropdown(jobList[0]);
