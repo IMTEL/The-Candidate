@@ -1,6 +1,12 @@
 import bpy
-import os
 import pathlib
+
+# Important notice. Most of this script is made trough the use of chatgpt due to me having
+# no idea of how to script in blender
+
+# Some modifications were done tho, moved from os to pathlib and changed most of the code
+# for loading the target. Else, chat has taken the liberty of creating it
+
 
 # ---------------- SETTINGS ----------------
 
@@ -111,8 +117,6 @@ for obj in duplicates:
 
 export_selected_fbx()
 
-print("✅ Character processed and exported!")
-
 # ---------------- CLEANUP ----------------
 
 deselect_all()
@@ -120,8 +124,6 @@ deselect_all()
 for obj in duplicates:
     if obj.name in bpy.data.objects:
         obj.select_set(True)
-
+        
 bpy.ops.object.delete()
-
-print("🧹 Duplicates removed from scene")
 
