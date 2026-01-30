@@ -24,7 +24,7 @@ public class IdunLLMService : LLMService
     /// <summary>
     /// The url that should be sent to
     /// </summary>
-    private string url = "https://ai.hpc.ntnu.no/api/gpt-oss-120b/v1";
+    private string url = "https://ai.hpc.ntnu.no/completions";
 
     private string apiKey;
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class NPC : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public TTService.Voice voice;
+    public VoiceProfile voice;
     public Environment.Actor actor;
     public AudioSource audioSource {get; private set;}
     public GameObject head;

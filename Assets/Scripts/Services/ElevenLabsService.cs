@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,45 +17,25 @@ public class ElevenLabsService : TTService
 
     private class TTSRequestBody
     {
-        public string text;
-        public string model_id = "eleven_flash_v2_5";
-        public string language_code = "no";
-
-        public TTSRequestBody(string text, string model_id = "eleven_flash_v2_5", string language_code = "no")
-        {
-            this.text = text;
-            this.model_id = model_id;
-            this.language_code = language_code;    
-        }
+      
     }
 
     private readonly SemaphoreSlim semaphore = new(1);
 
-    public ElevenLabsService(string apiKey)
+    public ElevenLabsService(string apiKey, Dictionary<VoiceProfile, string> voiceDB) : base(voiceDB)
     {
         this.apiKey = apiKey;
     }
 
-    public string getVoiceId(Voice voice)
+    public override Task<AudioClip> getAudioClip(VoiceProfile voice, string dialogue)
     {
-        return voice switch
-        {
-            Voice.Ola => "dgrgQcxISbZtq517iweJ",
-            Voice.Johannes => "2dhHLsmg0MVma2t041qT",
-            _ => getVoiceId(Voice.Ola),
-        };
-    }
-    
-
-    public override Task<AudioClip> getAudioClip(Voice voice, string dialogue)
-    {
-        return SendPostRequest(getVoiceId(voice), dialogue);
+        return SendPostRequest(getProfileID(voice), dialogue);
     }
 
     private async Task<AudioClip> SendPostRequest(string voiceid, string dialogue)
     {
         await semaphore.WaitAsync();
-        string jsonPayload = JsonConvert.ToString(new TTSRequestBody(dialogue));
+        string jsonPayload = JsonConvert.ToString(new ElevenLabsRequest(dialogue));
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonPayload);
 
         // Create request
@@ -77,5 +58,8 @@ public class ElevenLabsService : TTService
 
     }
 
-
+    public override string getDefualtVoiceId()
+    {
+        return "";
+    }
 }
