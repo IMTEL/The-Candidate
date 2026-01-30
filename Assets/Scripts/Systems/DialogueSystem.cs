@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Alchemy.Inspector;
 using UnityEngine;
 using Whisper;
 using Whisper.Utils;
@@ -13,7 +15,7 @@ using Whisper.Utils;
 public class DialogueSystem : IMicrophoneEventListener
 {
     private int userCounter;
-    private AIService aIService;
+    private LLMService aIService;
     private ScenarioSettings scenario;
     private WhisperManager whisper;
     private TTService TTService;
@@ -22,7 +24,7 @@ public class DialogueSystem : IMicrophoneEventListener
     private List<Dialog> dialogs;
     public Action<(NPC, Dialog)> onDialogueReady;
 
-    public DialogueSystem(AIService aIService, ScenarioSettings scenario, WhisperManager whisper, TTService ttService, NPCRegistry nPCRegistry)
+    public DialogueSystem(LLMService aIService, ScenarioSettings scenario, WhisperManager whisper, TTService ttService, NPCRegistry nPCRegistry)
     {
         this.aIService = aIService;
         this.scenario = scenario;
@@ -34,6 +36,50 @@ public class DialogueSystem : IMicrophoneEventListener
     private SemaphoreSlim simulatnousVoiceRequests = new(2);
 
     private CancellationTokenSource tokenSource = new();
+
+
+    /// <summary>
+    /// The starting prompt within the message
+    /// </summary>
+    private readonly string startPrompt = @"
+# Context
+You are an actor within a movie where you are with different other people to interview a potential candidate. 
+
+
+## Setting
+%s
+
+## Your Role
+%s
+
+## Actors
+%s
+
+# Instructions
+- Always follow the directors command. 
+- You are ONLY allowed up to 2 follow up question for a subject. NOTHING MORE
+- When mentioning your interpretation of the candidate, explain your though process.
+- The last dialog should be the ONLY ONE that leads to a candidates input
+- All actors do NOT response. Use the roles descriptions and evaluate if the actors should.
+- ALL DIALOGS SHOULD BE IN NORWEGIAN
+";
+
+
+
+    /// <summary>
+    /// Builds the prompt
+    /// </summary>
+    /// <param name="job"></param>
+    /// <param name="actor"></param>
+    /// <returns></returns>
+    [Button]
+    string BuildPrompt(Environment.Job job, Environment.Actor actor)
+    {
+        string setting = job.ToString();
+        string actors = string.Join("\n - ", job.actors.Select(actor => actor.ToString()));
+        return string.Format(startPrompt, setting, actor.getPrompt(), actors);
+    }
+
 
     /// <summary>
     /// Task to process the audio and start creating dialogues for the NPC
@@ -51,8 +97,7 @@ public class DialogueSystem : IMicrophoneEventListener
         dialogs.Add(new(Environment.Actor.Candidate, userDialog.Result, test));
         foreach(NPC npc in NPCRegistry.GetNPCs())
         {
-            string npcDialogue = await aIService.getAIResponse(scenario.job, npc.actor, dialogs);
-            Dialog dialog = new(npc.actor, npcDialogue);
+            Dialog dialog = new Dialog(npc.actor, await aIService.getAIResponse(BuildPrompt(scenario.job, npc.actor), dialogs));
             token.ThrowIfCancellationRequested();
             dialogs.Add(dialog);
             onDialogueReady.Invoke((npc,dialog));
@@ -83,7 +128,7 @@ public class DialogueSystem : IMicrophoneEventListener
 
     public void onMicrophoneStartRecording()
     {
-        throw new System.NotImplementedException();
+        tokenSource.Cancel();
     }
 
 

@@ -10,14 +10,13 @@ using Whisper;
 public class BootStrap : MonoBehaviour
 {
     private BootStrap instance;
-    [LabelText("TTS url")]
-    public string TTSurl;
+    [LabelText("TTService")]
+    public ServiceProviderSO<TTService> TTService;
     [LabelText("TTS Api Key")]
     public string TTSApiKey;
-    
-    [LabelText("AI Url")]
-    public string AIurl;
-    
+    [LabelText("AI Service")]
+    [ShowInInspector, SerializeReference]
+    public ServiceProviderSO<LLMService> LLMService;
     [LabelText("AI Api Key")]
     public string AIApiKey;
 
@@ -35,9 +34,9 @@ public class BootStrap : MonoBehaviour
         //Ensuring the AI and TTService is created and functional
         if (Services.AIService == null || Services.TTService == null)
         {
-            AIService aIService =  new(AIurl, AIApiKey);
-            TTService tTService = new(TTSurl,TTSApiKey);
-            Services.InitializeGlobals(aIService, tTService);
+            //ILLMService aIService =  new(AIApiKey);
+            //ITTService tTService = new TTService(TTSApiKey);
+            //Services.InitializeGlobals(aIService, tTService);
         }
         
         WhisperManager whisper = GetComponentInChildren<WhisperManager>();

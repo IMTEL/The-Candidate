@@ -1,19 +1,19 @@
-using System;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
 
 /// <summary>
 /// A TTS Script using the ElevenLabs API TTS Service. Requires the a enviroment variable for the API key.
 /// </summary>
-public class TTService
+public class ElevenLabsService : TTService 
 {
 
-    string url;
+    private string url = "https://api.elevenlabs.io/v1/text-to-speech/";
     string apiKey;
 
-    [Serializable]
     private class TTSRequestBody
     {
         public string text;
@@ -30,19 +30,12 @@ public class TTService
 
     private readonly SemaphoreSlim semaphore = new(1);
 
-    public TTService(string apiKey, string url)
+    public ElevenLabsService(string apiKey)
     {
         this.apiKey = apiKey;
-        this.url = url;
-    }
-    
-    public enum Voice
-    {
-        Johannes,
-        Ola
     }
 
-    private string getVoiceId(Voice voice)
+    public string getVoiceId(Voice voice)
     {
         return voice switch
         {
@@ -51,16 +44,17 @@ public class TTService
             _ => getVoiceId(Voice.Ola),
         };
     }
+    
 
-    public Awaitable<AudioClip> getAudioClip(Voice voice, string dialogue)
+    public override Task<AudioClip> getAudioClip(Voice voice, string dialogue)
     {
         return SendPostRequest(getVoiceId(voice), dialogue);
     }
 
-    private async Awaitable<AudioClip> SendPostRequest(string voiceid, string dialogue)
+    private async Task<AudioClip> SendPostRequest(string voiceid, string dialogue)
     {
         await semaphore.WaitAsync();
-        string jsonPayload = JsonUtility.ToJson(new TTSRequestBody(dialogue));
+        string jsonPayload = JsonConvert.ToString(new TTSRequestBody(dialogue));
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonPayload);
 
         // Create request
@@ -82,7 +76,6 @@ public class TTService
         return DownloadHandlerAudioClip.GetContent(request);
 
     }
-
 
 
 }

@@ -1,10 +1,7 @@
-using UnityEngine.Rendering.Universal;
-using Whisper;
-
 public static class Services {
 
     //Pure service
-    public static AIService AIService;
+    public static LLMService AIService;
     public static TTService TTService;
 
     //Pure C# Systems
@@ -18,7 +15,7 @@ public static class Services {
     public static ScenarioSettings scenarioSettings;
 
 
-    public static void InitializeGlobals(AIService ai, TTService tts)
+    public static void InitializeGlobals(LLMService ai, TTService tts)
     {
         AIService = ai;
         TTService = tts;
