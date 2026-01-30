@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Services/OpenAI LLM")]
+[CreateAssetMenu(menuName = "Services/IDUN")]
 public class OpenAiLlmProvider : ServiceProviderSO<LLMService>
 {
     [SerializeField] private string apiKey;

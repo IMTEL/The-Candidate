@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Alchemy.Inspector;
 using UnityEngine;
 using Whisper.Utils;
@@ -7,8 +8,8 @@ public class MicrophoneInputRecording : MonoBehaviour
 {
     MicrophoneRecord mic;
 
-    public static event Action onMicrophoneStartRecording;
-    public static event Action<AudioChunk> onMicrophoneEndRecording;
+    private event Action onMicrophoneStartRecording;
+    private event Action<AudioChunk> onMicrophoneEndRecording;
     
     void Awake()
     {
@@ -24,13 +25,49 @@ public class MicrophoneInputRecording : MonoBehaviour
     [Button]
     public void ToggleMicrophone()
     {
-        if (mic.IsRecording) onMicrophoneStartRecording?.Invoke();
-        else this.StopRecording(); 
+        if (mic.IsRecording) StartRecording();
+        else StopRecording(); 
     }
 
-    [Button]
     private void StopRecording()
     {
         mic.StopRecord();
     }
+
+    private void StartRecording()
+    {
+        onMicrophoneStartRecording?.Invoke();
+        mic.StartRecord();
+    }
+
+    public void AddListener(List<IMicrophoneEventListener> listeners)
+    {
+        foreach (var listener in listeners)
+        {
+            AddListener(listener);
+        }
+    }
+
+    public void AddListener(IMicrophoneEventListener listener)
+    {
+        if (listener == null) return;
+        onMicrophoneStartRecording += listener.onMicrophoneStartRecording;
+        onMicrophoneEndRecording += listener.onMicrophoneStopRecording; 
+    }
+
+    public void RemoveListener(List<IMicrophoneEventListener> listeners)
+    {
+        foreach (var listener in listeners)
+        {
+            RemoveListener(listener);
+        }
+    }
+
+    public void RemoveListener(IMicrophoneEventListener listener)
+    {
+        if(listener == null) return;
+        onMicrophoneStartRecording -= listener.onMicrophoneStartRecording;
+        onMicrophoneEndRecording -= listener.onMicrophoneStopRecording; 
+    }
+
 }
