@@ -16,7 +16,7 @@ if not blend_path.exists():
     raise Exception("Blend file must be saved before exporting!")
 
 folder : pathlib.Path = blend_path.parent.resolve()
-TARGET_FOLDER = pathlib.Path(folder, "visemes02\\targets\\visemes\\")   # Folder containing .target files
+TARGET_FOLDER = pathlib.Path(folder, "visemes\\")   # Folder containing .target files
 
 EXPORT_FILE = pathlib.Path(folder,blend_path.stem+"_exported.fbx")
 
