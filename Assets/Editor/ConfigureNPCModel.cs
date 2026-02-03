@@ -3,6 +3,7 @@ using System.Linq;
 using uLipSync;
 using UnityEditor;
 using UnityEngine;
+using static AssetDB;
 
 public class ModelImporterWindow : EditorWindow
 {
@@ -10,6 +11,11 @@ public class ModelImporterWindow : EditorWindow
     private List<Component> components;
     private Profile uLipSyncProfile;
     private GameObject parentPrefab;
+    private AssetDB assetDB;
+    private Material eyematerial;
+    private int eyeIndex;
+    private Material skinmaterial;
+    private int skinIndex;
 
     [MenuItem("Tools/Configure Make Human Model with Ulipsync")]
     public static void ShowWindow()
@@ -22,8 +28,16 @@ public class ModelImporterWindow : EditorWindow
         GUILayout.Label("Import Model to Prefab Variant", EditorStyles.boldLabel);
 
         model = (GameObject)EditorGUILayout.ObjectField("Model", model, typeof(GameObject), false);
-        uLipSyncProfile = (Profile)EditorGUILayout.ObjectField("WhisperProfile", uLipSyncProfile, typeof(Profile), false);
         parentPrefab = (GameObject)EditorGUILayout.ObjectField("Prefab Parent", parentPrefab,typeof(GameObject), false);
+        uLipSyncProfile = (Profile)EditorGUILayout.ObjectField("WhisperProfile", uLipSyncProfile, typeof(Profile), false);
+        
+        assetDB = (AssetDB)EditorGUILayout.ObjectField("AssetDB", assetDB, typeof(AssetDB), false);
+        
+        eyematerial = (Material)EditorGUILayout.ObjectField("EyeMaterial", eyematerial, typeof(Material), false);
+        eyeIndex = EditorGUILayout.IntField("Index",eyeIndex);
+
+        skinmaterial = (Material)EditorGUILayout.ObjectField("SkinMaterial", skinmaterial, typeof(Material), false);
+        skinIndex = EditorGUILayout.IntField("Index",skinIndex);
         
         if (GUILayout.Button("Import and Configure") && model != null && uLipSyncProfile != null && parentPrefab != null)
         {
@@ -60,6 +74,24 @@ public class ModelImporterWindow : EditorWindow
         controller.head = RecursiveDepthSearch(modelInstance.transform ,"head")?.gameObject;
         controller.transform.position = controller.head.transform.position;
         if (controller.head == null) Debug.LogWarning("Could not find a head to link to the NPC. Please link this yourselves");
+
+        //Configuring the rendering correctly
+        List<SkinnedMeshRenderer> skinnedMeshRenderers = modelInstance.GetComponentsInChildren<SkinnedMeshRenderer>().ToList();
+        foreach(SkinnedMeshRenderer renderer in skinnedMeshRenderers)
+        {
+            NPCRenderer nPCRenderer = renderer.gameObject.AddComponent<NPCRenderer>();
+            nPCRenderer.assetDB = assetDB;
+            if (renderer.sharedMaterial.name.Contains("body"))
+            {
+                nPCRenderer.material = skinmaterial;
+                nPCRenderer.index = skinIndex;
+            }
+            else if (renderer.sharedMaterial.name.Contains("high-poly"))
+            {
+                nPCRenderer.material = eyematerial;
+                nPCRenderer.index = eyeIndex;
+            }
+        }
 
         //Setting up Ulipsync with the correct profile 
         uLipSync.uLipSync lipsync = controller.gameObject.AddComponent<uLipSync.uLipSync>();
