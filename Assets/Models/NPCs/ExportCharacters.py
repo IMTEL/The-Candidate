@@ -18,7 +18,7 @@ if not blend_path.exists():
 folder : pathlib.Path = blend_path.parent.resolve()
 TARGET_FOLDER = pathlib.Path(folder, "visemes02\\targets\\visemes\\")   # Folder containing .target files
 
-EXPORT_FILE = pathlib.Path(folder,blend_path.stem+".fbx")
+EXPORT_FILE = pathlib.Path(folder,blend_path.stem+"_exported.fbx")
 
 # ------------------------------------------
 

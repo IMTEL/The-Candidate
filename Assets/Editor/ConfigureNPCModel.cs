@@ -62,7 +62,7 @@ public class ModelImporterWindow : EditorWindow
         if (controller.head == null) Debug.LogWarning("Could not find a head to link to the NPC. Please link this yourselves");
 
         //Setting up Ulipsync with the correct profile 
-        uLipSync.uLipSync lipsync = modelInstance.AddComponent<uLipSync.uLipSync>();
+        uLipSync.uLipSync lipsync = controller.gameObject.AddComponent<uLipSync.uLipSync>();
         lipsync.profile = uLipSyncProfile;
         
         //Add the blendshape, add the mesh renderer and add it as a listener to the lipsync
