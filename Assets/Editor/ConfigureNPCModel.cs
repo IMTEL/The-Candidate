@@ -29,7 +29,7 @@ public class ModelImporterWindow : EditorWindow
 
         model = (GameObject)EditorGUILayout.ObjectField("Model", model, typeof(GameObject), false);
         parentPrefab = (GameObject)EditorGUILayout.ObjectField("Prefab Parent", parentPrefab,typeof(GameObject), false);
-        uLipSyncProfile = (Profile)EditorGUILayout.ObjectField("WhisperProfile", uLipSyncProfile, typeof(Profile), false);
+        uLipSyncProfile = (Profile)EditorGUILayout.ObjectField("uLipSyncProfile", uLipSyncProfile, typeof(Profile), false);
         
         assetDB = (AssetDB)EditorGUILayout.ObjectField("AssetDB", assetDB, typeof(AssetDB), false);
         
