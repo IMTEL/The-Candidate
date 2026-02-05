@@ -1,24 +1,23 @@
 using System.Collections.Generic;
-using UnityEngine;
 
-public class NPCRegistry : MonoBehaviour
+public class NPCRegistry : INPCEventListener
 {
 
     private List<NPC> NPCs= new();
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    public IEnumerable<NPC> GetNPCEnumerable()
     {
-        
+        return new List<NPC>(NPCs);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnCreateNPC(NPC nPC)
     {
-        
+        NPCs.Add(nPC);
+        nPC.AddListener(this);
     }
 
-    public List<NPC> GetNPCs()
+    public void OnDestroyNPC(NPC nPC)
     {
-        return NPCs;
+        NPCs.Remove(nPC);
     }
 }

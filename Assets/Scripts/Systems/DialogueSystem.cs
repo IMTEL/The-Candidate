@@ -95,7 +95,7 @@ You are an actor within a movie where you are with different other people to int
         userCounter++;
         test.SetData(recordedAudio.Data,0);
         dialogs.Add(new(Environment.Actor.Candidate, userDialog.Result, test));
-        foreach(NPC npc in NPCRegistry.GetNPCs())
+        foreach(NPC npc in NPCRegistry.GetNPCEnumerable())
         {
             Dialog dialog = new Dialog(npc.actor, await aIService.getAIResponse(BuildPrompt(scenario.job, npc.actor), dialogs));
             token.ThrowIfCancellationRequested();

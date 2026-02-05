@@ -11,14 +11,9 @@ using UnityEngine.Networking;
 /// </summary>
 public class ElevenLabsService : TTService 
 {
-
+    
     private string url = "https://api.elevenlabs.io/v1/text-to-speech/";
     string apiKey;
-
-    private class TTSRequestBody
-    {
-      
-    }
 
     private readonly SemaphoreSlim semaphore = new(1);
 

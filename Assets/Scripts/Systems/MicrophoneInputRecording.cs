@@ -4,7 +4,7 @@ using Alchemy.Inspector;
 using UnityEngine;
 using Whisper.Utils;
 [RequireComponent(typeof(MicrophoneRecord))]
-public class MicrophoneInputRecording : MonoBehaviour
+public class MicrophoneInputRecording : MonoBehaviour, IEvent<IMicrophoneEventListener>
 {
     MicrophoneRecord mic;
 
@@ -14,10 +14,10 @@ public class MicrophoneInputRecording : MonoBehaviour
     void Awake()
     {
         mic = GetComponent<MicrophoneRecord>();
-        mic.OnRecordStop += sendChunk;
+        mic.OnRecordStop += SendChunk;
     }
 
-    private void sendChunk(AudioChunk recordedAudio)
+    private void SendChunk(AudioChunk recordedAudio)
     {
         onMicrophoneEndRecording.Invoke(recordedAudio);
     }
@@ -40,7 +40,7 @@ public class MicrophoneInputRecording : MonoBehaviour
         mic.StartRecord();
     }
 
-    public void AddListener(List<IMicrophoneEventListener> listeners)
+    public void AddListener(IEnumerable<IMicrophoneEventListener> listeners)
     {
         foreach (var listener in listeners)
         {
@@ -55,7 +55,7 @@ public class MicrophoneInputRecording : MonoBehaviour
         onMicrophoneEndRecording += listener.onMicrophoneStopRecording; 
     }
 
-    public void RemoveListener(List<IMicrophoneEventListener> listeners)
+    public void RemoveListener(IEnumerable<IMicrophoneEventListener> listeners)
     {
         foreach (var listener in listeners)
         {
@@ -69,5 +69,4 @@ public class MicrophoneInputRecording : MonoBehaviour
         onMicrophoneStartRecording -= listener.onMicrophoneStartRecording;
         onMicrophoneEndRecording -= listener.onMicrophoneStopRecording; 
     }
-
 }
