@@ -19,6 +19,17 @@ public class DialogUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UpdateText();
+    }
+
+    public void SetText(string newText)
+    {
+        timer = 0;
+        dialogue = newText;
+    }
+
+    private void UpdateText()
+    {
         string modifiedText = dialogue;
         
         if(dialogue.Length < letterPerSecond * timer) timer += Time.deltaTime;
@@ -28,12 +39,6 @@ public class DialogUI : MonoBehaviour
             modifiedText = modifiedText[..(int)(letterPerSecond * timer)];
         }
         text.text = modifiedText;   
-    }
-
-    public void SetText(string newText)
-    {
-        timer = 0;
-        dialogue = newText;
     }
 
     public Button GetButton()

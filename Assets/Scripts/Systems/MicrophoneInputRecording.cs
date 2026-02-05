@@ -24,10 +24,12 @@ public class MicrophoneInputRecording : MonoBehaviour, IEvent<IMicrophoneEventLi
     }
 
     [Button]
-    public void ToggleMicrophone()
+
+    public bool ToggleMicrophone()
     {
         if (mic.IsRecording) StartRecording();
-        else StopRecording(); 
+        else StopRecording();
+        return mic.IsRecording; 
     }
 
     private void StopRecording()
