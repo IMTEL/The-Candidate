@@ -3,7 +3,6 @@ using System.Linq;
 using uLipSync;
 using UnityEditor;
 using UnityEngine;
-using static AssetDB;
 
 public class ModelImporterWindow : EditorWindow
 {
@@ -47,7 +46,7 @@ public class ModelImporterWindow : EditorWindow
 
     private void ImportAndConfigure()
     {
-        
+        #region Creation of the prefab
         SkinnedMeshRenderer possibleBlendShape = model.GetComponentsInChildren<SkinnedMeshRenderer>().FirstOrDefault(renderer => renderer.sharedMesh.blendShapeCount > 0);
         if (possibleBlendShape == null)
         {
@@ -68,13 +67,19 @@ public class ModelImporterWindow : EditorWindow
         modelInstance.transform.SetParent(prefabRoot.transform);
         modelInstance.transform.position = Vector3.zero;
         NPC controller = prefabRoot.GetComponentInChildren<NPC>();
+        #endregion
 
+
+        #region Link NPC module ot correct areas
         //Link up the head to the NPC module
         //TODO: Can be done trought the Ulipsync Audiosource.. Need to double check if it is worth it
         controller.head = RecursiveDepthSearch(modelInstance.transform ,"head")?.gameObject;
-        controller.transform.position = controller.head.transform.position;
         if (controller.head == null) Debug.LogWarning("Could not find a head to link to the NPC. Please link this yourselves");
+        else controller.transform.position = controller.head.transform.position;
+        #endregion
 
+
+        #region Mapping Materials on the NPC
         //Configuring the rendering correctly
         List<SkinnedMeshRenderer> skinnedMeshRenderers = modelInstance.GetComponentsInChildren<SkinnedMeshRenderer>().ToList();
         foreach(SkinnedMeshRenderer renderer in skinnedMeshRenderers)
@@ -92,7 +97,9 @@ public class ModelImporterWindow : EditorWindow
                 nPCRenderer.index = eyeIndex;
             }
         }
+        #endregion
 
+        #region Mapping blendshapes to the profile
         //Setting up Ulipsync with the correct profile 
         uLipSync.uLipSync lipsync = controller.gameObject.AddComponent<uLipSync.uLipSync>();
         lipsync.profile = uLipSyncProfile;
@@ -113,12 +120,20 @@ public class ModelImporterWindow : EditorWindow
             BlendShape.blendShapes.Add(blendShapeInfo);
         }
         BlendShape.ApplyBlendShapes();
+        #endregion
+
         PrefabUtility.SaveAsPrefabAsset(prefabRoot, path);
         PrefabUtility.UnloadPrefabContents(prefabRoot);
 
         Debug.Log($"Prefab variant created and configured at {path}");
     }
 
+    /// <summary>
+    /// Finds the correct index of the blendshape based upon the phenomen name
+    /// </summary>
+    /// <param name="name">The name it should search for</param>
+    /// <param name="mesh">The mesh containing the blendshape</param>
+    /// <returns>A identical match or a match based upon the first character</returns>
     private int findCorrectIndex(string name, Mesh mesh)
     {   
         int i = mesh.GetBlendShapeIndex(name);
