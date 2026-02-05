@@ -72,6 +72,13 @@ public class BootStrap : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        GameObject player = GameObject.FindWithTag("Player");
+        DialogUI dialogUI = player.GetComponentInChildren<DialogUI>();
+        if(dialogUI != null)
+        {
+            MicrophoneInputRecording microphoneInput = GetComponentInChildren<MicrophoneInputRecording>();
+            dialogUI.GetButton().onClick.AddListener(microphoneInput.OnClick);
+        }
+        
     }
 }

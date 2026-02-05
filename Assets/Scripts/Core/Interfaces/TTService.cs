@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>
+/// TTService that provides us wiht a way to get voices
+/// </summary>
 public abstract class TTService
 {
 

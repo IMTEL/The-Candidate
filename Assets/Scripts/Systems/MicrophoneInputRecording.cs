@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using Alchemy.Inspector;
 using UnityEngine;
+using UnityEngine.UI;
 using Whisper.Utils;
 [RequireComponent(typeof(MicrophoneRecord))]
-public class MicrophoneInputRecording : MonoBehaviour, IEvent<IMicrophoneEventListener>
+public class MicrophoneInputRecording : MonoBehaviour, IEvent<IMicrophoneEventListener>, IButtonListener
 {
     MicrophoneRecord mic;
 
@@ -68,5 +69,10 @@ public class MicrophoneInputRecording : MonoBehaviour, IEvent<IMicrophoneEventLi
         if(listener == null) return;
         onMicrophoneStartRecording -= listener.onMicrophoneStartRecording;
         onMicrophoneEndRecording -= listener.onMicrophoneStopRecording; 
+    }
+
+    public void OnClick()
+    {
+        ToggleMicrophone();
     }
 }
