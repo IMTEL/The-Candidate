@@ -127,7 +127,7 @@ public class ModelImporterWindow : EditorWindow
         bool found = false;
         for(i = 0; !found && i < mesh.blendShapeCount; i++)
         {            
-            found = mesh.GetBlendShapeName(i)[0].Equals(name[0]);
+            found = mesh.GetBlendShapeName(i).ToLower()[0].Equals(name.ToLower()[0]);
         }
         return found ? i-1 : -1 ;
     }
