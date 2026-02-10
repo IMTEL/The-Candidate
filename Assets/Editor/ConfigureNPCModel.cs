@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using uLipSync;
 using UnityEditor;
+using UnityEditor.Events;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ModelImporterWindow : EditorWindow
 {
@@ -107,7 +109,7 @@ public class ModelImporterWindow : EditorWindow
         //Add the blendshape, add the mesh renderer and add it as a listener to the lipsync
         uLipSyncBlendShape BlendShape = possibleBlendShape.gameObject.AddComponent<uLipSyncBlendShape>();
         BlendShape.skinnedMeshRenderer = possibleBlendShape;
-        lipsync.onLipSyncUpdate.AddListener(BlendShape.OnLipSyncUpdate);
+        UnityEventTools.AddPersistentListener(lipsync.onLipSyncUpdate, BlendShape.OnLipSyncUpdate);
 
         string[] names = uLipSyncProfile.GetPhonemeNames();
         Mesh sharedMesh = possibleBlendShape.sharedMesh;
