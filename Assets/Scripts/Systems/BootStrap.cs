@@ -51,12 +51,12 @@ public class BootStrap : MonoBehaviour
             RemoveAndDisconnectSessionServices(microphoneInput);
             ScenarioSettings scenarioSettings = new();
             NPCRegistry nPCRegistry = new();
-            DialogueSystem dialogueSystem = new(Services.AIService, scenarioSettings, whisper, Services.TTService, nPCRegistry);
+            DialogueSystem dialogueSystem = new(Services.AIService, scenarioSettings, Services.TTService, nPCRegistry);
             Services.StartNewSession(scenarioSettings, dialogueSystem, dialogueScheduler, nPCRegistry);
             dialogueSystem.onDialogueReady += dialogueScheduler.onDialogueReady;
             microphoneInput.AddListener(new List<IMicrophoneEventListener>()
             {
-                dialogueSystem, dialogueScheduler
+                dialogueScheduler
             });
         }
     }
@@ -65,7 +65,7 @@ public class BootStrap : MonoBehaviour
     {
         microphoneInput.RemoveListener(new List<IMicrophoneEventListener>()
         {
-           Services.dialogueScheduler, Services.dialogueSystem 
+           Services.dialogueScheduler
         });
     }
 

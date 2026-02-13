@@ -11,5 +11,5 @@ public interface IMicrophoneEventListener
     /// Event for when we are done recording.
     /// </summary>
     /// <param name="recordedAudio">The audio from the microphone</param>
-    void onMicrophoneStopRecording(AudioChunk recordedaudio);
+    void onMicrophoneStopRecording(Dialog recordedaudio);
 }

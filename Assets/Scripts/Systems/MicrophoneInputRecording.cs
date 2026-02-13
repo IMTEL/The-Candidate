@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.UI;
+using Whisper;
 using Whisper.Utils;
 [RequireComponent(typeof(MicrophoneRecord))]
-public class MicrophoneInputRecording : MonoBehaviour, IEvent<IMicrophoneEventListener>, IButtonListener
+public class ExtendedWhisperManager : WhisperManager, IEvent<IMicrophoneEventListener>, IButtonListener
 {
     MicrophoneRecord mic;
 
     private event Action onMicrophoneStartRecording;
-    private event Action<AudioChunk> onMicrophoneEndRecording;
+    private event Action<Dialog> onMicrophoneEndRecording;
     
     void Awake()
     {
@@ -18,9 +20,12 @@ public class MicrophoneInputRecording : MonoBehaviour, IEvent<IMicrophoneEventLi
         mic.OnRecordStop += SendChunk;
     }
 
-    private void SendChunk(AudioChunk recordedAudio)
-    {
-        onMicrophoneEndRecording.Invoke(recordedAudio);
+    private async void SendChunk(AudioChunk recordedAudio)
+    { 
+        WhisperResult result = await this.GetTextAsync(recordedAudio.Data, recordedAudio.Frequency, recordedAudio.Channels);
+        AudioClip test = AudioClip.Create("User",1,recordedAudio.Channels,recordedAudio.Channels, false);
+        Dialog newDialog = new Dialog(Environment.Actor.Candidate, result.Result, test);
+
     }
 
     [Button]

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,7 +5,7 @@ using Whisper.Utils;
 
 public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener
 {
-    private Queue<(NPC,Dialog)> voiceQueue;
+    private Queue<(NPC,Dialog)> voiceQueue = new();
     private NPC lastNPC;
     private bool micRecording = false;
 

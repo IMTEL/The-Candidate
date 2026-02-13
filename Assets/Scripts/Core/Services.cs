@@ -1,18 +1,16 @@
 public static class Services {
 
     //Pure service
-    public static LLMService AIService;
-    public static TTService TTService;
+    public static LLMService AIService {get; private set;}
+    public static TTService TTService {get; private set;}
 
     //Pure C# Systems
-    public static DialogueScheduler dialogueScheduler;
-    public static DialogueSystem dialogueSystem;
-
-    //Monobehaviour Systems
-    public static NPCRegistry nPCRegistry;
+    public static DialogueScheduler dialogueScheduler {get; private set;}
+    public static DialogueSystem dialogueSystem {get; private set;}
+    public static NPCRegistry nPCRegistry {get; private set;}
 
     //Data C# Classes
-    public static ScenarioSettings scenarioSettings;
+    public static ScenarioSettings scenarioSettings {get; private set;}
 
 
     public static void InitializeGlobals(LLMService ai, TTService tts)

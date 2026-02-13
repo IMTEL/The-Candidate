@@ -5,37 +5,30 @@ using System.Threading;
 using System.Threading.Tasks;
 using Alchemy.Inspector;
 using UnityEngine;
-using Whisper;
-using Whisper.Utils;
 
 
 /// <summary>
 /// Creates dialogues with the AI moduel and
 /// </summary>
-public class DialogueSystem : IMicrophoneEventListener
+public class DialogueSystem
 {
-    private int userCounter;
     private LLMService aIService;
     private ScenarioSettings scenario;
-    private WhisperManager whisper;
     private TTService TTService;
     private NPCRegistry NPCRegistry;
 
-    private List<Dialog> dialogs;
+    private List<Dialog> dialogs = new();
     public Action<(NPC, Dialog)> onDialogueReady;
 
-    public DialogueSystem(LLMService aIService, ScenarioSettings scenario, WhisperManager whisper, TTService ttService, NPCRegistry nPCRegistry)
+    public DialogueSystem(LLMService aIService, ScenarioSettings scenario, TTService ttService, NPCRegistry nPCRegistry)
     {
         this.aIService = aIService;
         this.scenario = scenario;
-        this.whisper = whisper;
         this.TTService = ttService;
         this.NPCRegistry = nPCRegistry;
     }
 
     private SemaphoreSlim simulatnousVoiceRequests = new(2);
-
-    private CancellationTokenSource tokenSource = new();
 
 
     /// <summary>
@@ -64,8 +57,6 @@ You are an actor within a movie where you are with different other people to int
 - ALL DIALOGS SHOULD BE IN NORWEGIAN
 ";
 
-
-
     /// <summary>
     /// Builds the prompt
     /// </summary>
@@ -80,6 +71,12 @@ You are an actor within a movie where you are with different other people to int
         return string.Format(startPrompt, setting, actor.getPrompt(), actors);
     }
 
+    public (Task, CancellationTokenSource) HandleUserDialog(Dialog userDialog, CancellationTokenSource tokenSource = null)
+    {
+        if (userDialog == null) throw new ArgumentException("Dialog can't be null");
+        tokenSource ??= new();
+        return(HandleUserDialog(userDialog, tokenSource.Token), tokenSource);
+    }
 
     /// <summary>
     /// Task to process the audio and start creating dialogues for the NPC
@@ -87,14 +84,9 @@ You are an actor within a movie where you are with different other people to int
     /// <param name="recordedAudio">The recorded audio from the microphone</param>
     /// <param name="token">A cancellation token that will be checked if it is suppose to stop</param>
     /// <returns></returns>
-    private async Task ProcessAudio(AudioChunk recordedAudio, CancellationToken token)
+    private async Task HandleUserDialog(Dialog userDialog, CancellationToken token)
     {
-        WhisperResult userDialog = await whisper.GetTextAsync(recordedAudio.Data, recordedAudio.Frequency, recordedAudio.Channels);
-        //TODO: Double check that the audio for this is not mangled to bits
-        AudioClip test = AudioClip.Create("User-"+userCounter,1,recordedAudio.Channels,recordedAudio.Channels, false);
-        userCounter++;
-        test.SetData(recordedAudio.Data,0);
-        dialogs.Add(new(Environment.Actor.Candidate, userDialog.Result, test));
+        dialogs.Add(userDialog);
         foreach(NPC npc in NPCRegistry.GetNPCEnumerable())
         {
             Dialog dialog = new Dialog(npc.actor, await aIService.getAIResponse(BuildPrompt(scenario.job, npc.actor), dialogs));
@@ -124,17 +116,5 @@ You are an actor within a movie where you are with different other people to int
         }
         dialog.audioClip = await TTService.getAudioClip(npc.voice, dialog.dialog);
         simulatnousVoiceRequests.Release();
-    }
-
-    public void onMicrophoneStartRecording()
-    {
-        tokenSource.Cancel();
-    }
-
-
-    public void onMicrophoneStopRecording(AudioChunk audioChunk)
-    {
-        tokenSource = new CancellationTokenSource();
-        ProcessAudio(audioChunk, tokenSource.Token).Start();
     }
 }

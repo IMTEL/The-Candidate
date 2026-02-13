@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,15 +6,16 @@ public class DialogUI : MonoBehaviour
 {
 
     public int letterPerSecond = 3;
-    private float timer;
-    private string dialogue;
-    private Button button;
-    private Text text;
+    private float timer = 0;
+    private string dialogue = "";
+    public Button button;
+    public TMP_Text text;
 
 
     private void Awake()
     {
-        if(button == null) button = GetComponentInChildren<Button>();
+        button ??= GetComponentInChildren<Button>();
+        text ??= GetComponentInChildren<TMP_Text>();
     }
 
     // Update is called once per frame

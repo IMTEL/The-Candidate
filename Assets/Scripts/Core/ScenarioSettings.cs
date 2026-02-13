@@ -1,10 +1,11 @@
-using UnityEngine;
-
+/// <summary>
+/// Settings for the scenario
+/// </summary>
 public class ScenarioSettings {
 
     public Environment.Job job {get; private set;} = Environment.Job.Store;
 
-    public int amountOfPeople {get; private set;}
+    public int amountOfPeople {get; private set;} = 1;
 
     public void SetAmountOfPeople(int amount)
     {
@@ -18,7 +19,7 @@ public class ScenarioSettings {
     /// <param name="enviroment"></param>
     public void SetJob(Environment.Job job)
     {
-        this.job = job != null ? job : this.job;
+        this.job = job ?? this.job;
         if(job.actors.Count > amountOfPeople)
         {
             SetAmountOfPeople(job.actors.Count);
