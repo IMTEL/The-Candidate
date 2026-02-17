@@ -8,7 +8,7 @@ using UnityEngine;
 
 
 /// <summary>
-/// Creates dialogues with the AI moduel and
+/// Creates dialogues with the AI model and
 /// </summary>
 public class DialogueSystem
 {
@@ -20,7 +20,7 @@ public class DialogueSystem
     private List<Dialog> dialogs = new();
     public Action<(NPC, Dialog)> onDialogueReady;
 
-    public DialogueSystem(LLMService aIService, ScenarioSettings scenario, TTService ttService, NPCRegistry nPCRegistry)
+    public DialogueSystem(LLMService aIService, TTService ttService, ScenarioSettings scenario, NPCRegistry nPCRegistry)
     {
         this.aIService = aIService;
         this.scenario = scenario;
@@ -68,7 +68,7 @@ You are an actor within a movie where you are with different other people to int
     {
         string setting = job.ToString();
         string actors = string.Join("\n - ", job.actors.Select(actor => actor.ToString()));
-        return string.Format(startPrompt, setting, actor.getPrompt(), actors);
+        return string.Format(startPrompt, setting, actor?.getPrompt(), actors);
     }
 
     public (Task, CancellationTokenSource) HandleUserDialog(Dialog userDialog, CancellationTokenSource tokenSource = null)
@@ -89,10 +89,10 @@ You are an actor within a movie where you are with different other people to int
         dialogs.Add(userDialog);
         foreach(NPC npc in NPCRegistry.GetNPCEnumerable())
         {
-            Dialog dialog = new Dialog(npc.actor, await aIService.getAIResponse(BuildPrompt(scenario.job, npc.actor), dialogs));
+            Dialog dialog = new(npc.actor, await aIService.getAIResponse(BuildPrompt(scenario.job, npc.actor), dialogs));
             token.ThrowIfCancellationRequested();
             dialogs.Add(dialog);
-            onDialogueReady.Invoke((npc,dialog));
+            onDialogueReady?.Invoke((npc,dialog));
             createAudioClip(npc,dialog, token).Start();
         }
     }

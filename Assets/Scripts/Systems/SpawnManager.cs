@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Alchemy.Inspector;
 using UnityEngine;
 
-public class SpawnManager : MonoBehaviour, IEvent<INPCEventListener>
+public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
 {
     [ShowInInspector]
     private NPCSpawnPoint[] spawnLocations;
@@ -11,39 +11,36 @@ public class SpawnManager : MonoBehaviour, IEvent<INPCEventListener>
     private Action<NPC> OnCreateNPC;
 
     [ShowInInspector]
-    [LabelText("NPCs ")]
-    public HashSet<GameObject> NPCs {get; private set;} = new();
-
-    public void AddListener(IEnumerable<INPCEventListener> listeners)
-    {
-        foreach (INPCEventListener item in listeners)
-        {
-            AddListener(item);
-        }
-    }
-
-    public void AddListener(INPCEventListener listener)
-    {
-        OnCreateNPC += listener.OnCreateNPC;
-    }
-
-    public void RemoveListener(IEnumerable<INPCEventListener> listeners)
-    {
-        foreach (INPCEventListener item in listeners)
-        {
-            AddListener(item);
-        }
-    }
-
-    public void RemoveListener(INPCEventListener listener)
-    {
-        OnCreateNPC -= listener.OnCreateNPC;
-    }
+    [LabelText("NPC Register")]
+    readonly NPCRegistry nPCRegistry = new();
+    
+    [ShowInInspector]
+    [LabelText("NPC Prefabs")]
+    public HashSet<GameObject> npcPrefabs = new();
 
     void Start()
     {
         spawnLocations = FindObjectsByType<NPCSpawnPoint>(sortMode: FindObjectsSortMode.None);
     }
 
+    [Init]
+    public void Init()
+    {
+        nPCRegistry.Add(GameObject.FindAnyObjectByType<NPC>());
+    }
 
+    void INPCEventListener.OnCreateNPC(NPC nPC)
+    {
+        
+    }
+
+    public void OnDestroyNPC(NPC nPC)
+    {
+        throw new NotImplementedException();
+    }
+
+    public NPCRegistry GetNPCRegistry()
+    {
+        return nPCRegistry;
+    }
 }

@@ -22,7 +22,7 @@ public class OpenAICompletionRequest
 
     public string ToJson()
     {
-        return JsonConvert.ToString(this);
+        return JsonConvert.SerializeObject(this);
     }
 
 
@@ -30,9 +30,9 @@ public class OpenAICompletionRequest
     {
         return model switch
         {
-            Model.GPT_OSS_120b => "gpt-oss-120b",
-            Model.GPT4 => "gpt-4.1",
-            _ => "gpt-oss-120b",
+            Model.GPT_OSS_120b => "openai/gpt-oss-120b",
+            Model.GPT4 => "openai/gpt-4.1",
+            _ => "openai/gpt-oss-120b",
         };
     }
 

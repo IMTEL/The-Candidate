@@ -8,7 +8,7 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public VoiceProfile voice;
-    public Environment.Actor actor;
+    public Environment.Actor actor = Environment.Actor.Employee;
     public AudioSource audioSource {get; private set;}
     public GameObject head;
 

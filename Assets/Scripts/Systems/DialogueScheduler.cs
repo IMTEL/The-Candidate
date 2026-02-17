@@ -1,13 +1,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Whisper.Utils;
 
-public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener
+public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit, IDialogueReady
 {
     private Queue<(NPC,Dialog)> voiceQueue = new();
     private NPC lastNPC;
     private bool micRecording = false;
+
+    private DialogueSystemComponent dialogueSystem;
+
+    [Init]
+    private void Init(DialogueSystemComponent dialogueSystem, ExtendedWhisperManager extendedWhisperManager)
+    {
+        this.dialogueSystem = dialogueSystem;
+        extendedWhisperManager.AddListener(this);
+        dialogueSystem.AddListener(this);
+    }
 
     void Update()
     {
@@ -24,10 +33,14 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener
     public void onMicrophoneStartRecording()
     {
         micRecording = true;
-        lastNPC.audioSource.Stop();
+        if(lastNPC != null)
+        {
+            lastNPC.audioSource.Stop();
+        }
+        voiceQueue.Clear();
     }
 
-    public void onMicrophoneStopRecording(AudioChunk audioChunk)
+    public void onMicrophoneStopRecording(Dialog _)
     {
         micRecording = false;
     }

@@ -4,5 +4,9 @@ public class ScenarioSettingsWrapper : MonoBehaviour
 {
     private ScenarioSettings scenarioSettings = new();
 
-
+    public ScenarioSettings getScenarioSettings()
+    {
+        return scenarioSettings;
+    }
+    
 }

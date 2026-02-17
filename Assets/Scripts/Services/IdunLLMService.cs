@@ -24,7 +24,7 @@ public class IdunLLMService : LLMService
     /// <summary>
     /// The url that should be sent to
     /// </summary>
-    private string url = "https:/llm.hpc.ntnu.no/completions";
+    private string url = "https://llm.hpc.ntnu.no/v1/chat/completions";
 
     private string apiKey;
 
@@ -36,10 +36,10 @@ public class IdunLLMService : LLMService
     public async Task<string> getAIResponse(string startPrompt, List<Dialog> dialogs)
     {
         await simulationousRequests.WaitAsync();
-        string requestBody = new OpenAICompletionRequest(startPrompt, dialogs, model: OpenAICompletionRequest.Model.GPT_OSS_120b).ToJson();
+        OpenAICompletionRequest requestBody = new(startPrompt, dialogs, model: OpenAICompletionRequest.Model.GPT_OSS_120b);
         UnityWebRequest request = new(url, "POST")
         {
-            uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(requestBody)),
+            uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(requestBody.ToJson())),
             downloadHandler = new DownloadHandlerBuffer()
         };
         request.SetRequestHeader("Authorization", $"Bearer {apiKey}");

@@ -1,38 +1,40 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.UI;
 using Whisper;
 using Whisper.Utils;
 [RequireComponent(typeof(MicrophoneRecord))]
-public class ExtendedWhisperManager : WhisperManager, IEvent<IMicrophoneEventListener>, IButtonListener
+[RequireComponent(typeof(WhisperManager))]
+public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventListener>, IButtonListener
 {
     MicrophoneRecord mic;
+
+    WhisperManager whisperManager;
 
     private event Action onMicrophoneStartRecording;
     private event Action<Dialog> onMicrophoneEndRecording;
     
-    void Awake()
+    private async void Awake()
     {
         mic = GetComponent<MicrophoneRecord>();
+        whisperManager = GetComponent<WhisperManager>();
         mic.OnRecordStop += SendChunk;
     }
 
     private async void SendChunk(AudioChunk recordedAudio)
     { 
-        WhisperResult result = await this.GetTextAsync(recordedAudio.Data, recordedAudio.Frequency, recordedAudio.Channels);
-        AudioClip test = AudioClip.Create("User",1,recordedAudio.Channels,recordedAudio.Channels, false);
-        Dialog newDialog = new Dialog(Environment.Actor.Candidate, result.Result, test);
-
+        WhisperResult result = await whisperManager.GetTextAsync(recordedAudio.Data, recordedAudio.Frequency, recordedAudio.Channels);
+        AudioClip test = AudioClip.Create("User",1,recordedAudio.Channels,recordedAudio.Frequency, false);
+        Dialog newDialog = new(Environment.Actor.Candidate, result.Result, test);
+        onMicrophoneEndRecording?.Invoke(newDialog);
     }
 
     [Button]
-
     public bool ToggleMicrophone()
     {
-        if (mic.IsRecording) StartRecording();
+        if (!mic.IsRecording) StartRecording();
         else StopRecording();
         return mic.IsRecording; 
     }
@@ -60,12 +62,12 @@ public class ExtendedWhisperManager : WhisperManager, IEvent<IMicrophoneEventLis
     {
         if (listener == null) return;
         onMicrophoneStartRecording += listener.onMicrophoneStartRecording;
-        onMicrophoneEndRecording += listener.onMicrophoneStopRecording; 
+        onMicrophoneEndRecording += listener.onMicrophoneStopRecording;
     }
 
     public void RemoveListener(IEnumerable<IMicrophoneEventListener> listeners)
     {
-        foreach (var listener in listeners)
+        foreach (IMicrophoneEventListener listener in listeners)
         {
             RemoveListener(listener);
         }

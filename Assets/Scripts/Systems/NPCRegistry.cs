@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using UnityEngine.SocialPlatforms.GameCenter;
 
 public class NPCRegistry : INPCEventListener
 {
 
-    private List<NPC> NPCs= new();
+    private readonly HashSet<NPC> NPCs= new();
 
     public IEnumerable<NPC> GetNPCEnumerable()
     {
@@ -19,5 +20,15 @@ public class NPCRegistry : INPCEventListener
     public void OnDestroyNPC(NPC nPC)
     {
         NPCs.Remove(nPC);
+    }
+
+    public void Add(NPC npc)
+    {
+        NPCs.Add(npc);
+    }
+
+    public void Clear()
+    {
+        NPCs.Clear();
     }
 }

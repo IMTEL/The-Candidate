@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -30,7 +29,7 @@ public class ElevenLabsService : TTService
     private async Task<AudioClip> SendPostRequest(string voiceid, string dialogue)
     {
         await semaphore.WaitAsync();
-        string jsonPayload = JsonConvert.ToString(new ElevenLabsRequest(dialogue));
+        string jsonPayload = new ElevenLabsRequest(dialogue).ToJson();
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonPayload);
 
         // Create request

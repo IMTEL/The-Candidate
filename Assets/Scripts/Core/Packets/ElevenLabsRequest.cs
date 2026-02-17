@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 public class ElevenLabsRequest
 {
         public string text;
@@ -9,5 +11,10 @@ public class ElevenLabsRequest
             this.text = text;
             this.model_id = model_id;
             this.language_code = language_code;    
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this);
         }
 }
