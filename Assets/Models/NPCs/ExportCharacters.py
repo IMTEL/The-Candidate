@@ -1,5 +1,6 @@
 import bpy
 import pathlib
+import re
 
 # Important notice. Most of this script is made trough the use of chatgpt due to me having
 # no idea of how to script in blender
@@ -9,6 +10,7 @@ import pathlib
 
 
 # ---------------- SETTINGS ----------------
+meshpattern = re.compile(r'^(\.\.|[A-Za-z]+\.\d{3})$')
 
 blend_path : pathlib.Path = pathlib.Path(bpy.data.filepath)
 
@@ -16,9 +18,9 @@ if not blend_path.exists():
     raise Exception("Blend file must be saved before exporting!")
 
 folder : pathlib.Path = blend_path.parent.resolve()
-TARGET_FOLDER = pathlib.Path(folder, "visemes\\")   # Folder containing .target files
+TARGET_FOLDER = pathlib.Path(folder, "visemes/")   # Folder containing .target files
 
-EXPORT_FILE = pathlib.Path(folder,blend_path.stem+"_exported.fbx")
+EXPORT_FILE = pathlib.Path(folder,blend_path.stem+".fbx")
 
 # ------------------------------------------
 
@@ -42,10 +44,39 @@ def make_active(obj):
     bpy.context.view_layer.objects.active = obj
 
 
-def run_mpfb_merge(mesh_obj):
-    make_active(mesh_obj)
+def run_mpfb_merge(body_obj, duplicates = []):
+    make_active(body_obj)
     bpy.ops.mpfb.bake_shapekeys()          # MPFB merge keys
-    bpy.ops.mpfb.delete_helpers()           # Remove helper geometry
+    bpy.ops.mpfb.delete_helpers()          # Remove helper geometry
+    
+
+    # Make sure vertex color layer exists
+    if not body_obj.data.vertex_colors:
+        body_obj.data.vertex_colors.new(name="Mask")
+        
+    vcol_layer = body_obj.data.vertex_colors.active
+    
+    # Step 1: Set all loops to white (visible)
+    vcol_layer.data.foreach_set("color", [1.0, 1.0, 1.0, 1.0] * len(vcol_layer.data))
+    
+    for obj in duplicates:
+        
+        # Corresponding vertex group name
+        vg_name = f"Delete.{obj.name}"
+        vg = body_obj.vertex_groups.get(vg_name)
+        if not vg:
+            continue
+        
+        # Get all vertices in this vertex group
+        verts_in_group = [v.index for v in body_obj.data.vertices
+                          if vg.index in [g.group for g in v.groups]]
+        
+        # Paint these vertices black
+        for v in body_obj.data.vertices:
+            if v.index in verts_in_group:
+                for loop in v.loops:
+                    vcol_layer.data[loop.index].color = (0, 0, 0, 1)
+
 
 
 def load_targets(mesh_obj):
@@ -53,37 +84,10 @@ def load_targets(mesh_obj):
     target_files = [{"name": str(f.name)} for f in TARGET_FOLDER.iterdir() if f.suffix == ".target"]
     bpy.ops.mpfb.load_target(directory=str(TARGET_FOLDER), files=target_files)
 
-def clean_shapekey_names(mesh_obj):
-    keys = mesh_obj.data.shape_keys
-
-    if not keys:
-        print("No shapekeys found")
-        return
-
-    for key in keys.key_blocks:
-        old_name = key.name
-
-        # Skip Basis key
-        if old_name.lower() == "basis":
-            continue
-
-        new_name = old_name
-
-        # Remove prefix
-        if new_name.lower().startswith("viseme_"):
-            new_name = new_name[len("viseme_"):]
-
-        # Uppercase
-        new_name = new_name.upper()
-
-        print(f"Renaming {old_name} → {new_name}")
-        key.name = new_name
-
 def export_selected_fbx():
     bpy.ops.export_scene.fbx(
         filepath=str(EXPORT_FILE),
         use_selection=True,
-        apply_unit_scale=True,
         use_mesh_modifiers=False,
         add_leaf_bones=False,
         use_armature_deform_only=True
@@ -95,7 +99,7 @@ def export_selected_fbx():
 duplicates = duplicate_character()
 
 # Separate mesh and armature
-mesh_obj = next((o for o in duplicates if o.type == 'MESH'), None)
+mesh_obj = next((obj for obj in duplicates if meshpattern.match(obj.name)), None)
 armature = next((o for o in duplicates if o.type == 'ARMATURE'), None)
 
 if mesh_obj is None:
@@ -106,14 +110,13 @@ if armature:
     mesh_obj.parent = armature
 
 # Run MPFB operations
-run_mpfb_merge(mesh_obj)
+run_mpfb_merge(mesh_obj, duplicates)
 load_targets(mesh_obj)
 
 # Export only duplicates
 deselect_all()
 for obj in duplicates:
     obj.select_set(True)
-
 
 export_selected_fbx()
 
@@ -124,6 +127,6 @@ deselect_all()
 for obj in duplicates:
     if obj.name in bpy.data.objects:
         obj.select_set(True)
-        
+
 bpy.ops.object.delete()
 
