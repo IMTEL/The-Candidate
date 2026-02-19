@@ -24,7 +24,11 @@ public abstract class TTService
     /// <returns>The ID of voice</returns>
     public string getProfileID(VoiceProfile voice)
     {
-        string voiceid = voiceDB[voice];
+        string voiceid = null;
+        if (voiceDB != null && voice != null)
+        {
+            voiceid = voiceDB[voice];
+        }
         return voiceid ?? getDefualtVoiceId();
     }
 
