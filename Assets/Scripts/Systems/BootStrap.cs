@@ -21,7 +21,7 @@ using UnityEngine;
 /// </summary>
 public class BootStrap : MonoBehaviour
 {
-    private BootStrap instance = null;
+    private static BootStrap instance = null;
 
     public List<IInit> inits = new();
 
