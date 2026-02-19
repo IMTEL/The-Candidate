@@ -19,6 +19,9 @@
 *.blend1
 *.blend1.meta
 
+# Removing recovery files
+_Recovery
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
@@ -103,3 +106,6 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+#Remove virutal python
+*venv
