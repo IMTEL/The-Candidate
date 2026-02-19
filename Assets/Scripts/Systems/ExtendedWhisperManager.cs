@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Whisper;
 using Whisper.Utils;
+
 [RequireComponent(typeof(MicrophoneRecord))]
 [RequireComponent(typeof(WhisperManager))]
 public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventListener>, IButtonListener
@@ -16,7 +17,7 @@ public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventList
     private event Action onMicrophoneStartRecording;
     private event Action<Dialog> onMicrophoneEndRecording;
     
-    private async void Awake()
+    private void Awake()
     {
         mic = GetComponent<MicrophoneRecord>();
         whisperManager = GetComponent<WhisperManager>();
