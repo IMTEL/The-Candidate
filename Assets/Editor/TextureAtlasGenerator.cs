@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
+/// <summary>
+/// Script for combinding marked pictures into a grid to be used as a 2D Array
+/// </summary>
 public class SimpleGridAtlasGenerator
 {
     [MenuItem("Tools/Generate Grid Texture Atlas")]
@@ -24,7 +27,7 @@ public class SimpleGridAtlasGenerator
         int rows = Mathf.CeilToInt((float)texCount / cols);
 
         // Create atlas
-        Texture2D atlas = new Texture2D(cols * texWidth, rows * texHeight, TextureFormat.RGBA32, false);
+        Texture2D atlas = new(cols * texWidth, rows * texHeight, TextureFormat.RGBA32, false);
 
         for (int i = 0; i < texCount; i++)
         {
