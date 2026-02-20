@@ -4,8 +4,11 @@ using uLipSync;
 using UnityEditor;
 using UnityEditor.Events;
 using UnityEngine;
-using UnityEngine.Events;
-
+/// <summary>
+/// Script for configuring the NPC's model (this case MakeHuman) with the right component to be used in the game.
+/// This includes fititng them with Ulipsync, adding them into a prefab variant of the core NPC module, 
+/// zeroing blendshapes and trying to link blendshapes to the chosen Ulipsync profile.
+/// </summary>
 public class ModelImporterWindow : EditorWindow
 {
     private GameObject model;
@@ -46,6 +49,9 @@ public class ModelImporterWindow : EditorWindow
         }
     }
 
+    /// <summary>
+    /// Imports the NPC model into a chosen prefab parent and configures it to a usable parent
+    /// </summary>
     private void ImportAndConfigure()
     {
         #region Creation of the prefab
