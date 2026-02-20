@@ -44,6 +44,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaba440443858344a97ca00c37b93ed6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScenarioSettingsWrapper
+--- !u!1 &5856609625211125611
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 680238529849166589}
+  - component: {fileID: 6470471915406388057}
+  m_Layer: 0
+  m_Name: Scenemanager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &680238529849166589
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5856609625211125611}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6430455684545150473}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6470471915406388057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5856609625211125611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6466f17970a6aa4808b0d6451b607ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneSwitcher
 --- !u!1 &6202758688784406740
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,6 +202,7 @@ GameObject:
   - component: {fileID: 7785346120457104513}
   - component: {fileID: 3193782233658492658}
   - component: {fileID: 1390673717017786156}
+  - component: {fileID: 4269212132517703431}
   m_Layer: 0
   m_Name: MicrophoneRecorder
   m_TagString: Untagged
@@ -221,6 +266,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c895c06281c9e418c09d17f6e1f21f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MicrophoneInputRecording
+--- !u!114 &4269212132517703431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6901510977062062484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9370225a2ca94276b870d5f87b0db55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: com.whisper.unity::Whisper.WhisperManager
   logLevel: 1
   modelPath: Whisper/ggml-tiny.bin
   isModelPathInStreamingAssets: 1
@@ -364,6 +421,7 @@ Transform:
   - {fileID: 7785346120457104513}
   - {fileID: 3689557859295126072}
   - {fileID: 607479644476824211}
+  - {fileID: 680238529849166589}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7729283393058737066
