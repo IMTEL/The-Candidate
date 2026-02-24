@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Alchemy.Inspector;
 using UnityEngine;
 
 public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, IEvent<IDialogueReady>, IDialogueReady, IInit
@@ -12,12 +11,6 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
     private Task workingThread;
     private CancellationTokenSource cancellationToken;
 
-    [LabelText("TTService")]
-    public ServiceProviderSO<TTService> TTService;
-    
-    [LabelText("AI Service")]
-    public ServiceProviderSO<LLMService> LLMService;
-
     private Action<(NPC, Dialog)> onDialogueReadyAbstract;
 
     TTService TTSInstance;
@@ -26,8 +19,6 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
 
     private void Awake()
     {
-        this.TTSInstance = (TTService)TTService.CreateService();
-        this.LLMInstance = (LLMService)LLMService.CreateService();
     }
     
     [Init]
@@ -37,13 +28,6 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
         extendedWhisperManager.AddListener(this);
     }
 
-    private void OnValidate()
-    {
-        if(LLMService == null || TTService == null)
-        {
-            throw new ArgumentException("You need to set the services needed within the DialogSystemComponent");
-        }
-    }
 
     public void onMicrophoneStartRecording()
     {

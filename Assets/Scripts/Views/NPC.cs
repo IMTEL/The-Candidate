@@ -1,18 +1,30 @@
 using System;
 using System.Collections.Generic;
+using Alchemy.Inspector;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 [DisallowMultipleComponent]
+[Serializable]
 public class NPC : MonoBehaviour, IEvent<INPCEventListener>
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public VoiceProfile voice;
+    [LabelText("TTService")]
+    [SerializeField] public ServiceProviderSO<TTService> TTService = null;
+
+    [LabelText("AI Service")]
+    [SerializeField ]public ServiceProviderSO<LLMService> LLMService = null;
+
     public Environment.Actor actor = Environment.Actor.Employee;
     public AudioSource audioSource {get; private set;}
     public GameObject head;
 
-    public Action<NPC> onNPCDestroy; 
+    public VoiceProfile voiceProfile;
+
+    public Action<NPC> onNPCDestroy;
+
+
+
 
     void Start()
     {
@@ -60,5 +72,17 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
     public void RemoveListener(INPCEventListener listener)
     {
         onNPCDestroy -= listener.OnDestroyNPC;
+    }
+
+    void OnGUI()
+    {
+    }
+
+    private void OnValidate()
+    {
+        if(LLMService == null || TTService == null)
+        {
+            throw new ArgumentException("You need to set the services needed within the DialogSystemComponent");
+        }
     }
 }

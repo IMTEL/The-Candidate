@@ -114,7 +114,7 @@ You are an actor within a movie where you are with different other people to int
             simulatnousVoiceRequests.Release();
             return;
         }
-        dialog.audioClip = await TTService.getAudioClip(npc.voice, dialog.dialog);
+        dialog.audioClip = await TTService.getAudioClip(null, dialog.dialog);
         simulatnousVoiceRequests.Release();
     }
 }

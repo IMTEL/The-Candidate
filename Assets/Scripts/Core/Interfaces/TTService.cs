@@ -25,7 +25,7 @@ public abstract class TTService
     public string getProfileID(VoiceProfile voice)
     {
         string voiceid = null;
-        if (voiceDB != null && voice != null)
+        if (voiceDB != null)
         {
             voiceid = voiceDB[voice];
         }
