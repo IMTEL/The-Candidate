@@ -143,8 +143,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28da1e652623f1442b96f40866c3d28e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
-  voice: {fileID: 0}
+  TTService: {fileID: 0}
+  TTSOptions: []
+  LLMService: {fileID: 11400000, guid: b118f094d5174124e94c641b83c277a0, type: 2}
+  LLMOptions:
+  - rid: 8216903864595251278
+  - rid: 8216903864595251279
   head: {fileID: 4704330729860948489}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8216903864595251278
+      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 8216903864595251279
+      type: {class: 'PickOption`1[[OpenAICompletionRequest/Model, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5075505282213474269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,7 +277,7 @@ PrefabInstance:
     - target: {fileID: 1690070752621290186, guid: dfcf5d6eb121c5a0497f90cd32b3e9a0, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: -876546973899608171, guid: de482c1d5353c1e3597c73bb7602fd0e, type: 3}
+      objectReference: {fileID: -876546973899608171, guid: 8ff603d9dc4771f49a2b575be7bb8e94, type: 3}
     - target: {fileID: 1690070752621290186, guid: dfcf5d6eb121c5a0497f90cd32b3e9a0, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[0]'
       value: 0
@@ -424,7 +438,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCRenderer
   assetDB: {fileID: 11400000, guid: f147a31d3b5c4ee419f0589349da160f, type: 2}
-  material: {fileID: -876546973899608171, guid: 056e5c52bd00bdc47996b3917c708dfc, type: 3}
+  material: {fileID: -876546973899608171, guid: 8ff603d9dc4771f49a2b575be7bb8e94, type: 3}
   index: 1
 --- !u!114 &5323267517472016508
 MonoBehaviour:
@@ -510,5 +524,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCRenderer
   assetDB: {fileID: 11400000, guid: f147a31d3b5c4ee419f0589349da160f, type: 2}
-  material: {fileID: 0}
-  index: -1
+  material: {fileID: -876546973899608171, guid: 18d304b4d1c036546b5bfc98edcc02e4, type: 3}
+  index: 0

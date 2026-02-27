@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -10,7 +11,7 @@ public class OpenAICompletionRequest
     public List<OpenAIMessage> messages {get; private set;} = new();
     public bool store {get; private set;} = false;
 
-    public OpenAICompletionRequest(string instructions, List<Dialog> previousConversation = null, Model model = Model.GPT_OSS_120b)
+    public OpenAICompletionRequest(string instructions, Model model, List<Dialog> previousConversation = null )
     {
         messages.Add(new OpenAIMessage("developer", instructions));
         foreach(Dialog dialog in previousConversation)
@@ -30,9 +31,13 @@ public class OpenAICompletionRequest
     {
         return model switch
         {
-            Model.GPT_OSS_120b => "openai/gpt-oss-120b",
-            Model.GPT4 => "openai/gpt-4.1",
-            _ => "openai/gpt-oss-120b",
+            Model.IDUN_GPT_OSS_120b => "openai/gpt-oss-120b",
+            Model.IDUN_Mistral_Large_3_675B_Instruct_2512_NVFP4 => "mistralai/Mistral-Large-3-675B-Instruct-2512-NVFP4",
+            Model.IDUN_NorwAI_Magistral_24B_reasoning => "NorwAI/NorwAI-Magistral-24B-reasoning",
+            Model.GPT_OSS_120b => "gpt-oss-120b",
+            Model.GPT4 => "gpt-4.1",
+            Model.GPT5 => "gpt-5",
+            _ => throw new NotImplementedException("The model has no translation to plaintext. Please add it to the list"),
         };
     }
 
@@ -40,7 +45,10 @@ public class OpenAICompletionRequest
     {
         GPT4,
         GPT5,
-        GPT_OSS_120b
+        GPT_OSS_120b,
+        IDUN_GPT_OSS_120b,
+        IDUN_Mistral_Large_3_675B_Instruct_2512_NVFP4,
+        IDUN_NorwAI_Magistral_24B_reasoning
     }
 
     public struct OpenAIMessage

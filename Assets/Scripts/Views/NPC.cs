@@ -10,10 +10,12 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [LabelText("TTService")]
-    [SerializeField] public ServiceProviderSO<TTService> TTService = null;
+    [SerializeField] private TTSserviceProvider TTService = null;
+    [SerializeReference] private List<OptionBase> TTSOptions = new(); 
 
     [LabelText("AI Service")]
-    [SerializeField ]public ServiceProviderSO<LLMService> LLMService = null;
+    [SerializeField]private LLMServiceProvider LLMService = null;
+    [SerializeReference]private List<OptionBase> LLMOptions = new();
 
     public Environment.Actor actor = Environment.Actor.Employee;
     public AudioSource audioSource {get; private set;}
@@ -22,9 +24,6 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
     public VoiceProfile voiceProfile;
 
     public Action<NPC> onNPCDestroy;
-
-
-
 
     void Start()
     {
@@ -78,11 +77,32 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
     {
     }
 
+    public void SetLLMOptions(IEnumerable<OptionBase> values)
+    {
+        LLMOptions = new(values);
+    }
+    
+    public void SetTTSOptions(IEnumerable<OptionBase> values)
+    {
+        TTSOptions = new(values);
+    }
+
+    public IEnumerable<OptionBase> GetLLMOptions()
+    {
+        return LLMOptions;
+    }
+    
+    public IEnumerable<OptionBase> GetTTSOptions()
+    {
+        return TTSOptions;
+    }
+
+
     private void OnValidate()
     {
         if(LLMService == null || TTService == null)
         {
-            throw new ArgumentException("You need to set the services needed within the DialogSystemComponent");
+            throw new ArgumentException("You need to set the services needed within the NPC component");
         }
     }
 }

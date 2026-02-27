@@ -1,7 +1,7 @@
 public static class Services {
 
     //Pure service
-    public static LLMService AIService {get; private set;}
+    public static ILLMService AIService {get; private set;}
     public static TTService TTService {get; private set;}
 
     //Pure C# Systems
@@ -13,7 +13,7 @@ public static class Services {
     public static ScenarioSettings scenarioSettings {get; private set;}
 
 
-    public static void InitializeGlobals(LLMService ai, TTService tts)
+    public static void InitializeGlobals(ILLMService ai, TTService tts)
     {
         AIService = ai;
         TTService = tts;

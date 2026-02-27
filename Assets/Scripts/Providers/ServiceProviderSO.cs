@@ -19,5 +19,15 @@ public abstract class TTSserviceProvider : ServiceProviderSO<TTService>
     [ShowInInspector] public Dictionary<VoiceProfile, string> voiceproviderids = new();
     
     public override abstract TTService CreateTypedService();
-    
+
+    public abstract IEnumerable<OptionBase> GetTTSOptions();
+
+}
+
+public abstract class LLMServiceProvider : ServiceProviderSO<ILLMService>
+{   
+    public override abstract ILLMService CreateTypedService();
+
+    public abstract IEnumerable<OptionBase> GetLLMOptions();
+
 }

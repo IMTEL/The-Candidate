@@ -15,7 +15,7 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
 
     TTService TTSInstance;
 
-    LLMService LLMInstance;
+    ILLMService LLMInstance;
 
     private void Awake()
     {

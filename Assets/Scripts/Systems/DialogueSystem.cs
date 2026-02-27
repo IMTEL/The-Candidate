@@ -12,7 +12,7 @@ using UnityEngine;
 /// </summary>
 public class DialogueSystem
 {
-    private LLMService aIService;
+    private ILLMService aIService;
     private ScenarioSettings scenario;
     private TTService TTService;
     private NPCRegistry NPCRegistry;
@@ -20,7 +20,7 @@ public class DialogueSystem
     private List<Dialog> dialogs = new();
     public Action<(NPC, Dialog)> onDialogueReady;
 
-    public DialogueSystem(LLMService aIService, TTService ttService, ScenarioSettings scenario, NPCRegistry nPCRegistry)
+    public DialogueSystem(ILLMService aIService, TTService ttService, ScenarioSettings scenario, NPCRegistry nPCRegistry)
     {
         this.aIService = aIService;
         this.scenario = scenario;
@@ -89,7 +89,7 @@ You are an actor within a movie where you are with different other people to int
         dialogs.Add(userDialog);
         foreach(NPC npc in NPCRegistry.GetNPCEnumerable())
         {
-            Dialog dialog = new(npc.actor, await aIService.getAIResponse(BuildPrompt(scenario.job, npc.actor), dialogs));
+            Dialog dialog = new(npc.actor, await aIService.GetAIResponse(BuildPrompt(scenario.job, npc.actor), dialogs));
             token.ThrowIfCancellationRequested();
             dialogs.Add(dialog);
             onDialogueReady?.Invoke((npc,dialog));

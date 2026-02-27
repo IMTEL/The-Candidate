@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -9,8 +10,6 @@ public abstract class TTService
 {
 
     private Dictionary<VoiceProfile, string> voiceDB;
-    
-
 
     protected TTService(Dictionary<VoiceProfile, string> voiceDB)
     {
@@ -46,5 +45,6 @@ public abstract class TTService
     /// <param name="dialogue">the dialogue to speak</param>
     /// <returns></returns>
     public abstract Task<AudioClip> getAudioClip(VoiceProfile voice, string dialogue);
+    public static IEnumerable<OptionBase> GetTTSOptions()  => throw new NotImplementedException("The implementation for option is not implemented within this instance. Add it :)");
 
 }

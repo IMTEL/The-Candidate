@@ -1,12 +1,18 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Services/IDUN")]
-public class OpenAiLlmProvider : ServiceProviderSO<LLMService>
+public class IdunProvider : LLMServiceProvider
 {
     [SerializeField] private string apiKey;
 
-    public override LLMService CreateTypedService()
+    public override ILLMService CreateTypedService()
         => new IdunLLMService(apiKey);
+
+    public override IEnumerable<OptionBase> GetLLMOptions()
+    {
+        return IdunLLMService.GetLLMOptions();
+    }
 }
 
 

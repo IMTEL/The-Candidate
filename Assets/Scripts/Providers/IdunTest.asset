@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c281d084a41b34c49bafd0afae2157a0, type: 3}
   m_Name: IdunTest
   m_EditorClassIdentifier: Assembly-CSharp::OpenAiLlmProvider
-  apiKey: 
+  apiKey: sk-zDXMTECxGJuvl-R_7-C8zw
