@@ -11,19 +11,19 @@ using UnityEngine.Networking;
 public class ElevenLabsService : TTService 
 {
     
-    private string url = "https://api.elevenlabs.io/v1/text-to-speech/";
-    string apiKey;
+    private readonly string url = "https://api.elevenlabs.io/v1/text-to-speech/";
+    readonly string apiKey;
 
     private readonly SemaphoreSlim semaphore = new(1);
 
-    public ElevenLabsService(string apiKey, Dictionary<VoiceProfile, string> voiceDB) : base(voiceDB)
+    public ElevenLabsService(string apiKey)
     {
         this.apiKey = apiKey;
     }
 
-    public override Task<AudioClip> getAudioClip(VoiceProfile voice, string dialogue)
+    public Task<AudioClip> getAudioClip(VoiceProfile voice, string dialogue)
     {
-        return SendPostRequest(getProfileID(voice), dialogue);
+        return SendPostRequest(voice.getId(), dialogue);
     }
 
     private async Task<AudioClip> SendPostRequest(string voiceid, string dialogue)
@@ -52,8 +52,19 @@ public class ElevenLabsService : TTService
 
     }
 
-    public override string getDefualtVoiceId()
+    public static IEnumerable<OptionBase> GetTTSOptions()
     {
-        return "";
+        return new List<OptionBase>()
+        {
+            new FloatBoundOption("Stability", 0.5f ,0,1),
+            new FloatBoundOption("SimilarityBoost", 0.5f, 0, 1),
+            new PickOption<bool>("UseSpeakerBoost", new List<OptionEntry<bool>>()
+            {
+                new(true, "true"),
+                new(false, "false")
+            }),
+            new FloatBoundOption("Speed", 1, 0.1f, 2f)
+        };
     }
+
 }

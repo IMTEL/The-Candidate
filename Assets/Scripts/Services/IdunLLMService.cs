@@ -60,15 +60,19 @@ public class IdunLLMService : ILLMService
 
     public static IEnumerable<OptionBase> GetLLMOptions()
     {
+        List<OptionEntry<OpenAICompletionRequest.Model>> models = new(){
+            new (OpenAICompletionRequest.Model.IDUN_GPT_OSS_120b, "120b, OpenAI"),
+            new (OpenAICompletionRequest.Model.IDUN_Mistral_Large_3_675B_Instruct_2512_NVFP4, "Minstral 3"),
+            new (OpenAICompletionRequest.Model.IDUN_NorwAI_Magistral_24B_reasoning, "NorwAI 24B")
+        };
+
         return new List<OptionBase>
         {
             new FloatBoundOption("Temprature",1,0,2),
-            new PickOption<OpenAICompletionRequest.Model>("Model", OpenAICompletionRequest.Model.IDUN_GPT_OSS_120b, new List<OpenAICompletionRequest.Model>()
-            {
-                OpenAICompletionRequest.Model.IDUN_GPT_OSS_120b,
-                OpenAICompletionRequest.Model.IDUN_Mistral_Large_3_675B_Instruct_2512_NVFP4,
-                OpenAICompletionRequest.Model.IDUN_NorwAI_Magistral_24B_reasoning
-            })
+            // supply explicit display names for clarity
+            new PickOption<OpenAICompletionRequest.Model>(
+                "Model",
+                models)
         };
     }
 }

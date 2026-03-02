@@ -16,7 +16,7 @@ public abstract class ServiceProviderSO<T> : ServiceProviderSO
 
 public abstract class TTSserviceProvider : ServiceProviderSO<TTService>
 {
-    [ShowInInspector] public Dictionary<VoiceProfile, string> voiceproviderids = new();
+    public List<VoiceProfile> voices = new();
     
     public override abstract TTService CreateTypedService();
 

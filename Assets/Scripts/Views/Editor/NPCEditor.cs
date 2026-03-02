@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.AI;
 
 [CustomEditor(typeof(NPC))]
 public class NPCEditor : Editor
@@ -45,11 +45,28 @@ public class NPCEditor : Editor
             else
                 EditorGUILayout.HelpBox("No LLM options available (null list)", MessageType.Warning);
         }
-
+        
+        EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(TTService, new GUIContent("TTService"));
+        if (EditorGUI.EndChangeCheck())
+        {
+            if(TTService.objectReferenceValue != null)
+            {
+                ((NPC)target).SetTTSOptions(((TTSserviceProvider) TTService.objectReferenceValue).GetTTSOptions());
+            }
+            else
+            {
+                ((NPC)target).SetTTSOptions(new List<OptionBase>());
+            }
+            EditorUtility.SetDirty(target); 
+        }
         if(TTService.objectReferenceValue != null)
         {
-            TTSserviceProvider TTSObject = (TTSserviceProvider)TTService.objectReferenceValue;
+            var options = ((NPC)target).GetTTSOptions();
+            if (options != null)
+                FleshOptiontypes(options);
+            else
+                EditorGUILayout.HelpBox("No TTS options available (null list)", MessageType.Warning);
         }
         EditorGUI.BeginChangeCheck();
 
@@ -62,11 +79,10 @@ public class NPCEditor : Editor
         if (Options == null) return;
         foreach(OptionBase option in Options)
             {
-                if(option.GetType() == typeof(FloatBoundOption))
+                EditorGUILayout.LabelField(option.GetName());
+                if(option is FloatBoundOption floatBoundOption)
                 {
                     EditorGUI.BeginChangeCheck();
-                    FloatBoundOption floatBoundOption = (FloatBoundOption)option;
-                    EditorGUILayout.LabelField(floatBoundOption.GetName());
                     float newValue = EditorGUILayout.Slider(floatBoundOption.GetValue(), floatBoundOption.GetBounds().Item1,floatBoundOption.GetBounds().Item2);
                     if (EditorGUI.EndChangeCheck())
                     {
@@ -74,11 +90,28 @@ public class NPCEditor : Editor
                         floatBoundOption.SetValue(newValue);
                         EditorUtility.SetDirty(target); 
                     }
-                } else if(option.GetType() == typeof(PickOption<OpenAICompletionRequest.Model>))
-                {
-                    PickOption<OpenAICompletionRequest.Model> pickOption = (PickOption<OpenAICompletionRequest.Model>)option;
-                    EditorGUILayout.LabelField(pickOption.GetName());
-                }
+                } else if(option is IPickOption pickOption){
+
+                    if (EditorGUILayout.DropdownButton(new GUIContent(pickOption.GetCurrentname()), FocusType.Passive))
+                    {
+                        //A bit of AI help on this bit. Mostly becouse I did not know how to create a own window/menu for this
+                        GenericMenu menu = new();
+                        List<string> displayNames = new(pickOption.GetOptionDisplayNames());
+                        List<object> objects = new(pickOption.GetOptionsObjects());
+                        for (int i = 0; i < displayNames.Count(); i++)
+                        {
+                            int index = i;
+                            bool on = displayNames[i].Equals(pickOption.GetCurrentname());
+                            menu.AddItem(new GUIContent(displayNames[i]), on, () =>
+                            {
+                                Undo.RecordObject(target, "Changed " + pickOption.GetCurrentname());
+                                pickOption.SetValueObject(objects[index]);
+                                EditorUtility.SetDirty(target);
+                            });
+                        }
+                        menu.ShowAsContext();
+                    }
+            }
             }
     }
 }

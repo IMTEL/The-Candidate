@@ -1,11 +1,32 @@
-public class VoiceProfile 
-{
-    public string displayname;
-    public string id;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Android;
 
-    public VoiceProfile(string displayname, string id)
+[Serializable]
+public class VoiceProfile 
+{        
+    [SerializeField] private string displayName;
+    [SerializeField] private string id;
+    [SerializeField] private List<string> models = new();
+    [SerializeField] private string language;
+
+    public VoiceProfile(string id, string displayname, IEnumerable<string> models, string language = "no")
     {
-        this.displayname = displayname;
+        this.displayName = displayname;
         this.id = id;
+        this.models = new(models);
+        this.language = language;
+    }
+    public VoiceProfile(string id, string displayname, string language = "no")
+    {
+        this.displayName = displayname;
+        this.id = id;
+        this.language = language;
+    }
+
+    public string getId()
+    {
+        return id;
     }
 }
