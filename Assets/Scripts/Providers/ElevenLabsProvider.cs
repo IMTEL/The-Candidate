@@ -32,7 +32,7 @@ public class ElevenLabsProvider : TTSserviceProvider
     private async Task<List<VoiceProfile>> getVoiceProfile(string nextPageToken = "")
     {
         List<VoiceProfile> voiceProfiles = new();
-        if(apiKey == null || string.IsNullOrEmpty(apiKey))
+        if(string.IsNullOrEmpty(apiKey))
             {
                 throw new ArgumentException("The apikey needs to be set for the settings to be correct");
         }
