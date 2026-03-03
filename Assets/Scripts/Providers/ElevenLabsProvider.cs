@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Alchemy.Inspector;
 using Newtonsoft.Json.Linq;
+using Unity.Tutorials.Core.Editor;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -24,6 +25,7 @@ public class ElevenLabsProvider : TTSserviceProvider
     public override IEnumerable<OptionBase> GetTTSOptions()
     {
         List<OptionBase> options = new();
+
         return ElevenLabsService.GetTTSOptions();
     }
 
@@ -31,15 +33,15 @@ public class ElevenLabsProvider : TTSserviceProvider
     {
         List<VoiceProfile> voiceProfiles = new();
         if(apiKey == null || string.IsNullOrEmpty(apiKey))
-        {
-            throw new ArgumentException("The apikey needs to be set for the settings to be correct");
+            {
+                throw new ArgumentException("The apikey needs to be set for the settings to be correct");
         }
         string queryString = "";
         if(nextPageToken != null & nextPageToken != "")
         {
-            queryString = "?next_pake_token="+nextPageToken;
+            queryString = "?next_page_token="+nextPageToken;
         }
-        string url = string.Format("https://api.elevenlabs.io/v2/voices", nextPageToken);
+        string url = "https://api.elevenlabs.io/v2/voices"+queryString;
         UnityWebRequest request = new(url)
         {
             downloadHandler = new DownloadHandlerBuffer()
@@ -54,7 +56,7 @@ public class ElevenLabsProvider : TTSserviceProvider
             voiceProfiles.Add(new((string?)voice["voice_id"], (string?)voice["name"]));
             Debug.Log((string)voice["settings"]);
         }
-        if(json["next_page_token"] != null && (string)json["next_page_token"] != nextPageToken)
+        if(((string)json["next_page_token"]).IsNotNullOrEmpty()  && (string)json["next_page_token"] != nextPageToken)
         {
             foreach(VoiceProfile voice in await getVoiceProfile((string)json["next_page_token"])) {
                 voiceProfiles.Add(voice);
