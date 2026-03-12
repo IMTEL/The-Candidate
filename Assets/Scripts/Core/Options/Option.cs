@@ -1,5 +1,4 @@
 using System;
-using Unity.Tutorials.Core.Editor;
 using UnityEngine;
 
 [Serializable]
@@ -10,7 +9,7 @@ public class OptionBase
 
     public OptionBase(string name)
     {
-        if (name.IsNotNullOrEmpty())
+        if (string.IsNullOrWhiteSpace(name))
         {
             throw new ArgumentException("Name can't be empty or null");
         }

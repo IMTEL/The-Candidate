@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Alchemy.Inspector;
 using Newtonsoft.Json.Linq;
-using Unity.Tutorials.Core.Editor;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -56,7 +55,7 @@ public class ElevenLabsProvider : TTSserviceProvider
             voiceProfiles.Add(new((string?)voice["voice_id"], (string?)voice["name"]));
             Debug.Log((string)voice["settings"]);
         }
-        if(((string)json["next_page_token"]).IsNotNullOrEmpty()  && (string)json["next_page_token"] != nextPageToken)
+        if(string.IsNullOrWhiteSpace((string)json["next_page_token"])  && (string)json["next_page_token"] != nextPageToken)
         {
             foreach(VoiceProfile voice in await getVoiceProfile((string)json["next_page_token"])) {
                 voiceProfiles.Add(voice);
