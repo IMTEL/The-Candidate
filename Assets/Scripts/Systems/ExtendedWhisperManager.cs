@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,7 +28,8 @@ public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventList
     private async void SendChunk(AudioChunk recordedAudio)
     { 
         WhisperResult result = await whisperManager.GetTextAsync(recordedAudio.Data, recordedAudio.Frequency, recordedAudio.Channels);
-        AudioClip test = AudioClip.Create("User",1,recordedAudio.Channels,recordedAudio.Frequency, false);
+        AudioClip test = AudioClip.Create("User",recordedAudio.Data.Count()/recordedAudio.Channels,recordedAudio.Channels,recordedAudio.Frequency, false);
+        test.SetData(recordedAudio.Data,0);
         Dialog newDialog = new(Environment.Actor.Candidate, result.Result, test);
         onMicrophoneEndRecording?.Invoke(newDialog);
     }
