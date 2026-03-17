@@ -118,6 +118,7 @@
 *.slnx filter=lfs diff=lfs merge=lfs -text
 /Assets/Animations/NPCs/MotionCapture/LICENSE filter=lfs diff=lfs merge=lfs -text
 /Assets/StreamingAssets/Whisper/LICENSE filter=lfs diff=lfs merge=lfs -text
+*.onnx filter=lfs diff=lfs merge=lfs -text
 *.cs !text !filter !merge !diff
 *.md !text !filter !merge !diff
 *.py !text !filter !merge !diff
@@ -159,7 +160,6 @@ shadergraph !text !filter !merge !diff
 *.FCStd filter=lfs diff=lfs merge=lfs -text
 /README filter=lfs diff=lfs merge=lfs -text
 /Assets/NPC/Animations/LICENSE filter=lfs diff=lfs merge=lfs -text
-*.onnx filter=lfs diff=lfs merge=lfs -text
 *.shadergraph !text !filter !merge !diff
 *.inputaction !text !filter !merge !diff
 *.ttf !text !filter !merge !diff

@@ -28,6 +28,21 @@ public class PickOption<T> : OptionBase, IPickOption, IEvent<T>
         SetValue(defualtValue);
     }
 
+    public PickOption(string name,  IEnumerable<(T, string)> values, object defualtValue = null) : base(name) {
+        if(values == null || values.Count() == 0)
+        {
+            throw new ArgumentException("The values has to be a list of options with 1 or more options");    
+        }
+        options = new();
+        foreach ((T, string) item in values)
+        {
+            OptionEntry<T> optionEntry = new(item.Item1, item.Item2);
+            options.Add(optionEntry);
+        }
+        defualtValue ??= values.First();
+        SetValueObject(defualtValue);
+    }
+
     public OptionEntry<T> GetOption()
     {
         return value;
@@ -120,6 +135,27 @@ public class OptionEntry<T> {
 
     public string GetDisplayName(){
         return displayName;
+    }
+
+    public override bool Equals(object obj)
+    {   
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+        OptionEntry<object> casted = (OptionEntry<object>)obj;
+        if(value.Equals(casted.GetValue()) && displayName.Equals(casted.GetDisplayName())) return true;
+        return false;
+    }
+    
+    // override object.GetHashCode
+    public override int GetHashCode()
+    { 
+        
+        int hash = 17;
+        hash = hash * 23 + value.GetHashCode();
+        hash = hash * 23 + displayName.GetHashCode(); 
+        return hash;
     }
 }
 

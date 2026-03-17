@@ -143,22 +143,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28da1e652623f1442b96f40866c3d28e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
-  TTService: {fileID: 0}
-  TTSOptions: []
+  TTService: {fileID: 11400000, guid: bd0fd0e714551a39885442b0338be91d, type: 2}
+  TTSOptions:
+  - rid: 5094727923348013134
+  - rid: 5094727923348013135
+  - rid: 5094727923348013136
+  - rid: 5094727923348013137
   LLMService: {fileID: 11400000, guid: b118f094d5174124e94c641b83c277a0, type: 2}
   LLMOptions:
-  - rid: 8216903864595251278
-  - rid: 8216903864595251279
+  - rid: 8216903907198894163
+  - rid: 8216903907198894164
   head: {fileID: 4704330729860948489}
+  voiceProfile:
+    displayName: 
+    id: 
+    models: []
+    language: 
   references:
     version: 2
     RefIds:
-    - rid: 8216903864595251278
+    - rid: 5094727923348013134
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 8216903864595251279
+      data:
+        name: Stability
+        value: 0.42
+        minBound: 0
+        maxBound: 1
+    - rid: 5094727923348013135
+      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
+      data:
+        name: SimilarityBoost
+        value: 0.825
+        minBound: 0
+        maxBound: 1
+    - rid: 5094727923348013136
+      type: {class: 'PickOption`1[[System.Boolean, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        name: UseSpeakerBoost
+        value:
+          value: 1
+          displayName: true
+        options:
+        - value: 1
+          displayName: true
+        - value: 0
+          displayName: false
+    - rid: 5094727923348013137
+      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
+      data:
+        name: Speed
+        value: 1.175
+        minBound: 0.1
+        maxBound: 2
+    - rid: 8216903907198894163
+      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
+      data:
+        name: Temprature
+        value: 1.434
+        minBound: 0
+        maxBound: 2
+    - rid: 8216903907198894164
       type: {class: 'PickOption`1[[OpenAICompletionRequest/Model, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
-      data: 
+      data:
+        name: Model
+        value:
+          value: 5
+          displayName: NorwAI 24B
+        options:
+        - value: 3
+          displayName: 120b, OpenAI
+        - value: 4
+          displayName: Minstral 3
+        - value: 5
+          displayName: NorwAI 24B
 --- !u!114 &5075505282213474269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,6 +327,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7885432203382356503, guid: dfcf5d6eb121c5a0497f90cd32b3e9a0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: -876546973899608171, guid: 805df72bc1092a941be5ac491d267bc2, type: 3}
+    - target: {fileID: 919132149155446097, guid: dfcf5d6eb121c5a0497f90cd32b3e9a0, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 919132149155446097, guid: dfcf5d6eb121c5a0497f90cd32b3e9a0, type: 3}
       propertyPath: m_Name
       value: 1M
@@ -366,10 +431,18 @@ PrefabInstance:
       propertyPath: 'm_BlendShapeWeights.Array.data[21]'
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4771848323966511190, guid: dfcf5d6eb121c5a0497f90cd32b3e9a0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: -876546973899608171, guid: 18d304b4d1c036546b5bfc98edcc02e4, type: 3}
     - target: {fileID: 4931806359652595645, guid: dfcf5d6eb121c5a0497f90cd32b3e9a0, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: dfcf5d6eb121c5a0497f90cd32b3e9a0, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 5b89920f295446b44b0fb882ebc8e626, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
