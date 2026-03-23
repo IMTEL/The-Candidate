@@ -62,20 +62,24 @@ def run_mpfb_merge(body_obj, duplicates = []):
     for obj in duplicates:
         
         # Corresponding vertex group name
-        vg_name = f"Delete.{obj.name}"
+        vg_name = f"Delete.{obj.name.split('.')[1]}"
+        print(vg_name)
         vg = body_obj.vertex_groups.get(vg_name)
+        print(vg)
         if not vg:
             continue
         
-        # Get all vertices in this vertex group
-        verts_in_group = [v.index for v in body_obj.data.vertices
-                          if vg.index in [g.group for g in v.groups]]
-        
-        # Paint these vertices black
-        for v in body_obj.data.vertices:
-            if v.index in verts_in_group:
-                for loop in v.loops:
-                    vcol_layer.data[loop.index].color = (0, 0, 0, 1)
+        verts_in_group = {
+            v.index for v in body_obj.data.vertices
+            if vg.index in [g.group for g in v.groups]
+        }
+
+        # Paint all loops belonging to those vertices black
+        for poly in body_obj.data.polygons:
+            for loop_index in poly.loop_indices:
+                loop = body_obj.data.loops[loop_index]
+                if loop.vertex_index in verts_in_group:
+                    vcol_layer.data[loop_index].color = (0.0, 0.0, 0.0, 1.0)
 
 
 
