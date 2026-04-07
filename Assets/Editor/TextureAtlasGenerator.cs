@@ -3,7 +3,9 @@ using UnityEditor;
 using System.IO;
 
 /// <summary>
-/// Script for combinding marked pictures into a grid to be used as a 2D Array
+/// Script for combining marked pictures into a grid to be used as a 2D Array
+/// 
+/// Simple AI made script
 /// </summary>
 public class SimpleGridAtlasGenerator
 {
