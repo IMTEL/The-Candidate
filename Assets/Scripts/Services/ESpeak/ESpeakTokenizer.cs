@@ -1,6 +1,7 @@
 using UnityEngine;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System;
 
 public class AudioConfig
 {
@@ -42,22 +43,19 @@ public class ESpeakTokenizer
 
     private PiperConfig config;
     private float[] inferenceParams;
-    private bool isInitialized = false;
 
     public ESpeakTokenizer(TextAsset jsonFile)
     {
+        if (jsonFile == null)
+        {
+            throw new ArgumentNullException("Jsonfile can't be null");
+        }
         this.jsonFile = jsonFile;
         Initialize();
     }
 
     private void Initialize()
     {
-        if (jsonFile == null)
-        {
-            Debug.LogError("JSON file is not assigned. Please assign it in the Inspector.");
-            return;
-        }
-
         try
         {
             config = JsonConvert.DeserializeObject<PiperConfig>(jsonFile.text);
@@ -65,13 +63,12 @@ public class ESpeakTokenizer
             {
                 Debug.LogError("JSON data is missing required fields or is invalid. Deserialization resulted in a partially/fully null object.");
                 config = null;
-                return;
+                throw new ArgumentException("JSON Data is missing");
             }
         }
-        catch (JsonException ex)
+        catch (JsonException)
         {
-            Debug.LogError($"Failed to parse JSON file. Error: {ex.Message}");
-            return;
+            throw new Exception("Could not parse the JSON");
         }
 
         inferenceParams = new float[3]
@@ -86,18 +83,12 @@ public class ESpeakTokenizer
         this.Voice = config.espeak.voice;
         this.PhonemeType = config.phoneme_type;
         
-        isInitialized = true;
         Debug.Log("JSON parsing and setup completed successfully.");
         Debug.Log($"Extracted Settings: SampleRate={SampleRate}, Quality='{Quality}', Voice='{Voice}', PhonemeType='{PhonemeType}'");
     }
 
     public int[] Tokenize(string[] phonemes)
     {
-        if (!isInitialized)
-        {
-            Debug.LogError("Tokenizer is not initialized. Check for errors during Awake().");
-            return null;
-        }
 
         int estimatedCapacity = (phonemes != null ? phonemes.Length * 2 : 0) + 3;
         var tokenizedList = new List<int>(estimatedCapacity) { 1, 0 };
@@ -125,11 +116,6 @@ public class ESpeakTokenizer
 
     public float[] GetInferenceParams()
     {
-        if (!isInitialized)
-        {
-            Debug.LogError("Tokenizer is not initialized. Cannot get inference parameters.");
-            return null;
-        }
         return (float[])inferenceParams.Clone();
     }
 }
