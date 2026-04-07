@@ -12,19 +12,15 @@ using UnityEngine;
 /// </summary>
 public class DialogueSystem
 {
-    private ILLMService aIService;
     private ScenarioSettings scenario;
-    private TTService TTService;
     private NPCRegistry NPCRegistry;
 
     private List<Dialog> dialogs = new();
     public Action<(NPC, Dialog)> onDialogueReady;
 
-    public DialogueSystem(ILLMService aIService, TTService ttService, ScenarioSettings scenario, NPCRegistry nPCRegistry)
+    public DialogueSystem(ScenarioSettings scenario, NPCRegistry nPCRegistry)
     {
-        this.aIService = aIService;
         this.scenario = scenario;
-        this.TTService = ttService;
         this.NPCRegistry = nPCRegistry;
     }
 
@@ -75,7 +71,7 @@ You are an actor within a movie where you are with different other people to int
     {
         if (userDialog == null) throw new ArgumentException("Dialog can't be null");
         tokenSource ??= new();
-        return(HandleUserDialog(userDialog, tokenSource.Token), tokenSource);
+        return (HandleUserDialog(userDialog, tokenSource.Token), tokenSource);
     }
 
     /// <summary>
@@ -87,13 +83,13 @@ You are an actor within a movie where you are with different other people to int
     private async Task HandleUserDialog(Dialog userDialog, CancellationToken token)
     {
         dialogs.Add(userDialog);
-        foreach(NPC npc in NPCRegistry.GetNPCEnumerable())
+        foreach (NPC npc in NPCRegistry.GetNPCEnumerable())
         {
-            Dialog dialog = new(npc.actor, await aIService.GetAIResponse(BuildPrompt(scenario.job, npc.actor), dialogs));
+            Dialog dialog = new(npc.actor, await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc.actor), dialogs));
             token.ThrowIfCancellationRequested();
             dialogs.Add(dialog);
-            onDialogueReady?.Invoke((npc,dialog));
-            createAudioClip(npc,dialog, token).Start();
+            onDialogueReady?.Invoke((npc, dialog));
+            createAudioClip(npc, dialog, token).Start();
         }
     }
 
@@ -109,12 +105,15 @@ You are an actor within a movie where you are with different other people to int
     private async Task createAudioClip(NPC npc, Dialog dialog, CancellationToken token)
     {
         await simulatnousVoiceRequests.WaitAsync();
-        if (token.IsCancellationRequested)
+        try
         {
-            simulatnousVoiceRequests.Release();
-            return;
+            if (token.IsCancellationRequested)
+            {
+                simulatnousVoiceRequests.Release();
+                return;
+            }
+            dialog.audioClip = await ((ITTService)npc.TTService.CreateService()).getAudioClip(dialog.dialog, npc.GetTTSOptions());
         }
-        dialog.audioClip = await TTService.getAudioClip(null, dialog.dialog);
-        simulatnousVoiceRequests.Release();
+        finally { simulatnousVoiceRequests.Release(); }
     }
 }

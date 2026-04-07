@@ -25,6 +25,19 @@ public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventList
         mic.OnRecordStop += SendChunk;
     }
 
+    private void Start()
+    {
+        DialogUI player = FindAnyObjectByType<DialogUI>();
+        if(player != null)
+        {
+            player.button.onClick.AddListener(() => {ToggleMicrophone();});
+        }
+        else
+        {
+            Debug.LogError("Can't find player");
+        }
+    }
+
     private async void SendChunk(AudioChunk recordedAudio)
     { 
         WhisperResult result = await whisperManager.GetTextAsync(recordedAudio.Data, recordedAudio.Frequency, recordedAudio.Channels);

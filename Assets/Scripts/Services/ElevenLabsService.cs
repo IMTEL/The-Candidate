@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 /// <summary>
 /// A TTS Script using the ElevenLabs API TTS Service. Requires the a enviroment variable for the API key.
 /// </summary>
-public class ElevenLabsService : TTService 
+public class ElevenLabsService : ITTService 
 {
     
     private readonly string url = "https://api.elevenlabs.io/v1/text-to-speech/";
@@ -67,4 +67,8 @@ public class ElevenLabsService : TTService
         };
     }
 
+    public Task<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options)
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -14,11 +14,10 @@ public abstract class ServiceProviderSO<T> : ServiceProviderSO
     public override object CreateService() => CreateTypedService();
 }
 
-public abstract class TTSserviceProvider : ServiceProviderSO<TTService>
+public abstract class TTSserviceProvider : ServiceProviderSO<ITTService>
 {
-    public List<VoiceProfile> voices = new();
     
-    public override abstract TTService CreateTypedService();
+    public override abstract ITTService CreateTypedService();
 
     public abstract IEnumerable<OptionBase> GetTTSOptions();
 

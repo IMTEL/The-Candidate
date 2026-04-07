@@ -4,16 +4,19 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;   //DO NOT REMOVE
+using System.IO.Compression;    //DO NOT REMOVE
 using Unity.InferenceEngine;
 using System.IO;
 using System.Collections;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+
 /// <summary>
 /// Modified version of the PiperManager from https://github.com/skykim/piper-unity
 /// </summary>
-public class PiperManager : TTService
+public class PiperManager : ITTService
 {
 
     /// <summary>
@@ -57,6 +60,7 @@ public class PiperManager : TTService
     private IEnumerator InitializePiper()
     {
         string espeakDataPath;
+                        
 
 #if UNITY_ANDROID && !UNITY_EDITOR
             espeakDataPath = Path.Combine(Application.persistentDataPath, "espeak-ng-data");
@@ -77,12 +81,10 @@ public class PiperManager : TTService
                         Debug.LogError($"Failed to load espeak-ng-data.zip from StreamingAssets: {www.error}");
                         yield break;
                     }
-
+                    ZipFile.ExtractToDirectory(zipDestPath, Application.persistentDataPath);
                     File.WriteAllBytes(zipDestPath, www.downloadHandler.data);
-
                     try
                     {
-                        ZipFile.ExtractToDirectory(zipDestPath, Application.persistentDataPath);
                         Debug.Log("eSpeak data successfully unzipped to persistentDataPath.");
                     }
                     catch (Exception e)
@@ -126,12 +128,24 @@ public class PiperManager : TTService
         }
     }
 
+    public Task<AudioClip> getAudioClip(VoiceProfile voice, string dialogue)
+    {
+        throw new NotImplementedException();
+    }
+    
+    public Task<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options)
+    {
+        Debug.Log("Creating audioclip from piper model");
+        PickOption<ESpeakVoiceContainer> important = options.OfType<PickOption<ESpeakVoiceContainer>>().First() ?? throw new ArgumentException("Oy, we are missing a model information for this one. Plz fix");
+        return Synthesize(dialogue, important.GetCurrentValue().GetTokenizer(), important.GetCurrentValue().GetModelAsset());
+    }
+
     /// <summary>
     /// Creates a TTS audioclip from the text
     /// </summary>
     /// <param name="text">Things to be said</param>
     /// <returns>A audioclip to be voiced</returns>s
-    private AudioClip Synthesize(string text, ESpeakTokenizer tokenizer, ModelAsset model)
+    private async Task<AudioClip> Synthesize(string text, ESpeakTokenizer tokenizer, ModelAsset model)
     {
         if (tokenizer == null || string.IsNullOrEmpty(tokenizer.Voice))
         {
@@ -367,10 +381,7 @@ public class PiperManager : TTService
         return Encoding.UTF8.GetString(byteList.ToArray());
     }
 
-    public Task<AudioClip> getAudioClip(VoiceProfile voice, string dialogue)
-    {
-        throw new NotImplementedException();
-    }
+
 
     public static IEnumerable<OptionBase> GetTTSOptions()
     {

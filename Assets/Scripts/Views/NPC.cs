@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Alchemy.Inspector;
 using UnityEngine;
 
@@ -9,16 +10,16 @@ using UnityEngine;
 public class NPC : MonoBehaviour, IEvent<INPCEventListener>
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    [LabelText("TTService")]
-    [SerializeField] private TTSserviceProvider TTService = null;
-    [SerializeReference] private List<OptionBase> TTSOptions = new(); 
+    [LabelText("ITTService")]
+    [SerializeReference] public TTSserviceProvider TTService = null;
+    [SerializeReference] private Dictionary<string, object> TTSOptions = new();
 
     [LabelText("AI Service")]
-    [SerializeField]private LLMServiceProvider LLMService = null;
-    [SerializeReference]private List<OptionBase> LLMOptions = new();
+    [SerializeReference] public LLMServiceProvider LLMService = null;
+    [SerializeReference] private Dictionary<string, object> LLMOptions = new();
 
     public Environment.Actor actor = Environment.Actor.Employee;
-    public AudioSource audioSource {get; private set;}
+    public AudioSource audioSource { get; private set; }
     public GameObject head;
 
     public VoiceProfile voiceProfile;
@@ -73,36 +74,96 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
         onNPCDestroy -= listener.OnDestroyNPC;
     }
 
-    void OnGUI()
-    {
-    }
-
     public void SetLLMOptions(IEnumerable<OptionBase> values)
     {
-        LLMOptions = new(values);
+        LLMOptions.Clear();
+        foreach (OptionBase item in values)
+        {
+            LLMOptions[item.GetName()] = item.GetObjectValue();
+        }
     }
-    
+
+    public void SetLLMOverrideValue(string name, object value)
+    {
+        if (LLMOptions.TryGetValue(name, out _))
+        {
+            LLMOptions[name] = value;
+        }
+    }
+
     public void SetTTSOptions(IEnumerable<OptionBase> values)
     {
-        TTSOptions = new(values);
+        TTSOptions.Clear();
+        foreach (OptionBase item in values)
+        {
+            TTSOptions[item.GetName()] = item.GetObjectValue();
+        }
+    }
+
+    public void SetTTSOverrideValue(string name, object value)
+    {
+        if (TTSOptions.TryGetValue(name, out _))
+        {
+            TTSOptions[name] = value;
+        }
     }
 
     public IEnumerable<OptionBase> GetLLMOptions()
     {
-        return LLMOptions;
+        IEnumerable<OptionBase> options = LLMService.GetLLMOptions();
+        foreach (OptionBase item in options)
+        {
+            if (LLMOptions.TryGetValue(item.GetName(), out object overridevalue))
+            {
+                try
+                {
+                    item.TrySetValue(overridevalue);
+                }
+                catch (System.Exception)
+                {
+                    LLMOptions[item.GetName()] = item.GetObjectValue();
+                }
+            }
+            else
+            {
+                LLMOptions[item.GetName()] = item.GetObjectValue();
+            }
+        }
+        return options;
     }
-    
+
     public IEnumerable<OptionBase> GetTTSOptions()
     {
-        return TTSOptions;
+        IEnumerable<OptionBase> options = TTService.GetTTSOptions();
+        foreach (OptionBase item in options)
+        {
+            if (TTSOptions.TryGetValue(item.GetName(), out object overridevalue))
+            {
+                try
+                {
+                    item.TrySetValue(overridevalue);
+                }
+                catch (System.Exception)
+                {
+                    TTSOptions[item.GetName()] = item.GetObjectValue();
+                }
+            }
+            else
+            {
+                TTSOptions[item.GetName()] = item.GetObjectValue();
+            }
+        }
+        return options;
     }
 
 
     private void OnValidate()
     {
-        if(LLMService == null || TTService == null)
+        if (LLMService == null || TTService == null)
         {
             throw new ArgumentException("You need to set the services needed within the NPC component");
         }
+        GetLLMOptions();
+        GetTTSOptions();
     }
 }

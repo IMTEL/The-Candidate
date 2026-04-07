@@ -1,5 +1,4 @@
 using System;
-using NUnit.Framework.Constraints;
 using UnityEngine;
 
 /// <summary>
@@ -31,6 +30,11 @@ public class FloatBoundOption : OptionBase
         SetValue(value);
         minBound = Minvalue;
         maxBound = MaxValue;
+    }
+
+    public override object GetObjectValue()
+    {
+        return value;
     }
 
     public float GetValue()
@@ -67,5 +71,34 @@ public class FloatBoundOption : OptionBase
             this.value = value;
         }
         return value == this.value;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+        FloatBoundOption casted = (FloatBoundOption)obj;
+        return  casted.maxBound == this.maxBound && 
+                casted.minBound == this.minBound && base.Equals(casted);
+    }
+    
+    // override object.GetHashCode
+    public override int GetHashCode()
+    {
+        int hash = 17;
+        hash = hash * 23 + (int)maxBound;
+        hash = hash * 27  + (int)minBound;
+        return base.GetHashCode()+hash;
+    }
+
+    public override bool TrySetValue(object value)
+    {
+        if(value is float v)
+        {
+           return SetValue(v); 
+        }
+        return false;
     }
 }

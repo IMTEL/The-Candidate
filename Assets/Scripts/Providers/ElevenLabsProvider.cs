@@ -10,9 +10,10 @@ using UnityEngine.Networking;
 public class ElevenLabsProvider : TTSserviceProvider
 {
     [SerializeField] private string apiKey;
+    public List<VoiceProfile> voices = new();
 
 
-    public override TTService CreateTypedService()
+    public override ITTService CreateTypedService()
         => new ElevenLabsService(apiKey);
 
     [Button]

@@ -13,10 +13,6 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
 
     private Action<(NPC, Dialog)> onDialogueReadyAbstract;
 
-    TTService TTSInstance;
-
-    ILLMService LLMInstance;
-
     private void Awake()
     {
     }
@@ -24,7 +20,7 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
     [Init]
     protected void Init(SpawnManager nPCRegistry, ScenarioSettingsWrapper scenarioSettingsWrapper, ExtendedWhisperManager extendedWhisperManager)
     {
-        dialogueSystem = new DialogueSystem(LLMInstance, TTSInstance, scenarioSettingsWrapper.getScenarioSettings(), nPCRegistry.GetNPCRegistry());
+        dialogueSystem = new DialogueSystem(scenarioSettingsWrapper.getScenarioSettings(), nPCRegistry.GetNPCRegistry());
         extendedWhisperManager.AddListener(this);
     }
 

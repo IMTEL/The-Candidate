@@ -7,9 +7,7 @@ using UnityEngine;
 [CustomEditor(typeof(NPC))]
 public class NPCEditor : Editor
 {
-
     private SerializedProperty TTService;
-
 
     private SerializedProperty LLMService;
 
@@ -35,13 +33,14 @@ public class NPCEditor : Editor
             {
                 ((NPC)target).SetLLMOptions(new List<OptionBase>());
             }
-            EditorUtility.SetDirty(target); 
+            EditorUtility.SetDirty(target);
+            Repaint(); 
         }
         if(LLMService.objectReferenceValue != null)
         {
             var options = ((NPC)target).GetLLMOptions();
             if (options != null)
-                FleshOptiontypes(options);
+                FleshOptiontypes(options, ((NPC)target).SetLLMOverrideValue);
             else
                 EditorGUILayout.HelpBox("No LLM options available (null list)", MessageType.Warning);
         }
@@ -59,12 +58,13 @@ public class NPCEditor : Editor
                 ((NPC)target).SetTTSOptions(new List<OptionBase>());
             }
             EditorUtility.SetDirty(target); 
+            Repaint();
         }
         if(TTService.objectReferenceValue != null)
         {
             var options = ((NPC)target).GetTTSOptions();
             if (options != null)
-                FleshOptiontypes(options);
+                FleshOptiontypes(options,((NPC)target).SetTTSOverrideValue);
             else
                 EditorGUILayout.HelpBox("No TTS options available (null list)", MessageType.Warning);
         }
@@ -74,7 +74,7 @@ public class NPCEditor : Editor
     }
 
 
-    public void FleshOptiontypes(IEnumerable<OptionBase> Options)
+    public void FleshOptiontypes(IEnumerable<OptionBase> Options, Action<string, object> overridemethod)
     {
         if (Options == null) return;
         foreach(OptionBase option in Options)
@@ -88,6 +88,7 @@ public class NPCEditor : Editor
                     {
                         Undo.RecordObject(target, "Changed " + floatBoundOption.GetName());
                         floatBoundOption.SetValue(newValue);
+                        overridemethod.Invoke(option.GetName(), newValue);
                         EditorUtility.SetDirty(target); 
                     }
                 } else if(option is IPickOption pickOption){
@@ -106,6 +107,7 @@ public class NPCEditor : Editor
                             {
                                 Undo.RecordObject(target, "Changed " + pickOption.GetCurrentname());
                                 pickOption.SetValueObject(objects[index]);
+                                overridemethod.Invoke(option.GetName(), objects[index]);
                                 EditorUtility.SetDirty(target);
                             });
                         }

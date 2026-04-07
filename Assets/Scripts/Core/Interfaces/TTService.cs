@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// TTService that provides us wiht a way to get voices
 /// </summary>
-public interface TTService
+public interface ITTService
 {
     /// <summary>
     /// Fetches the audioclip from the service
@@ -15,6 +15,7 @@ public interface TTService
     /// <param name="dialogue">the dialogue to speak</param>
     /// <returns></returns>
     public Task<AudioClip> getAudioClip(VoiceProfile voice, string dialogue);
+    public Task<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options);
     public static IEnumerable<OptionBase> GetTTSOptions()  => throw new NotImplementedException("The implementation for option is not implemented within this instance. Add it :)");
 
 }

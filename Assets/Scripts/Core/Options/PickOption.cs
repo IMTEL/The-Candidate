@@ -6,10 +6,10 @@ using UnityEngine;
 
 public interface IPickOption{
     string GetCurrentname();
-    object GetValueObject();                    // current value as object
     IEnumerable<object> GetOptionsObjects(); // all option values as objects
     IEnumerable<string> GetOptionDisplayNames(); // display labels for each option
-    bool SetValueObject(object value);         // set by value/entry/index
+
+    bool SetValueObject(object value);
 }
 
 [Serializable]
@@ -23,7 +23,7 @@ public class PickOption<T> : OptionBase, IPickOption, IEvent<T>
         {
             throw new ArgumentException("The values has to be a list of options with 1 or more options");    
         }
-        options = new List<OptionEntry<T>>(values);
+        options = new(values);
         defualtValue ??= values.First();
         SetValue(defualtValue);
     }
@@ -40,7 +40,7 @@ public class PickOption<T> : OptionBase, IPickOption, IEvent<T>
             options.Add(optionEntry);
         }
         defualtValue ??= values.First();
-        SetValueObject(defualtValue);
+        TrySetValue(defualtValue);
     }
 
     public OptionEntry<T> GetOption()
@@ -71,9 +71,14 @@ public class PickOption<T> : OptionBase, IPickOption, IEvent<T>
         return true;
     }
 
-    public object GetValueObject()
+    public override object GetObjectValue()
     {
         return value;
+    }
+
+    public T GetValue()
+    {
+        return value.GetValue();
     }
 
     public IEnumerable<object> GetOptionsObjects()
@@ -86,7 +91,7 @@ public class PickOption<T> : OptionBase, IPickOption, IEvent<T>
         return options.Select(value => value.GetDisplayName());
     }
 
-    public bool SetValueObject(object value)
+    public override bool TrySetValue(object value)
     {
         if(value is OptionEntry<T> optionEntry){
             return SetValue(optionEntry);
@@ -116,6 +121,39 @@ public class PickOption<T> : OptionBase, IPickOption, IEvent<T>
     {
         throw new NotImplementedException();
     }
+
+    public bool Contains(OptionEntry<T> value)
+    {
+        return options.Contains(value);
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+        // TODO: write your implementation of Equals() here
+        PickOption<T> casted = (PickOption<T>)obj;
+        return casted.GetOptions().Equals(this.options) && GetHashCode().Equals(casted.GetHashCode())
+            && base.Equals(casted);
+    }
+    
+    // override object.GetHashCode
+    public override int GetHashCode()
+    {
+        int hash = 17;
+        foreach (var option in options)
+        {
+            hash = hash * 23 + option.GetHashCode();
+        }
+        return hash+base.GetHashCode();
+    }
+
+    public bool SetValueObject(object value)
+    {
+        return TrySetValue(value);
+    }
 }
 
 [Serializable]
@@ -143,19 +181,15 @@ public class OptionEntry<T> {
         {
             return false;
         }
-        OptionEntry<object> casted = (OptionEntry<object>)obj;
+        OptionEntry<T> casted = (OptionEntry<T>)obj;
         if(value.Equals(casted.GetValue()) && displayName.Equals(casted.GetDisplayName())) return true;
         return false;
     }
     
     // override object.GetHashCode
     public override int GetHashCode()
-    { 
-        
-        int hash = 17;
-        hash = hash * 23 + value.GetHashCode();
-        hash = hash * 23 + displayName.GetHashCode(); 
-        return hash;
+    {
+        return System.HashCode.Combine(value, displayName);
     }
 }
 
