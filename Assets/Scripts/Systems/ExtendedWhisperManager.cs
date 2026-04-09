@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Alchemy.Inspector;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Whisper;
 using Whisper.Utils;
@@ -15,27 +14,14 @@ public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventList
 
     WhisperManager whisperManager;
 
-    private event Action onMicrophoneStartRecording;
-    private event Action<Dialog> onMicrophoneEndRecording;
+    private event UnityAction onMicrophoneStartRecording;
+    private event UnityAction<Dialog> onMicrophoneEndRecording;
     
     private void Awake()
     {
         mic = GetComponent<MicrophoneRecord>();
         whisperManager = GetComponent<WhisperManager>();
         mic.OnRecordStop += SendChunk;
-    }
-
-    private void Start()
-    {
-        DialogUI player = FindAnyObjectByType<DialogUI>();
-        if(player != null)
-        {
-            player.button.onClick.AddListener(() => {ToggleMicrophone();});
-        }
-        else
-        {
-            Debug.LogError("Can't find player");
-        }
     }
 
     private async void SendChunk(AudioChunk recordedAudio)
@@ -66,27 +52,12 @@ public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventList
         mic.StartRecord();
     }
 
-    public void AddListener(IEnumerable<IMicrophoneEventListener> listeners)
-    {
-        foreach (var listener in listeners)
-        {
-            AddListener(listener);
-        }
-    }
 
     public void AddListener(IMicrophoneEventListener listener)
     {
         if (listener == null) return;
         onMicrophoneStartRecording += listener.onMicrophoneStartRecording;
         onMicrophoneEndRecording += listener.onMicrophoneStopRecording;
-    }
-
-    public void RemoveListener(IEnumerable<IMicrophoneEventListener> listeners)
-    {
-        foreach (IMicrophoneEventListener listener in listeners)
-        {
-            RemoveListener(listener);
-        }
     }
 
     public void RemoveListener(IMicrophoneEventListener listener)
