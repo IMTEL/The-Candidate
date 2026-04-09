@@ -48,7 +48,7 @@ public class PiperManager : ITTService
             throw new ArgumentException("Need a higher capacity then a negative number");
         }
         modelCapacity = capacity;
-        InitializePiper();
+        AMagicalCrashingFunction();
     }
 
     public static PiperManager GetInstance(int capacity = 3)
@@ -57,12 +57,10 @@ public class PiperManager : ITTService
         return instance;
     }
 
-    private IEnumerator InitializePiper()
+    private void AMagicalCrashingFunction()
     {
         string espeakDataPath;
-                        
-
-#if UNITY_ANDROID && !UNITY_EDITOR
+        #if UNITY_ANDROID && !UNITY_EDITOR
             espeakDataPath = Path.Combine(Application.persistentDataPath, "espeak-ng-data");
 
             if (!Directory.Exists(espeakDataPath))
@@ -81,10 +79,12 @@ public class PiperManager : ITTService
                         Debug.LogError($"Failed to load espeak-ng-data.zip from StreamingAssets: {www.error}");
                         yield break;
                     }
-                    ZipFile.ExtractToDirectory(zipDestPath, Application.persistentDataPath);
+
                     File.WriteAllBytes(zipDestPath, www.downloadHandler.data);
+
                     try
                     {
+                        ZipFile.ExtractToDirectory(zipDestPath, Application.persistentDataPath);
                         Debug.Log("eSpeak data successfully unzipped to persistentDataPath.");
                     }
                     catch (Exception e)
@@ -105,16 +105,15 @@ public class PiperManager : ITTService
             {
                 Debug.Log("Android: eSpeak data already exists in persistentDataPath.");
             }
-#else
-        espeakDataPath = Path.Combine(Application.streamingAssetsPath, "espeak-ng-data");
-        Debug.Log($"Editor/Standalone: Using eSpeak data directly from StreamingAssets: {espeakDataPath}");
-        yield return null;
-#endif
-        InitializeESpeak(espeakDataPath);
+        #else
+            espeakDataPath = Path.Combine(Application.streamingAssetsPath, "espeak-ng-data");
+            Debug.Log($"Editor/Standalone: Using eSpeak data directly from StreamingAssets: {espeakDataPath}");
+        #endif
+        AnotherMagicalCrashingFunction(espeakDataPath);
         Debug.Log("Piper Manager initialized.");
     }
 
-    private void InitializeESpeak(string dataPath)
+    private void AnotherMagicalCrashingFunction(string dataPath)
     {
         int initResult = ESpeakNG.espeak_Initialize(0, 0, dataPath, 0);
 
