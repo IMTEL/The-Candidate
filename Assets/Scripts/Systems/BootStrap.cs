@@ -21,32 +21,38 @@ using UnityEngine;
 /// </summary>
 public class BootStrap : MonoBehaviour
 {
-    private static BootStrap instance = null;
+    public static BootStrap Instance {private set; get;} = null;
+
+    private bool initilized = false;
 
     public List<IInit> inits = new();
 
     void Awake()
     {
-        if (instance != null && instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(this.gameObject);
         }
+        else
+        {
+            Instance = this;
+        }
+        
     }
 
     void Start()
     {
-        if (instance == null)
+        if (!initilized)
         {
             DontDestroyOnLoad(this);
-            instance = this;
             List<DependencyNode> dependencies = new(GetComponenentDependencyOrdered());
             foreach (DependencyNode node in dependencies)
             {
                 Debug.Log("Initiating " + node.GetContainedType().Name);
                 runInit(node.GetContainedType());
             }
+            initilized = true;
         }
-
     }
 
 
@@ -77,7 +83,7 @@ public class BootStrap : MonoBehaviour
                 inits.Add(init);
             }
         }
-        String debug = "The following classes will be checked: ";
+        string debug = "The following classes will be checked: ";
         inits.ForEach((initObject) => debug += (initObject.GetType().Name + ", "));
         Debug.Log(debug);
         List<DependencyNode> dependencies = new();

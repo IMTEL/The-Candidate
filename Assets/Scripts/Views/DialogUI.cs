@@ -21,7 +21,7 @@ public class DialogUI : MonoBehaviour
 
     private void Start()
     {
-        ExtendedWhisperManager extendedWhisperManager = FindAnyObjectByType<ExtendedWhisperManager>();
+        ExtendedWhisperManager extendedWhisperManager = BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>();
         button.onClick.AddListener(() => extendedWhisperManager.ToggleMicrophone());
     } 
 
