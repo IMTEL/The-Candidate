@@ -1,13 +1,28 @@
 using System.Collections.Generic;
+using NUnit.Framework.Interfaces;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
+using UnityEngine.SceneManagement;
 
 public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit, IDialogueReady
 {
     private Queue<(NPC,Dialog)> voiceQueue = new();
     private NPC lastNPC;
     private bool micRecording = false;
-
+    private DialogUI dialogUI;
     private DialogueSystemComponent dialogueSystem;
+
+
+    void Start()
+    {
+        SceneManager.activeSceneChanged += (Scene _, Scene _) => {RefreshUIObject();};        
+        RefreshUIObject();
+    }
+
+    void RefreshUIObject()
+    {
+        dialogUI = FindFirstObjectByType<DialogUI>();
+    }
 
     [Init]
     private void Init(DialogueSystemComponent dialogueSystem, ExtendedWhisperManager extendedWhisperManager)
@@ -27,6 +42,10 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
             nextVoiceLine.Item1.audioSource.clip = nextVoiceLine.Item2.audioClip;
             nextVoiceLine.Item1.audioSource.Play();
             lastNPC = nextVoiceLine.Item1;
+            if(dialogUI.isActiveAndEnabled)
+            {
+                dialogUI.SetText(nextVoiceLine.Item2.dialog);
+            }
         }
     }
 
