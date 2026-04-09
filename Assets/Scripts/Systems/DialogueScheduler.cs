@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit, IDialogueReady
@@ -20,8 +19,9 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     void Update()
     {
+        (NPC, Dialog) nextVoiceLine = (null, null);
         //If the next voice line is not ready or if either the user or the npc's are talking, do not run anything
-        if(!(voiceQueue.TryPeek(out (NPC, Dialog) nextVoiceLine) && nextVoiceLine.Item2.audioClip) || micRecording || (lastNPC && lastNPC.audioSource.isPlaying)) return;
+        if(!(voiceQueue.TryPeek(out nextVoiceLine) && nextVoiceLine.Item2.audioClip != null) || micRecording || (lastNPC != null && lastNPC.audioSource.isPlaying)) return;
         if (voiceQueue.TryDequeue(out _))
         {
             nextVoiceLine.Item1.audioSource.clip = nextVoiceLine.Item2.audioClip;
@@ -47,6 +47,6 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
     
     public void onDialogueReady((NPC,Dialog) queueItem)
     {
-        voiceQueue.Append(queueItem);
+        voiceQueue.Enqueue(queueItem);
     }
 }
