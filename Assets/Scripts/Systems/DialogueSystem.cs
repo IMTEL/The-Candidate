@@ -10,7 +10,7 @@ using UnityEngine;
 /// <summary>
 /// Creates dialogues with the AI model and
 /// </summary>
-public class DialogueSystem
+public class DialogueSystem : IEvent<IDialogueReady>
 {
     private ScenarioSettings scenario;
     private NPCRegistry NPCRegistry;
@@ -115,5 +115,15 @@ You are an actor within a movie where you are with different other people to int
             dialog.audioClip = await ((ITTService)npc.TTService.CreateService()).getAudioClip(dialog.dialog, npc.GetTTSOptions());
         }
         finally { simulatnousVoiceRequests.Release(); }
+    }
+
+    public void AddListener(IDialogueReady listener)
+    {
+        onDialogueReady += listener.onDialogueReady;
+    }
+
+    public void RemoveListener(IDialogueReady listener)
+    {
+        onDialogueReady -= listener.onDialogueReady;
     }
 }

@@ -1,21 +1,12 @@
-using System;
-using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
-public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, IEvent<IDialogueReady>, IDialogueReady, IInit
+public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, IEvent<IDialogueReady>, IInit
 {
     [SerializeField] private DialogueSystem dialogueSystem;
 
-    private Task workingThread;
     private CancellationTokenSource cancellationToken;
 
-    private Action<(NPC, Dialog)> onDialogueReadyAbstract;
-
-    private void Awake()
-    {
-    }
     
     [Init]
     protected void Init(SpawnManager nPCRegistry, ScenarioSettingsWrapper scenarioSettingsWrapper, ExtendedWhisperManager extendedWhisperManager)
@@ -32,37 +23,17 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
 
     public void onMicrophoneStopRecording(Dialog recordedaudio)
     {
-        (workingThread, cancellationToken) = dialogueSystem.HandleUserDialog(recordedaudio);
-    }
-
-    public void onDialogueReady((NPC, Dialog) dialog)
-    {
-        onDialogueReadyAbstract?.Invoke(dialog);
-    }
-
-    public void AddListener(IEnumerable<IDialogueReady> listeners)
-    {
-        foreach (var item in listeners)
-        {
-            AddListener(item);
-        }
+        (_, cancellationToken) = dialogueSystem.HandleUserDialog(recordedaudio);
     }
 
     public void AddListener(IDialogueReady listener)
     {
-        onDialogueReadyAbstract += listener.onDialogueReady;
+        dialogueSystem.AddListener(listener);
     }
 
-    public void RemoveListener(IEnumerable<IDialogueReady> listeners)
-    {
-        foreach (var item in listeners)
-        {
-            RemoveListener(item);
-        }
-    }
 
     public void RemoveListener(IDialogueReady listener)
     {
-        onDialogueReadyAbstract += listener.onDialogueReady;
+        dialogueSystem.RemoveListener(listener);
     }
 }
