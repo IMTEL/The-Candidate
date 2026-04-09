@@ -1,3 +1,4 @@
+using OVR.OpenVR;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,12 @@ public class DialogUI : MonoBehaviour
         button ??= GetComponentInChildren<Button>();
         text ??= GetComponentInChildren<TMP_Text>();
     }
+
+    private void Start()
+    {
+        ExtendedWhisperManager extendedWhisperManager = FindAnyObjectByType<ExtendedWhisperManager>();
+        button.onClick.AddListener(() => extendedWhisperManager.ToggleMicrophone());
+    } 
 
     // Update is called once per frame
     void Update()
