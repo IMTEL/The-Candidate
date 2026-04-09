@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Alchemy.Inspector;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
 {
@@ -17,16 +18,18 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
     [ShowInInspector]
     [LabelText("NPC Prefabs")]
     public HashSet<GameObject> npcPrefabs = new();
+    
+
+    private void OnSceneChange(Scene _, Scene __)
+    {
+        spawnLocations = FindObjectsByType<NPCSpawnPoint>(sortMode: FindObjectsSortMode.None);
+        nPCRegistry.Clear();
+        nPCRegistry.Add(FindAnyObjectByType<NPC>());
+    }
 
     void Start()
     {
-        spawnLocations = FindObjectsByType<NPCSpawnPoint>(sortMode: FindObjectsSortMode.None);
-    }
-
-    [Init]
-    public void Init()
-    {
-        nPCRegistry.Add(GameObject.FindAnyObjectByType<NPC>());
+        SceneManager.activeSceneChanged += OnSceneChange;
     }
 
     void INPCEventListener.OnCreateNPC(NPC nPC)
@@ -34,13 +37,13 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
         
     }
 
-    public void OnDestroyNPC(NPC nPC)
-    {
-        throw new NotImplementedException();
-    }
-
     public NPCRegistry GetNPCRegistry()
     {
         return nPCRegistry;
+    }
+
+    public void OnDestroyNPC(NPC nPC)
+    {
+        throw new NotImplementedException();
     }
 }
