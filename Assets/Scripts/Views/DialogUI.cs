@@ -1,4 +1,3 @@
-using OVR.OpenVR;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +5,7 @@ using UnityEngine.UI;
 public class DialogUI : MonoBehaviour
 {
 
-    public int letterPerSecond = 3;
+    public float letterPerSecond = 8;
     private float timer = 0;
     private string dialogue = "";
     public Button button;
@@ -41,9 +40,9 @@ public class DialogUI : MonoBehaviour
     {
         string modifiedText = dialogue;
         
-        if(dialogue.Length < letterPerSecond * timer) timer += Time.deltaTime;
+        if(dialogue.Length > letterPerSecond * timer) timer += Time.deltaTime;
         
-        if(dialogue.Length < letterPerSecond * timer)
+        if(dialogue.Length > letterPerSecond * timer)
         {
             modifiedText = modifiedText[..(int)(letterPerSecond * timer)];
         }
