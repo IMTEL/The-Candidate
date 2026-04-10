@@ -366,6 +366,10 @@ PrefabInstance:
       propertyPath: 'm_BlendShapeWeights.Array.data[21]'
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4504578304540096179, guid: dfcf5d6eb121c5a0497f90cd32b3e9a0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4771848323966511190, guid: dfcf5d6eb121c5a0497f90cd32b3e9a0, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
