@@ -37,6 +37,8 @@ public class OpenAICompletionRequest
             Model.GPT_OSS_120b => "gpt-oss-120b",
             Model.GPT4 => "gpt-4.1",
             Model.GPT5 => "gpt-5",
+            Model.IDUN_GOOGLE_Gemini_4_26B_A4B_it => "google/gemma-4-26B-A4B-it",
+            Model.IDUN_GOOGLE_Gemini_4_26B_A4B_it_thikning => "google/gemma-4-26B-A4B-it-thinking",
             _ => throw new NotImplementedException("The model has no translation to plaintext. Please add it to the list"),
         };
     }
@@ -48,7 +50,9 @@ public class OpenAICompletionRequest
         GPT_OSS_120b,
         IDUN_GPT_OSS_120b,
         IDUN_Mistral_Large_3_675B_Instruct_2512_NVFP4,
-        IDUN_NorwAI_Magistral_24B_reasoning
+        IDUN_NorwAI_Magistral_24B_reasoning,
+        IDUN_GOOGLE_Gemini_4_26B_A4B_it,
+        IDUN_GOOGLE_Gemini_4_26B_A4B_it_thikning
     }
 
     public struct OpenAIMessage
