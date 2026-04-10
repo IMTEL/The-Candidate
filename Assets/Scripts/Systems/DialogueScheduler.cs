@@ -13,7 +13,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     void Start()
     {
-        SceneManager.activeSceneChanged += (Scene _, Scene _) => {RefreshUIObject();};        
+        SceneManager.activeSceneChanged += (_, _) => {RefreshUIObject();};        
         RefreshUIObject();
     }
 
