@@ -25,14 +25,14 @@ public class Environment {
     /// </summary>
     public class Job
     {
-        public static Job Store = new("Store worker", new() { Actor.Manager });
+        public static Job Store = new("Store worker", new() { Actor.Manager }, "A store worker for a store. Standard work tasks being filling shelfs and helping customers.");
         public static Job Sales = new("Phone Seller", new() { Actor.Manager });
         public static Job Post = new("Postal Serice", new() {Actor.Manager, Actor.Employee});
         public static Job Cleaner = new("Cleaner", new() { Actor.Manager });
         public static Job Assistant = new("Assistant", new() {Actor.Manager, Actor.Expert});
         public static HashSet<Job> All = new() { Cleaner, Store, Post, Sales, Assistant };
         public string name {get; private set;} = ""; 
-        public string description {get; private set;} = "s";
+        public string description {get; private set;} = "";
         public HashSet<Actor> actors {get;} = new();
         /// <summary>
         /// Creates a Job. Only meant to be called by the class itself to create static job
@@ -54,6 +54,11 @@ public class Environment {
             actors.ForEach(actor => this.actors.Add(actor));
             this.name = name;
             this.description = description;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("### {0}:\n{1} ",name, description);
         }
     }
 
@@ -80,9 +85,9 @@ public class Environment {
             this.roleDescription = roleDescription;
         }
 
-        public string getPrompt()
+        public string GetString()
         {
-            string start = "### %s \n %s \n";
+            string start = "### {0} \n {1} \n";
             return string.Format(start, name, roleDescription);
         }
 
