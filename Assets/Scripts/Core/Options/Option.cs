@@ -1,8 +1,10 @@
 using System;
+using UnityEngine;
 
+[Serializable]
 public abstract class OptionBase
 {
-    private string name;
+    [SerializeField] private string name;
     public OptionBase(string name)
     {
         if (string.IsNullOrWhiteSpace(name))

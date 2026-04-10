@@ -1,22 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Alchemy.Inspector;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 [DisallowMultipleComponent]
-[Serializable]
 public class NPC : MonoBehaviour, IEvent<INPCEventListener>
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    public string name;
+
     [LabelText("ITTService")]
     [SerializeReference] public TTSserviceProvider TTService = null;
-    [SerializeReference] private Dictionary<string, object> TTSOptions = new();
+    [SerializeReference] private List<OptionBase> TTSOptions = new();
 
     [LabelText("AI Service")]
     [SerializeReference] public LLMServiceProvider LLMService = null;
-    [SerializeReference] private Dictionary<string, object> LLMOptions = new();
+    [SerializeReference] private List<OptionBase> LLMOptions = new();
 
     public Environment.Actor actor = Environment.Actor.Employee;
     public AudioSource audioSource { get; private set; }
@@ -79,15 +79,20 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
         LLMOptions.Clear();
         foreach (OptionBase item in values)
         {
-            LLMOptions[item.GetName()] = item.GetObjectValue();
+            SetLLMOverrideValue(item);
         }
     }
 
-    public void SetLLMOverrideValue(string name, object value)
+    public void SetLLMOverrideValue(OptionBase optionBase)
     {
-        if (LLMOptions.TryGetValue(name, out _))
+        OptionBase option = LLMOptions.Find(option => option.Equals(optionBase));
+        if(option != null)
         {
-            LLMOptions[name] = value;
+            option.TrySetValue(optionBase.GetObjectValue());
+        }
+        else
+        {
+            LLMOptions.Add(optionBase);
         }
     }
 
@@ -96,64 +101,62 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
         TTSOptions.Clear();
         foreach (OptionBase item in values)
         {
-            TTSOptions[item.GetName()] = item.GetObjectValue();
+            SetTTSOverrideValue(item);        
         }
     }
 
-    public void SetTTSOverrideValue(string name, object value)
+    public void SetTTSOverrideValue(OptionBase optionBase)
     {
-        if (TTSOptions.TryGetValue(name, out _))
+        OptionBase option = TTSOptions.Find(option => option.Equals(optionBase));
+        if(option != null)
         {
-            TTSOptions[name] = value;
+            option.TrySetValue(optionBase.GetObjectValue());
+        }
+        else
+        {
+            TTSOptions.Add(optionBase);
         }
     }
 
     public IEnumerable<OptionBase> GetLLMOptions()
     {
-        IEnumerable<OptionBase> options = LLMService.GetLLMOptions();
-        foreach (OptionBase item in options)
+        IEnumerable<OptionBase> baseline = new List<OptionBase>();
+        if(LLMService != null)
         {
-            if (LLMOptions.TryGetValue(item.GetName(), out object overridevalue))
-            {
-                try
-                {
-                    item.TrySetValue(overridevalue);
-                }
-                catch (System.Exception)
-                {
-                    LLMOptions[item.GetName()] = item.GetObjectValue();
-                }
-            }
-            else
-            {
-                LLMOptions[item.GetName()] = item.GetObjectValue();
-            }
+            baseline = LLMService.GetLLMOptions();
         }
-        return options;
+        LLMOptions = CompareAndGetOpptions(LLMOptions, baseline);
+        return LLMOptions; 
     }
 
     public IEnumerable<OptionBase> GetTTSOptions()
     {
-        IEnumerable<OptionBase> options = TTService.GetTTSOptions();
+        IEnumerable<OptionBase> baseline = new List<OptionBase>();
+        if(TTService != null)
+        {
+            baseline = TTService.GetTTSOptions();
+        }
+        TTSOptions = CompareAndGetOpptions(TTSOptions, baseline);
+        return TTSOptions;
+    }
+
+    public List<OptionBase> CompareAndGetOpptions(List<OptionBase> localOptionBases, IEnumerable<OptionBase> options)
+    {
+        List<OptionBase> optionBases = new();
         foreach (OptionBase item in options)
         {
-            if (TTSOptions.TryGetValue(item.GetName(), out object overridevalue))
+            OptionBase optionBase = localOptionBases.Find(option => option.Equals(item)); 
+            if (optionBase != null)
             {
                 try
                 {
-                    item.TrySetValue(overridevalue);
+                    item.TrySetValue(optionBase.GetObjectValue());
                 }
-                catch (System.Exception)
-                {
-                    TTSOptions[item.GetName()] = item.GetObjectValue();
-                }
+                catch (Exception){};
             }
-            else
-            {
-                TTSOptions[item.GetName()] = item.GetObjectValue();
-            }
+            optionBases.Add(item);
         }
-        return options;
+        return optionBases;
     }
 
 

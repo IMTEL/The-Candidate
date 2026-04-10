@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
+public abstract class PickOption : OptionBase{
+    protected PickOption(string name) : base(name)
+    {
+    }
 
-public interface IPickOption{
-    string GetCurrentname();
-    IEnumerable<object> GetOptionsObjects(); // all option values as objects
-    IEnumerable<string> GetOptionDisplayNames(); // display labels for each option
-
-    bool SetValueObject(object value);
+    public abstract string  GetCurrentname();
+    public abstract IEnumerable<object> GetOptionsObjects(); // all option values as objects
+    public abstract IEnumerable<string> GetOptionDisplayNames(); // display labels for each option
 }
 
 [Serializable]
-public class PickOption<T> : OptionBase, IPickOption, IEvent<T>
+public class PickOption<T> : PickOption, IEvent<T>
 {
     [SerializeField] private OptionEntry<T> value;
     [SerializeField] private List<OptionEntry<T>> options;
@@ -52,7 +54,7 @@ public class PickOption<T> : OptionBase, IPickOption, IEvent<T>
         return value.GetValue();
     }
 
-    public string GetCurrentname(){
+    public override string GetCurrentname(){
         return value.GetDisplayName();
     }
 
@@ -81,12 +83,12 @@ public class PickOption<T> : OptionBase, IPickOption, IEvent<T>
         return value.GetValue();
     }
 
-    public IEnumerable<object> GetOptionsObjects()
+    public override IEnumerable<object> GetOptionsObjects()
     {
         return options.Select(value => (object)value.GetValue());
     }
 
-    public IEnumerable<string> GetOptionDisplayNames()
+    public override IEnumerable<string> GetOptionDisplayNames()
     {
         return options.Select(value => value.GetDisplayName());
     }
@@ -135,7 +137,7 @@ public class PickOption<T> : OptionBase, IPickOption, IEvent<T>
         }
         // TODO: write your implementation of Equals() here
         PickOption<T> casted = (PickOption<T>)obj;
-        return casted.GetOptions().Equals(this.options) && GetHashCode().Equals(casted.GetHashCode())
+        return options.All(option => casted.GetOptions().Contains(option)) && GetHashCode().Equals(casted.GetHashCode())
             && base.Equals(casted);
     }
     

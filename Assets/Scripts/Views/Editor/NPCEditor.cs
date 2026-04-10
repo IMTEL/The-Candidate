@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEditor;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 [CustomEditor(typeof(NPC))]
@@ -10,17 +12,20 @@ public class NPCEditor : Editor
     private SerializedProperty TTService;
 
     private SerializedProperty LLMService;
-
+    
+    private SerializedProperty name;
     
     void OnEnable()
     {
         if(serializedObject == null) throw new ArgumentException("Object not serializable");
         TTService = serializedObject.FindProperty("TTService");
         LLMService = serializedObject.FindProperty("LLMService");
+        name = serializedObject.FindProperty("name");
     }
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
+        EditorGUILayout.PropertyField(name, new GUIContent("Name"));
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(LLMService, new GUIContent("LLMService"));
         if (EditorGUI.EndChangeCheck())
@@ -74,7 +79,7 @@ public class NPCEditor : Editor
     }
 
 
-    public void FleshOptiontypes(IEnumerable<OptionBase> Options, Action<string, object> overridemethod)
+    public void FleshOptiontypes(IEnumerable<OptionBase> Options, Action<OptionBase> overridemethod)
     {
         if (Options == null) return;
         foreach(OptionBase option in Options)
@@ -88,10 +93,10 @@ public class NPCEditor : Editor
                     {
                         Undo.RecordObject(target, "Changed " + floatBoundOption.GetName());
                         floatBoundOption.SetValue(newValue);
-                        overridemethod.Invoke(option.GetName(), newValue);
+                        overridemethod.Invoke(floatBoundOption);
                         EditorUtility.SetDirty(target); 
                     }
-                } else if(option is IPickOption pickOption){
+                } else if(option is PickOption pickOption){
 
                     if (EditorGUILayout.DropdownButton(new GUIContent(pickOption.GetCurrentname()), FocusType.Passive))
                     {
@@ -106,8 +111,8 @@ public class NPCEditor : Editor
                             menu.AddItem(new GUIContent(displayNames[i]), on, () =>
                             {
                                 Undo.RecordObject(target, "Changed " + pickOption.GetCurrentname());
-                                pickOption.SetValueObject(objects[index]);
-                                overridemethod.Invoke(option.GetName(), objects[index]);
+                                pickOption.TrySetValue(objects[index]);
+                                overridemethod.Invoke(pickOption);
                                 EditorUtility.SetDirty(target);
                             });
                         }
