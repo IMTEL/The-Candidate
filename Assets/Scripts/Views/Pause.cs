@@ -1,8 +1,6 @@
-using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class Pause : MonoBehaviour
 {
@@ -11,12 +9,6 @@ public class Pause : MonoBehaviour
     public InputActionReference pause;
 
     bool paused = false;
-
-    [ShowInInspector]
-    public Button exit;
-
-    [ShowInInspector]
-    public Button resume;
 
 
     void Awake()

@@ -1,5 +1,7 @@
 using TMPro;
+using Unity.Android.Gradle;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using UnityEngine.UI;
 
 public class DialogUI : MonoBehaviour
@@ -11,17 +13,40 @@ public class DialogUI : MonoBehaviour
     public Button button;
     public TMP_Text text;
 
+    public Color OnrecordColor;
+    public Color OnRecordHighlightColor;
+    public Color OnRecordselectedColor;
+
+    ColorBlock buttonColorDefualt = new();
+
+    ColorBlock OnRecord = new();
 
     private void Awake()
     {
         button ??= GetComponentInChildren<Button>();
         text ??= GetComponentInChildren<TMP_Text>();
+        buttonColorDefualt = button.colors;
+        OnRecord = button.colors;
+        OnRecord.normalColor = OnrecordColor;
+        OnRecord.highlightedColor = OnRecordHighlightColor;
+        OnRecord.selectedColor = OnRecordselectedColor;
     }
 
     private void Start()
     {
         ExtendedWhisperManager extendedWhisperManager = BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>();
-        button.onClick.AddListener(() => extendedWhisperManager.ToggleMicrophone());
+        button.onClick.AddListener(() =>
+        {
+            if (extendedWhisperManager.ToggleMicrophone())
+            {
+                button.colors = OnRecord;
+            }
+            else
+            {
+                button.colors = buttonColorDefualt;    
+            }
+            
+            ;});
     } 
 
     // Update is called once per frame

@@ -8,7 +8,6 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
     private NPC lastNPC;
     private bool micRecording = false;
     private DialogUI dialogUI;
-    private DialogueSystemComponent dialogueSystem;
 
 
     void Start()
@@ -25,7 +24,6 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
     [Init]
     private void Init(DialogueSystemComponent dialogueSystem, ExtendedWhisperManager extendedWhisperManager)
     {
-        this.dialogueSystem = dialogueSystem;
         extendedWhisperManager.AddListener(this);
         dialogueSystem.AddListener(this);
     }
