@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Alchemy.Inspector;
 using UnityEngine;
 
 
@@ -18,10 +17,11 @@ public class DialogueSystem : IEvent<IDialogueReady>
     private List<Dialog> dialogs = new();
     public Action<(NPC, Dialog)> onDialogueReady;
 
-    public DialogueSystem(ScenarioSettings scenario, NPCRegistry nPCRegistry)
+    public DialogueSystem(ScenarioSettings scenario, NPCRegistry nPCRegistry, string startingprompt = "")
     {
         this.scenario = scenario;
         this.NPCRegistry = nPCRegistry;
+        this.startPrompt = startingprompt;
     }
 
     private SemaphoreSlim simulatnousVoiceRequests = new(2);
@@ -30,28 +30,7 @@ public class DialogueSystem : IEvent<IDialogueReady>
     /// <summary>
     /// The starting prompt within the message
     /// </summary>
-    private readonly string startPrompt = @"
-# Context
-You are an actor within a movie where you are with different other people to interview a potential candidate. 
-
-
-## Setting
-%s
-
-## Your Role
-%s
-
-## Actors
-%s
-
-# Instructions
-- Always follow the directors command. 
-- You are ONLY allowed up to 2 follow up question for a subject. NOTHING MORE
-- When mentioning your interpretation of the candidate, explain your though process.
-- The last dialog should be the ONLY ONE that leads to a candidates input
-- All actors do NOT response. Use the roles descriptions and evaluate if the actors should.
-- ALL DIALOGS SHOULD BE IN NORWEGIAN
-";
+    private readonly string startPrompt;
 
     /// <summary>
     /// Builds the prompt
@@ -59,12 +38,11 @@ You are an actor within a movie where you are with different other people to int
     /// <param name="job"></param>
     /// <param name="actor"></param>
     /// <returns></returns>
-    [Button]
     string BuildPrompt(Environment.Job job, Environment.Actor actor)
     {
         string setting = job.ToString();
-        string actors = string.Join("\n - ", job.actors.Select(actor => actor.ToString()));
-        return string.Format(startPrompt, setting, actor?.getPrompt(), actors);
+        string actors = string.Join("\n - ", job.actors.Select(actor => actor.GetString()));
+        return string.Format(startPrompt, setting, actor?.GetString(), actors);
     }
 
     public (Task, CancellationTokenSource) HandleUserDialog(Dialog userDialog, CancellationTokenSource tokenSource = null)

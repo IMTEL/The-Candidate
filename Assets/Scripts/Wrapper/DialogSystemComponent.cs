@@ -7,11 +7,14 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
 
     private CancellationTokenSource cancellationToken;
 
+    [TextArea(10,30)]
+    public string prompt;
+
     
     [Init]
     protected void Init(SpawnManager nPCRegistry, ScenarioSettingsWrapper scenarioSettingsWrapper, ExtendedWhisperManager extendedWhisperManager)
     {
-        dialogueSystem = new DialogueSystem(scenarioSettingsWrapper.getScenarioSettings(), nPCRegistry.GetNPCRegistry());
+        dialogueSystem = new DialogueSystem(scenarioSettingsWrapper.getScenarioSettings(), nPCRegistry.GetNPCRegistry(), prompt);
         extendedWhisperManager.AddListener(this);
     }
 
