@@ -1513,7 +1513,7 @@ GameObject:
   - component: {fileID: 3301990301596656214}
   - component: {fileID: 8133181017644565212}
   - component: {fileID: 9183986815721400435}
-  - component: {fileID: 3595255618760276100}
+  - component: {fileID: 4102478071039968877}
   - component: {fileID: 1806019013354243169}
   - component: {fileID: 3875420543096411509}
   m_Layer: 0
@@ -1607,7 +1607,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &3595255618760276100
+--- !u!114 &4102478071039968877
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1616,16 +1616,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 7942890226391820602}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afe3cda3e244f60419474164d6ba3b0b, type: 3}
+  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.TrackedDeviceRaycaster
+  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceGraphicRaycaster
   m_IgnoreReversedGraphics: 0
   m_CheckFor2DOcclusion: 0
   m_CheckFor3DOcclusion: 0
-  m_MaxDistance: 1000
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
+  m_RaycastTriggerInteraction: 1
 --- !u!114 &1806019013354243169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1664,9 +1664,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a7f588d144e1b346b0b567b6690f8e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  letterPerSecond: 3
-  button: {fileID: 0}
-  text: {fileID: 0}
+  letterPerSecond: 25
+  button: {fileID: 7701332337839934083}
+  text: {fileID: 1421127129265716249}
 --- !u!1 &8505385275305150809
 GameObject:
   m_ObjectHideFlags: 0
