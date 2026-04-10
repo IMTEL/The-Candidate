@@ -1,6 +1,5 @@
 
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -12,7 +11,7 @@ public class NavArbeidsPlass
 
     public NavArbeidsPlass()
     {
-        httpClient.BaseAddress = new System.Uri("https://pam-stilling-feed.nav.no/api/");
+        httpClient.BaseAddress = new Uri("https://pam-stilling-feed.nav.no/api/");
         Task<HttpResponseMessage> response = httpClient.GetAsync("accesstoken");
         response.Wait();
         string responseString = response.Result.Content.ToString();
