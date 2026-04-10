@@ -38,11 +38,15 @@ public class DialogueSystem : IEvent<IDialogueReady>
     /// <param name="job"></param>
     /// <param name="actor"></param>
     /// <returns></returns>
-    string BuildPrompt(Environment.Job job, Environment.Actor actor)
+    string BuildPrompt(Environment.Job job, Environment.Actor actor, string name = "")
     {
+        if(name == "")
+        {
+            name = "Dict up a name for yourself";
+        }
         string setting = job.ToString();
         string actors = string.Join("\n - ", job.actors.Select(actor => actor.GetString()));
-        return string.Format(startPrompt, setting, actor?.GetString(), actors);
+        return string.Format(startPrompt, setting, $"{actor?.GetString()}\nYour name is: {name}", actors);
     }
 
     public (Task, CancellationTokenSource) HandleUserDialog(Dialog userDialog, CancellationTokenSource tokenSource = null)
@@ -63,7 +67,7 @@ public class DialogueSystem : IEvent<IDialogueReady>
         dialogs.Add(userDialog);
         foreach (NPC npc in NPCRegistry.GetNPCEnumerable())
         {
-            Dialog dialog = new(npc.actor, await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc.actor), dialogs));
+            Dialog dialog = new(npc.actor, await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc.actor, npc.name), dialogs));
             token.ThrowIfCancellationRequested();
             dialogs.Add(dialog);
             onDialogueReady?.Invoke((npc, dialog));

@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Mathematics;
 using UnityEditor;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 [CustomEditor(typeof(NPC))]
