@@ -1,11 +1,14 @@
+using System;
 using System.Threading;
 using UnityEngine;
 
-public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, IEvent<IDialogueReady>, IInit
+public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, IEvent<IDialogueReady>, IInit, IDialogueReady
 {
     [SerializeField] private DialogueSystem dialogueSystem;
 
     private CancellationTokenSource cancellationToken;
+
+    private Action<(NPC, Dialog)> buffer;
 
     [TextArea(10,30)]
     public string prompt;
@@ -16,6 +19,7 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
     {
         dialogueSystem = new DialogueSystem(scenarioSettingsWrapper.getScenarioSettings(), nPCRegistry.GetNPCRegistry(), prompt);
         extendedWhisperManager.AddListener(this);
+        dialogueSystem.AddListener(this);
     }
 
 
@@ -31,12 +35,17 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
 
     public void AddListener(IDialogueReady listener)
     {
-        dialogueSystem.AddListener(listener);
+        buffer += listener.onDialogueReady;
     }
 
 
     public void RemoveListener(IDialogueReady listener)
     {
-        dialogueSystem.RemoveListener(listener);
+        buffer -= listener.onDialogueReady;
+    }
+
+    public void onDialogueReady((NPC, Dialog) dialog)
+    {
+        buffer?.Invoke(dialog);
     }
 }

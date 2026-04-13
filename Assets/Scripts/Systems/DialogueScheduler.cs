@@ -1,14 +1,16 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit, IDialogueReady
+public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit, IDialogueReady, IEvent<IDialoguePlaying>
 {
     private Queue<(NPC,Dialog)> voiceQueue = new();
     private NPC lastNPC;
     private bool micRecording = false;
     private DialogUI dialogUI;
 
+    private Action<Dialog> OnDialoguePlaying;
 
     void Start()
     {
@@ -19,6 +21,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
     void RefreshUIObject()
     {
         dialogUI = FindFirstObjectByType<DialogUI>();
+        OnDialoguePlaying = null;
     }
 
     [Init]
@@ -42,6 +45,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
             {
                 dialogUI.SetText(nextVoiceLine.Item2.dialog);
             }
+            OnDialoguePlaying?.Invoke(nextVoiceLine.Item2);
         }
     }
 
@@ -63,5 +67,15 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
     public void onDialogueReady((NPC,Dialog) queueItem)
     {
         voiceQueue.Enqueue(queueItem);
+    }
+
+    public void AddListener(IDialoguePlaying listener)
+    {
+        OnDialoguePlaying += listener.OnDialoguePlaying;
+    }
+
+    public void RemoveListener(IDialoguePlaying listener)
+    {
+        OnDialoguePlaying -= listener.OnDialoguePlaying;
     }
 }

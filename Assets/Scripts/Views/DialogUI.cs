@@ -1,7 +1,5 @@
 using TMPro;
-using Unity.Android.Gradle;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using UnityEngine.UI;
 
 public class DialogUI : MonoBehaviour
@@ -23,8 +21,8 @@ public class DialogUI : MonoBehaviour
 
     private void Awake()
     {
-        button ??= GetComponentInChildren<Button>();
-        text ??= GetComponentInChildren<TMP_Text>();
+        button = button != null ? button : GetComponentInChildren<Button>();
+        text = text != null ? text : GetComponentInChildren<TMP_Text>();
         buttonColorDefualt = button.colors;
         OnRecord = button.colors;
         OnRecord.normalColor = OnrecordColor;
@@ -45,7 +43,6 @@ public class DialogUI : MonoBehaviour
             {
                 button.colors = buttonColorDefualt;    
             }
-            
             ;});
     } 
 
