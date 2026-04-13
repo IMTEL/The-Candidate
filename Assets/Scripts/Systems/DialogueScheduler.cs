@@ -21,7 +21,6 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
     void RefreshUIObject()
     {
         dialogUI = FindFirstObjectByType<DialogUI>();
-        OnDialoguePlaying = null;
     }
 
     [Init]

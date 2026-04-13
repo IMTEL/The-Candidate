@@ -8,9 +8,9 @@ using UnityEngine.Networking;   //DO NOT REMOVE
 using System.IO.Compression;    //DO NOT REMOVE
 using Unity.InferenceEngine;
 using System.IO;
-using System.Collections;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Collections;
 
 
 /// <summary>
@@ -45,10 +45,10 @@ public class PiperManager : ITTService
     {
         if (capacity < 0)
         {
-            throw new ArgumentException("Need a higher capacity then a negative number");
+            throw new ArgumentException("Need a higher capacity then a negative number or 0");
         }
         modelCapacity = capacity;
-        AMagicalCrashingFunction();
+        AMagicalCrashingFunction().Wait();
     }
 
     public static PiperManager GetInstance(int capacity = 3)
@@ -57,7 +57,7 @@ public class PiperManager : ITTService
         return instance;
     }
 
-    private void AMagicalCrashingFunction()
+    private async Task AMagicalCrashingFunction()
     {
         string espeakDataPath;
         #if UNITY_ANDROID && !UNITY_EDITOR
@@ -72,12 +72,11 @@ public class PiperManager : ITTService
 
                 using (UnityWebRequest www = UnityWebRequest.Get(zipSourcePath))
                 {
-                    yield return www.SendWebRequest();
+                    await www.SendWebRequest();
 
                     if (www.result != UnityWebRequest.Result.Success)
                     {
                         Debug.LogError($"Failed to load espeak-ng-data.zip from StreamingAssets: {www.error}");
-                        yield break;
                     }
 
                     File.WriteAllBytes(zipDestPath, www.downloadHandler.data);
@@ -90,7 +89,6 @@ public class PiperManager : ITTService
                     catch (Exception e)
                     {
                         Debug.LogError($"Error unzipping eSpeak data: {e.Message}");
-                        yield break;
                     }
                     finally
                     {
@@ -125,11 +123,6 @@ public class PiperManager : ITTService
         {
             Debug.LogError($"[PiperManager] eSpeak-ng Initialization FAILED. Error code: {initResult}");
         }
-    }
-
-    public Task<AudioClip> getAudioClip(VoiceProfile voice, string dialogue)
-    {
-        throw new NotImplementedException();
     }
     
     public Task<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options)
@@ -222,7 +215,8 @@ public class PiperManager : ITTService
         }
         if(modelsLastUse.Count() >= modelCapacity)
         {
-            modelsLookupTable.Remove(modelsLastUse.Last.Value);
+            modelsLookupTable.Remove(modelsLastUse.Last.Value, out (Model, Worker) value);
+            value.Item2.Dispose();
             modelsLastUse.RemoveLast();
         }
         model.Item1 = ModelLoader.Load(modelAsset);

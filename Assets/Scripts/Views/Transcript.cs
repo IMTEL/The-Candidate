@@ -1,30 +1,22 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(ScrollRect))]
-[RequireComponent(typeof(Canvas))]
 public class Transcript : MonoBehaviour, IMicrophoneEventListener, IDialoguePlaying
 {
 
     ExtendedWhisperManager extendedWhisperManager;
     DialogueScheduler dialogueSystem;
 
-    TMP_Text text;
+    public Text text;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        text = GetComponent<ScrollRect>().content.GetComponent<TMP_Text>();
+        text = text != null ? text : GetComponentInChildren<Text>();
         extendedWhisperManager = BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>();
         dialogueSystem = BootStrap.Instance.GetComponentInChildren<DialogueScheduler>();
         extendedWhisperManager.AddListener(this);
         dialogueSystem.AddListener(this);
-    }
-
-    void Start()
-    {
-
     }
 
     public void onMicrophoneStartRecording()

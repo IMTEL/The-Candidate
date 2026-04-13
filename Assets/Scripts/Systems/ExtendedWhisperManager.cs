@@ -48,7 +48,10 @@ public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventList
 
     private void StartRecording()
     {
-        onMicrophoneStartRecording?.Invoke();
+        foreach (UnityAction item in onMicrophoneStartRecording.GetInvocationList().Cast<UnityAction>())
+        {
+            item.BeginInvoke(null,null);
+        }
         mic.StartRecord();
     }
 

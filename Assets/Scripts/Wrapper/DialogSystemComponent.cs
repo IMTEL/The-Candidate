@@ -46,6 +46,6 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
 
     public void onDialogueReady((NPC, Dialog) dialog)
     {
-        buffer?.Invoke(dialog);
+        buffer?.BeginInvoke(dialog, null, null);
     }
 }
