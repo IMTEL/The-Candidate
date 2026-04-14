@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit, IDialogueReady, IEvent<IDialoguePlaying>
 {
-    private Queue<(NPC,Dialog)> voiceQueue = new();
+    private Queue<(NPC, Dialog)> voiceQueue = new();
     private NPC lastNPC;
     private bool micRecording = false;
     private DialogUI dialogUI;
@@ -14,7 +14,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     void Start()
     {
-        SceneManager.activeSceneChanged += (_, _) => {RefreshUIObject();};        
+        SceneManager.activeSceneChanged += (_, _) => { RefreshUIObject(); };
         RefreshUIObject();
     }
 
@@ -34,16 +34,15 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
     {
         (NPC, Dialog) nextVoiceLine = (null, null);
         //If the next voice line is not ready or if either the user or the npc's are talking, do not run anything
-        if(!(voiceQueue.TryPeek(out nextVoiceLine) && nextVoiceLine.Item2.audioClip != null) || micRecording || (lastNPC != null && lastNPC.audioSource.isPlaying)) return;
+        if (!(voiceQueue.TryPeek(out nextVoiceLine) && (nextVoiceLine.Item1.TTService == null || nextVoiceLine.Item2.audioClip != null)) 
+            || micRecording
+            || (lastNPC != null && (lastNPC.audioSource.isPlaying || dialogUI.TextPlaying()))) return;
         if (voiceQueue.TryDequeue(out _))
         {
             nextVoiceLine.Item1.audioSource.clip = nextVoiceLine.Item2.audioClip;
             nextVoiceLine.Item1.audioSource.Play();
             lastNPC = nextVoiceLine.Item1;
-            if(dialogUI.isActiveAndEnabled)
-            {
-                dialogUI.SetText(nextVoiceLine.Item2.dialog);
-            }
+            dialogUI.SetText(nextVoiceLine.Item2.dialog);
             OnDialoguePlaying?.Invoke(nextVoiceLine.Item2);
         }
     }
@@ -51,7 +50,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
     public void onMicrophoneStartRecording()
     {
         micRecording = true;
-        if(lastNPC != null)
+        if (lastNPC != null)
         {
             lastNPC.audioSource.Stop();
         }
@@ -62,8 +61,8 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
     {
         micRecording = false;
     }
-    
-    public void onDialogueReady((NPC,Dialog) queueItem)
+
+    public void onDialogueReady((NPC, Dialog) queueItem)
     {
         voiceQueue.Enqueue(queueItem);
     }

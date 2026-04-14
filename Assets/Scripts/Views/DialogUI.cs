@@ -6,6 +6,7 @@ public class DialogUI : MonoBehaviour
 {
 
     public float letterPerSecond = 8;
+    public float AfterSeconds = 2;
     private float timer = 0;
     private string dialogue = "";
     public Button button;
@@ -62,13 +63,18 @@ public class DialogUI : MonoBehaviour
     {
         string modifiedText = dialogue;
         
-        if(dialogue.Length > letterPerSecond * timer) timer += Time.deltaTime;
+        if(dialogue.Length/letterPerSecond + AfterSeconds > timer) timer += Time.deltaTime;
         
         if(dialogue.Length > letterPerSecond * timer)
         {
             modifiedText = modifiedText[..(int)(letterPerSecond * timer)];
         }
         text.text = modifiedText;   
+    }
+
+    public bool TextPlaying()
+    {
+        return dialogue.Length > letterPerSecond * timer + AfterSeconds;
     }
 
     public Button GetButton()

@@ -162,9 +162,9 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
 
     private void OnValidate()
     {
-        if (LLMService == null || TTService == null)
+        if (LLMService == null)
         {
-            throw new ArgumentException("You need to set the services needed within the NPC component");
+            throw new ArgumentException("You need to set minium the LLM service");
         }
         GetLLMOptions();
         GetTTSOptions();

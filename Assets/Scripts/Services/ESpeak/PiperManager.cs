@@ -10,7 +10,6 @@ using Unity.InferenceEngine;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Collections;
 
 
 /// <summary>
@@ -34,6 +33,8 @@ public class PiperManager : ITTService
     /// </summary>
     private int modelCapacity;
 
+    private Task initilize;
+
     private static PiperManager instance;
 
     [Range(0.0f, 1.0f)] public float commaDelay = 0.1f;
@@ -48,7 +49,7 @@ public class PiperManager : ITTService
             throw new ArgumentException("Need a higher capacity then a negative number or 0");
         }
         modelCapacity = capacity;
-        AMagicalCrashingFunction().Wait();
+        initilize = AMagicalCrashingFunction();
     }
 
     public static PiperManager GetInstance(int capacity = 3)
@@ -145,6 +146,7 @@ public class PiperManager : ITTService
             throw new ArgumentException("Tokenizer is either null or is missing a voice");
         }
         string voiceName = tokenizer.Voice;
+        await initilize;
         int voiceResult = ESpeakNG.espeak_SetVoiceByName(voiceName);
         (Model, Worker) lodedModel = FetchModel(model);
         string delayPunctuationPattern = @"([,.?!;:])";
