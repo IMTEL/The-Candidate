@@ -11,7 +11,7 @@ public class NPCEditor : Editor
 
     private SerializedProperty LLMService;
     
-    private SerializedProperty name;
+    new private SerializedProperty name;
     
     void OnEnable()
     {
