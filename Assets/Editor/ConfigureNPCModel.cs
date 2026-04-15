@@ -12,14 +12,8 @@ using UnityEngine;
 public class ModelImporterWindow : EditorWindow
 {
     private GameObject model;
-    private List<Component> components;
     private Profile uLipSyncProfile;
     private GameObject parentPrefab;
-    private AssetDB assetDB;
-    private Material eyematerial;
-    private int eyeIndex;
-    private Material skinmaterial;
-    private int skinIndex;
 
     [MenuItem("Tools/Configure Make Human Model with Ulipsync")]
     public static void ShowWindow()
@@ -34,15 +28,7 @@ public class ModelImporterWindow : EditorWindow
         model = (GameObject)EditorGUILayout.ObjectField("Model", model, typeof(GameObject), false);
         parentPrefab = (GameObject)EditorGUILayout.ObjectField("Prefab Parent", parentPrefab,typeof(GameObject), false);
         uLipSyncProfile = (Profile)EditorGUILayout.ObjectField("uLipSyncProfile", uLipSyncProfile, typeof(Profile), false);
-        
-        assetDB = (AssetDB)EditorGUILayout.ObjectField("AssetDB", assetDB, typeof(AssetDB), false);
-        
-        eyematerial = (Material)EditorGUILayout.ObjectField("EyeMaterial", eyematerial, typeof(Material), false);
-        eyeIndex = EditorGUILayout.IntField("Index",eyeIndex);
-
-        skinmaterial = (Material)EditorGUILayout.ObjectField("SkinMaterial", skinmaterial, typeof(Material), false);
-        skinIndex = EditorGUILayout.IntField("Index",skinIndex);
-        
+            
         if (GUILayout.Button("Import and Configure") && model != null && uLipSyncProfile != null && parentPrefab != null)
         {
             ImportAndConfigure();
@@ -86,26 +72,6 @@ public class ModelImporterWindow : EditorWindow
         else controller.transform.position = controller.head.transform.position;
         #endregion
 
-
-        #region Mapping Materials on the NPC
-        //Configuring the rendering correctly
-        List<SkinnedMeshRenderer> skinnedMeshRenderers = modelInstance.GetComponentsInChildren<SkinnedMeshRenderer>().ToList();
-        foreach(SkinnedMeshRenderer renderer in skinnedMeshRenderers)
-        {
-            NPCRenderer nPCRenderer = renderer.gameObject.AddComponent<NPCRenderer>();
-            nPCRenderer.assetDB = assetDB;
-            if (renderer.sharedMaterial.name.Contains("body"))
-            {
-                nPCRenderer.material = skinmaterial;
-                nPCRenderer.index = skinIndex;
-            }
-            else if (renderer.sharedMaterial.name.Contains("high-poly"))
-            {
-                nPCRenderer.material = eyematerial;
-                nPCRenderer.index = eyeIndex;
-            }
-        }
-        #endregion
 
         #region Mapping blendshapes to the profile
         //Setting up Ulipsync with the correct profile 
