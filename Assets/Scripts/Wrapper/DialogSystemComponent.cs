@@ -26,14 +26,16 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
         SceneManager.activeSceneChanged += ResetDialogueSystem;
         ResetDialogueSystem(SceneManager.GetActiveScene(), SceneManager.GetActiveScene());
         extendedWhisperManager.AddListener(this);
-        dialogueSystem.AddListener(this);
+        
     }
 
     private void ResetDialogueSystem(Scene scene1, Scene scene2)
     {
+        dialogueSystem?.RemoveListener(this);
         if (scene2.name.Equals("Start") || dialogueSystem == null)
         {
-            dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), prompt);    
+            dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), prompt);
+            dialogueSystem.AddListener(this);    
         }
     }
 
