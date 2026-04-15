@@ -8,7 +8,27 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Human.body
-    second: {fileID: -876546973899608171, guid: 8ff603d9dc4771f49a2b575be7bb8e94, type: 3}
+    second: {fileID: 2100000, guid: f94fef7ed916df347846c6849093983e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Human.high-poly
+    second: {fileID: 2100000, guid: eb3a9347aa13a334b8138143c5014be9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Human.male_elegantsuit01
+    second: {fileID: 2100000, guid: fa5832231caf1184f976ceeedbcc63f8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Human.shoes03
+    second: {fileID: 2100000, guid: 24589b0364128414a8f36ee78a0d5496, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Human.short02
+    second: {fileID: 2100000, guid: 003bbe121eb3c5c4db4d46835986964f, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

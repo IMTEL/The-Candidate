@@ -3,7 +3,12 @@ guid: 8ccc303e974cafe8fb81b487a65407e4
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Human.male_elegantsuit01
+    second: {fileID: 2100000, guid: 0cfb053396543054c9215464890c772d, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
