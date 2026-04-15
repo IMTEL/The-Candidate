@@ -9,12 +9,15 @@ public class Transcript : MonoBehaviour, IMicrophoneEventListener, IDialoguePlay
 
     public Text text;
 
+    private ScrollRect scrollRect;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         text = text != null ? text : GetComponentInChildren<Text>();
         extendedWhisperManager = BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>();
         dialogueSystem = BootStrap.Instance.GetComponentInChildren<DialogueScheduler>();
+        scrollRect = GetComponentInChildren<ScrollRect>();
         extendedWhisperManager.AddListener(this);
         dialogueSystem.AddListener(this);
     }
@@ -39,6 +42,7 @@ public class Transcript : MonoBehaviour, IMicrophoneEventListener, IDialoguePlay
     public void OnDialoguePlaying(Dialog dialog)
     {
         text.text += $"[{dialog.actor.getName()}] {dialog.dialog}\n";
+        LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content); 
     }
     
     public void onMicrophoneStopRecording(Dialog recordedaudio)
