@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, IEvent<IDialogueReady>, IInit, IDialogueReady
 {
@@ -13,13 +14,27 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
     [TextArea(10,30)]
     public string prompt;
 
+    ScenarioSettingsWrapper scenarioSettings;
+
+    SpawnManager spawnManager;
     
     [Init]
     protected void Init(SpawnManager nPCRegistry, ScenarioSettingsWrapper scenarioSettingsWrapper, ExtendedWhisperManager extendedWhisperManager)
     {
-        dialogueSystem = new DialogueSystem(scenarioSettingsWrapper.getScenarioSettings(), nPCRegistry.GetNPCRegistry(), prompt);
+        spawnManager = nPCRegistry;
+        scenarioSettings = scenarioSettingsWrapper;
+        SceneManager.activeSceneChanged += ResetDialogueSystem;
+        ResetDialogueSystem(SceneManager.GetActiveScene(), SceneManager.GetActiveScene());
         extendedWhisperManager.AddListener(this);
         dialogueSystem.AddListener(this);
+    }
+
+    private void ResetDialogueSystem(Scene scene1, Scene scene2)
+    {
+        if (scene2.name.Equals("Start") || dialogueSystem == null)
+        {
+            dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), prompt);    
+        }
     }
 
 
