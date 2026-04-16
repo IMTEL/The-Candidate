@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class Pause : MonoBehaviour, IPauseMenuEventListener
+public class Pause : MonoBehaviour, IPauseMenuEventListener, IEvent<IPause>
 {
     public List<GameObject> pauseMenues;
 
@@ -13,6 +13,8 @@ public class Pause : MonoBehaviour, IPauseMenuEventListener
 
     public InputActionReference pause;
 
+    private Action<bool> pauseListeners;
+
     bool paused = false;
 
 
@@ -20,7 +22,7 @@ public class Pause : MonoBehaviour, IPauseMenuEventListener
     {
         foreach (GameObject item in pauseMenues)
         {
-            GameObject menu = Instantiate(item, this.transform, false);
+            GameObject menu = Instantiate(item, transform, false);
             menu.transform.GetLocalPositionAndRotation(out Vector3 location, out Quaternion rotation);
             int qoutent = Math.DivRem(instatiesMenues.Count, 2, out int rem);
             float xchange = qoutent;
@@ -33,8 +35,8 @@ public class Pause : MonoBehaviour, IPauseMenuEventListener
                 zchange *= -1;
             }
             float rotationamount = (qoutent+rem) * (rem == 0 ? 1 : -1)/2f;
-            xchange *= (this.transform.localPosition.z+0.5f) / 2f * (float)Math.Cos(rotationamount);
-            zchange *= (this.transform.localPosition.z+0.5f) / 2f * -(float)Math.Sin(rotationamount);
+            xchange *= (transform.localPosition.z+0.5f) / 2f * (float)Math.Cos(rotationamount);
+            zchange *= (transform.localPosition.z+0.5f) / 2f * -(float)Math.Sin(rotationamount);
             location.x += xchange;
             location.z += zchange;
             rotation.y += rotationamount;
@@ -47,13 +49,14 @@ public class Pause : MonoBehaviour, IPauseMenuEventListener
                 menu.transform.SetLocalPositionAndRotation(location, rotation);
             }
             menu.SetActive(false);
-            if(menu.TryGetComponent<PauseMenu>(out PauseMenu pauseMenu))
+            if(menu.TryGetComponent(out PauseMenu pauseMenu))
             {
                 pauseMenu.AddListener(this);
             }
             instatiesMenues.Add(menu);
         }
         pause.action.performed += OnPauseClick;
+        this.AddListener(BootStrap.Instance.GetComponentInChildren<DialogueScheduler>());
     }
 
     void OnPauseClick(InputAction.CallbackContext action)
@@ -67,6 +70,7 @@ public class Pause : MonoBehaviour, IPauseMenuEventListener
         Time.timeScale = paused ? 0 : 1;
         instatiesMenues.ForEach(menu => menu.SetActive(paused));
         DeactiveOnPause.ForEach(menu => menu.SetActive(!paused));
+        pauseListeners.Invoke(paused);
     }
 
     void OnDestroy()
@@ -88,4 +92,19 @@ public class Pause : MonoBehaviour, IPauseMenuEventListener
     {
         throw new NotImplementedException();
     }
+
+    public void AddListener(IPause listener)
+    {
+        pauseListeners += listener.OnPauseClick;
+    }
+
+    public void RemoveListener(IPause listener)
+    {
+         pauseListeners -= listener.OnPauseClick;
+    }
 }
+
+    public interface IPause
+    {
+        void OnPauseClick(bool paused);
+    }

@@ -1,8 +1,6 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.XR.OpenXR.NativeTypes;
 
 public class DialogUI : MonoBehaviour
 {
@@ -13,6 +11,8 @@ public class DialogUI : MonoBehaviour
     private string dialogue = "";
     public Button button;
     public TMP_Text text;
+
+    private int pages;
 
     public Button NextButton;
     public Button PreviousButton;
@@ -61,8 +61,8 @@ public class DialogUI : MonoBehaviour
 
     private void UpdateButtons()
     {
-        NextButton.interactable = text.textInfo.pageCount > text.pageToDisplay;
-        PreviousButton.interactable = text.textInfo.pageCount > 1 && text.pageToDisplay > 1;
+        NextButton.interactable = pages > text.pageToDisplay;
+        PreviousButton.interactable = pages > 1 && text.pageToDisplay > 1;
     }
 
     public void SetText(string newText)
@@ -74,16 +74,20 @@ public class DialogUI : MonoBehaviour
     private void UpdateText()
     {
         string modifiedText = dialogue;
+        pages = text.textInfo.pageCount;
         
         if(dialogue.Length/letterPerSecond + AfterSeconds > timer) timer += Time.deltaTime;
         
         if(dialogue.Length > letterPerSecond * timer)
         {
-            //Should make x amount invis, not remove. This is becouse words might jump around at wrapping
-            modifiedText = modifiedText[..(int)(letterPerSecond * timer)];
+            modifiedText = $"{modifiedText[..(int)(letterPerSecond * timer)]}<color=#FFFFFF00>{modifiedText[(int)(letterPerSecond * timer)..]} </color>" ;
+            //We are setting the text and reading the amount of pages it would give us. This way, we can't browse to the next page before it is visible
+            text.text = modifiedText[..(int)(letterPerSecond * timer)];
+            text.ForceMeshUpdate();
+            pages = text.textInfo.pageCount;
         }
         text.text = modifiedText;
-        if(text.textInfo.pageCount < text.pageToDisplay && text.textInfo.pageCount != 0)
+        if(pages < text.pageToDisplay && pages != 0)
         {
             text.pageToDisplay = text.textInfo.pageCount;
         }   

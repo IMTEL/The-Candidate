@@ -11,6 +11,8 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
 
     private Action<(NPC, Dialog)> buffer;
 
+    private readonly object _lock = new();
+
     [TextArea(10,30)]
     public string prompt;
 
@@ -46,7 +48,12 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
 
     public void onMicrophoneStopRecording(Dialog recordedaudio)
     {
-        (_, cancellationToken) = dialogueSystem.HandleUserDialog(recordedaudio);
+        lock (_lock)
+        {
+            if(cancellationToken != null && !cancellationToken.IsCancellationRequested) cancellationToken.Cancel();
+            (_, cancellationToken) = dialogueSystem.HandleUserDialog(recordedaudio);    
+        }
+        
     }
 
     public void AddListener(IDialogueReady listener)
