@@ -219,8 +219,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8873235574553623687}
   m_HandleRect: {fileID: 1291808149091438345}
   m_Direction: 2
-  m_Value: 0.00001096075
-  m_Size: 0.46621582
+  m_Value: 0
+  m_Size: 0.9999874
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -260,7 +260,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 126, y: -229.5}
+  m_AnchoredPosition: {x: 126, y: -8.5}
   m_SizeDelta: {x: 252, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6628213361276888114
@@ -304,15 +304,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\r\n\r\nI need to correct @gmspacex's answer, which is utterly wrong (the
-    screenshot speaks for itself, showing a warning), for future reference. The correct
-    way of setting a Text element with a dynamic height or width is clearly described
-    here: Make children of a Layout Group fit their respective sizes\r\n\r\nTo summarize
-    you just need to:\r\n\r\n    Add a vertical layout group to the parent\r\n   
-    Add a ContentSizeFitter component to the same object and set Vertical Fit to
-    Preferred Size\r\n    Toggle ON: control child size width and height, child force
-    expand width\r\n    Toggle OFF: child force expand height\r\n\r\nNo shenanigans
-    with toggling the component on and off. If you find some eleme"
+  m_Text: 
 --- !u!114 &6941052986885894396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -607,7 +599,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.008178711, y: -214.00229}
+  m_AnchoredPosition: {x: 0.008178711, y: -213.99442}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1874330217441928338

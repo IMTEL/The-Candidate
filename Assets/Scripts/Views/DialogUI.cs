@@ -1,6 +1,8 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR.OpenXR.NativeTypes;
 
 public class DialogUI : MonoBehaviour
 {
@@ -11,6 +13,9 @@ public class DialogUI : MonoBehaviour
     private string dialogue = "";
     public Button button;
     public TMP_Text text;
+
+    public Button NextButton;
+    public Button PreviousButton;
 
     public Color OnrecordColor;
     public Color OnRecordHighlightColor;
@@ -51,6 +56,13 @@ public class DialogUI : MonoBehaviour
     void Update()
     {
         UpdateText();
+        UpdateButtons();
+    }
+
+    private void UpdateButtons()
+    {
+        NextButton.interactable = text.textInfo.pageCount > text.pageToDisplay;
+        PreviousButton.interactable = text.textInfo.pageCount > 1 && text.pageToDisplay > 1;
     }
 
     public void SetText(string newText)
@@ -67,14 +79,31 @@ public class DialogUI : MonoBehaviour
         
         if(dialogue.Length > letterPerSecond * timer)
         {
+            //Should make x amount invis, not remove. This is becouse words might jump around at wrapping
             modifiedText = modifiedText[..(int)(letterPerSecond * timer)];
         }
-        text.text = modifiedText;   
+        text.text = modifiedText;
+        if(text.textInfo.pageCount < text.pageToDisplay && text.textInfo.pageCount != 0)
+        {
+            text.pageToDisplay = text.textInfo.pageCount;
+        }   
     }
 
     public bool TextPlaying()
     {
         return dialogue.Length > letterPerSecond * timer + AfterSeconds;
+    }
+
+    public void NextPage()
+    {
+        text.pageToDisplay += 1;
+        UpdateButtons();
+    }
+
+    public void PreviousPage()
+    {
+        text.pageToDisplay -= 1;
+        UpdateButtons();
     }
 
     public Button GetButton()
