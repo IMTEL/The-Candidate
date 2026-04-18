@@ -53,7 +53,7 @@ public class ElevenLabsProvider : TTSserviceProvider
         JToken voices = json["voices"];
         foreach (JToken voice in voices)
         {
-            voiceProfiles.Add(new((string?)voice["voice_id"], (string?)voice["name"]));
+            voiceProfiles.Add(new((string)voice["voice_id"], (string)voice["name"]));
             Debug.Log((string)voice["settings"]);
         }
         if(string.IsNullOrWhiteSpace((string)json["next_page_token"])  && (string)json["next_page_token"] != nextPageToken)

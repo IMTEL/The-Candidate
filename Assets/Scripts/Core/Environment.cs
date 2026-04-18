@@ -26,10 +26,10 @@ public class Environment {
     public class Job
     {
         public static Job Store = new("Store worker", new() { Actor.Manager }, "A store worker for a store. Standard work tasks being filling shelfs and helping customers.");
-        public static Job Sales = new("Phone Seller", new() { Actor.Manager });
-        public static Job Post = new("Postal Serice", new() {Actor.Manager, Actor.Employee});
-        public static Job Cleaner = new("Cleaner", new() { Actor.Manager });
-        public static Job Assistant = new("Assistant", new() {Actor.Manager, Actor.Expert});
+        public static Job Sales = new("Phone Seller", new() { Actor.Manager }, "Phone seller within a phone center. Standard work includes convincing customer in shifting providers, make them buy goods or handle complaints/questions.");
+        public static Job Post = new("Postal Serice", new() {Actor.Manager, Actor.Employee}, "Postman delivering packages. Needs to have a access to a driving license. ");
+        public static Job Cleaner = new("Cleaner", new() { Actor.Manager }, "");
+        public static Job Assistant = new("Assistant", new() {Actor.Manager, Actor.Expert}, "");
         public static HashSet<Job> All = new() { Cleaner, Store, Post, Sales, Assistant };
         public string name {get; private set;} = ""; 
         public string description {get; private set;} = "";
@@ -73,7 +73,7 @@ public class Environment {
         public static Actor HiringManger = new("Hiring Manager",
         "You are the one that has called in the candidate for a interview. You assume this is one of your potential candidates looking trough their CV. You are here to confirm this trough what you think the company needs");
         public static Actor HR = new("HR", "Your main focus should be in assesing how you think the candidate would fit in with the rest of the company.");
-        public static Actor Expert = new("Expert", "You are here to assess the persons skills.");
+        public static Actor Expert = new("Expert", "You are here to assess the persons skills. You are familiar with most of the tasks they will undertake and are interested in knowing what they would do in rare scenarios.");
         public static Actor Employee = new("Employee", "");
 
         private string name;
