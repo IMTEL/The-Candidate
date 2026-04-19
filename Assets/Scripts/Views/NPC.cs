@@ -8,9 +8,9 @@ using UnityEngine;
 public class NPC : MonoBehaviour, IEvent<INPCEventListener>
 {
 
-    public string name;
+    public new string name;
 
-    [LabelText("ITTService")]
+    [LabelText("TTS Service")]
     [SerializeReference] public TTSserviceProvider TTService = null;
     [SerializeReference] private List<OptionBase> TTSOptions = new();
 

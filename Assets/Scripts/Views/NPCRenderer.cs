@@ -1,6 +1,7 @@
 using UnityEngine;
 using static AssetDB;
 
+[RequireComponent(typeof(SkinnedMeshRenderer))]
 public class NPCRenderer : MonoBehaviour
 {
     public AssetDB assetDB;
