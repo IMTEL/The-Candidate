@@ -17,7 +17,7 @@ public class UIStartManager : MonoBehaviour
     [ShowInInspector]
     public HashSet<Environment.Job> jobsAvailable = Environment.Job.All;
 
-    // Start is callsed once before the first execution of Update after the MonoBehaviour is created
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         jobs.ClearOptions();

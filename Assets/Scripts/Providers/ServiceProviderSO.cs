@@ -14,6 +14,19 @@ public abstract class ServiceProviderSO<T> : ServiceProviderSO
     public override object CreateService() => CreateTypedService();
 }
 
+public abstract class JobSelection : ServiceProviderSO<IJobSelectionService>
+{
+    public Texture2D icon;
+
+    public override abstract IJobSelectionService CreateTypedService();
+
+    public Texture2D GetIcon()
+    {
+        return icon;
+    }
+
+}
+
 public abstract class TTSserviceProvider : ServiceProviderSO<ITTService>
 {
     
