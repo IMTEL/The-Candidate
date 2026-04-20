@@ -72,10 +72,10 @@ public class JobSelectionManager : MonoBehaviour
         }
     }
     
-    private void SetJobs()
+    private async void SetJobs()
     {
         int qoutinent = Math.DivRem(JobContainers.Count(),PerPageAmount,out _);
-        IEnumerator<Environment.Job> jobs = jobservice.GetJobs(page, amount: PerPageAmount).GetEnumerator();
+        IEnumerator<JobContainer> jobs = (await jobservice.GetJobs(page, amount: PerPageAmount)).Item1.GetEnumerator();
         for(int i = 0; jobs.MoveNext(); i++)
         {
             int y = Math.DivRem(i, qoutinent, out int x);
@@ -87,6 +87,7 @@ public class JobSelectionManager : MonoBehaviour
     {
         page += 1;
         SetJobs();
+        
     }
 
     private void PreviousPage()

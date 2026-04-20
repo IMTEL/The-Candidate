@@ -16,6 +16,7 @@ public class JobButton : MonoBehaviour
     void Awake()
     {
         Button.onClick.AddListener(() => {});
+        SetJob(null);
     }
 
     public void SetJob(JobContainer job)
