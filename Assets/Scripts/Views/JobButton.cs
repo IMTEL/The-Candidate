@@ -2,9 +2,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Button))]
+[RequireComponent(typeof(Image))]
 public class JobButton : MonoBehaviour
 {
-    public Button Button;
+    private Button Button;
 
     private JobContainer Job;
 
@@ -12,9 +14,13 @@ public class JobButton : MonoBehaviour
 
     public RawImage Picture;
 
+    private Image ButtonImage;
+
 
     void Awake()
     {
+        Button = GetComponent<Button>();
+        ButtonImage = GetComponent<Image>();
         Button.onClick.AddListener(() => {});
         SetJob(null);
     }
@@ -26,13 +32,17 @@ public class JobButton : MonoBehaviour
         {
             Button.interactable = false;
             Text.text = "";
-            Picture.texture = null;    
+            Picture.texture = null;
+            Picture.enabled = false;
+            ButtonImage.enabled = false; 
         }
         else
         {
             Button.interactable = true;
             Text.text = job.GetJob().name;
-            Picture.texture = job.GetTexture2D();    
+            Picture.texture = job.GetTexture2D();
+            Picture.enabled = true;
+            ButtonImage.enabled = true;
         }        
     }
 

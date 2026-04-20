@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,23 +16,25 @@ public class JobSelectionManager : MonoBehaviour
 
     public List<GameObject> JobContainers;
 
-    private int page = 0;
+    [ShowInInspector]
+    private int page = 1;
+    private int perPageAmount = 8;
 
-    [Tooltip("This is divided upon the total amount of containers for the outlay")]
-    public int PerPageAmount {set
+    public int GetPerPageAmount()
+    {
+        return perPageAmount;
+    }
+
+    [Button]
+    public void SetPerPageAmount(int value)
+    {
+        if (value < 0)
         {
-            if(value < 0)
-            {
-                value = 1;
-            }
-            PerPageAmount = value;
-            CreateJobButtons();
-            SetJobs();
+            value = 1;
         }
-        get
-        {
-            return PerPageAmount;
-        }
+        perPageAmount = value;
+        CreateJobButtons();
+        SetJobs();
     }
 
     public GameObject jobButtonPrefab;
@@ -45,42 +49,54 @@ public class JobSelectionManager : MonoBehaviour
 
     public Button PreviousPageButton;
 
-    public void Awake()
+    public async void Awake()
     {
+        page = 1;
         foreach (JobSelection item in jobServices)
         {
             GameObject serviceButton = Instantiate(serviceButtonPrefab,ServiceContainer.transform);
-            serviceButton.GetComponent<Button>().onClick.AddListener(() => {SwitchJobService(item);});
+            serviceButton.GetComponent<Button>().onClick.AddListener(async () => {await SwitchJobService(item);});
             serviceButton.GetComponent<RawImage>().texture = item.GetIcon();
         }
         if(jobServices.Count > 0)
         {
-            SwitchJobService(jobServices[0]);
+            await SwitchJobService(jobServices[0]);
         }
         NextPageButton.onClick.AddListener(NextPage);
         PreviousPageButton.onClick.AddListener(PreviousPage);
         PreviousPageButton.interactable = false;
     }
 
-    private void SwitchJobService(JobSelection jobSelectionService)
+    private async Task SwitchJobService(JobSelection jobSelectionService)
     {
         if (jobServices.Contains(jobSelectionService))
         {
             page = 0;
             jobservice = jobSelectionService.CreateTypedService();
-            SetJobs();
+            await SetJobs();
         }
     }
     
-    private async void SetJobs()
+    private async Task SetJobs()
     {
-        int qoutinent = Math.DivRem(JobContainers.Count(),PerPageAmount,out _);
-        IEnumerator<JobContainer> jobs = (await jobservice.GetJobs(page, amount: PerPageAmount)).Item1.GetEnumerator();
-        for(int i = 0; jobs.MoveNext(); i++)
+        jobservice ??= jobServices[0].CreateTypedService();
+        page = page > 0 ? page : 1;
+        (IEnumerable<JobContainer> jobs, bool nextpage)  = await jobservice.GetJobs(page, amount: GetPerPageAmount());
+        IEnumerator<JobContainer> jobEnumerator = jobs.GetEnumerator();
+        foreach (GameObject row in JobContainers)
         {
-            int y = Math.DivRem(i, qoutinent, out int x);
-
+            int i = 0;
+            JobButton[] buttons = row.GetComponentsInChildren<JobButton>();
+            for (i = 0;buttons.Count() > i && jobEnumerator.MoveNext(); i++)
+            {
+                buttons[i].SetJob(jobEnumerator.Current);
+            }
+            for(;i > buttons.Count(); i++)
+            {
+                buttons[i].SetJob(null);
+            }
         }
+        NextPageButton.interactable = nextpage;
     }
 
     private void NextPage()
@@ -98,9 +114,33 @@ public class JobSelectionManager : MonoBehaviour
 
     private void CreateJobButtons()
     {
-        for (int i = 0; i < PerPageAmount; i++)
+        //We can clear everything... or just the excess on every row
+        int amount = Math.DivRem(perPageAmount, JobContainers.Count(), out int reminder);
+        foreach (GameObject row in JobContainers)
         {
+            JobButton[] jobButtons = row.GetComponentsInChildren<JobButton>();
+            int count = jobButtons.Count();
             
+            if(jobButtons.Count() <= amount + (reminder > 0 ? 1 : 0))
+            {
+                for(int i = 0; i < amount + reminder - count; i++)
+                {
+                    Instantiate(jobButtonPrefab, row.transform);
+                } 
+            }
+            else
+            {
+                for(int i = 0; i < count - (amount + (reminder > 0 ? 1 : 0)); i++)
+                {
+                    //Maybe just disable them and instantiate when we need to? I don't know
+                    #if UNITY_EDITOR 
+                        DestroyImmediate(jobButtons.Last().gameObject);
+                    #else 
+                        Destroy(jobButtons.Last().gameObject);
+                    #endif   
+                } 
+            }
+            reminder += reminder > 0 ? -1 : 0;
         }
     }
 }
