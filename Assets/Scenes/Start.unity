@@ -1221,6 +1221,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3527265732775023403, guid: 8144c8180f67b8f4e802d1557184ec2a, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3534997683368660956, guid: 8144c8180f67b8f4e802d1557184ec2a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1886,6 +1890,9 @@ PrefabInstance:
     - {fileID: 2338202492448932051, guid: 8144c8180f67b8f4e802d1557184ec2a, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5692796579285703465, guid: 8144c8180f67b8f4e802d1557184ec2a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1525451520}
     - targetCorrespondingSourceObject: {fileID: 3586304762201531244, guid: 8144c8180f67b8f4e802d1557184ec2a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
@@ -2517,6 +2524,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1525451514 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5692796579285703465, guid: 8144c8180f67b8f4e802d1557184ec2a, type: 3}
+  m_PrefabInstance: {fileID: 1057705723}
+  m_PrefabAsset: {fileID: 0}
+--- !u!222 &1525451520
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525451514}
+  m_CullTransparentMesh: 1
 --- !u!1001 &1572151159
 PrefabInstance:
   m_ObjectHideFlags: 0
