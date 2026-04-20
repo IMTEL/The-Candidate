@@ -4,11 +4,16 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Unity.Tutorials.Core.Editor;
 
 public class NavArbeidsPlass : IJobSelectionService
 {
     
     HttpClient httpClient = new();
+
+    string nextpage;
+
+    List<JobContainer> cache;
 
     public NavArbeidsPlass()
     {
@@ -23,8 +28,10 @@ public class NavArbeidsPlass : IJobSelectionService
 
     public async Task<(IEnumerable<JobContainer>, bool)> GetJobs(int page = 1, int amount = 9)
     {
-        HttpResponseMessage response = await httpClient.GetAsync("v1/feed");
+        HttpResponseMessage response = await httpClient.GetAsync("v1/feed"+ (nextpage.IsNotNullOrWhiteSpace() ? "/"+nextpage : ""));
         JObject json = JObject.Parse(response.Content.ToString());
+        nextpage = (string)json["next_id"];
+        
         throw new NotImplementedException();
     }
 
