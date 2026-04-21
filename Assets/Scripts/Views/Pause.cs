@@ -85,6 +85,8 @@ public class Pause : MonoBehaviour, IPauseMenuEventListener, IEvent<IPause>
 
     public void OnExitButton()
     {
+        paused = !paused;
+        Time.timeScale = paused ? 0 : 1;
         SceneManager.LoadScene("Start");
     }
 

@@ -26,7 +26,7 @@ public class JobSelectionManager : MonoBehaviour
     }
 
     [Button]
-    public void SetPerPageAmount(int value)
+    public async void SetPerPageAmount(int value)
     {
         if (value < 0)
         {
@@ -34,7 +34,7 @@ public class JobSelectionManager : MonoBehaviour
         }
         perPageAmount = value;
         CreateJobButtons();
-        SetJobs();
+        await SetJobs();
     }
 
     public GameObject jobButtonPrefab;
@@ -85,31 +85,32 @@ public class JobSelectionManager : MonoBehaviour
         IEnumerator<JobContainer> jobEnumerator = jobs.GetEnumerator();
         foreach (GameObject row in JobContainers)
         {
-            int i = 0;
             JobButton[] buttons = row.GetComponentsInChildren<JobButton>();
-            for (i = 0;buttons.Count() > i && jobEnumerator.MoveNext(); i++)
+            int i;
+            for (i = 0; buttons.Count() > i && jobEnumerator.MoveNext(); i++)
             {
                 buttons[i].SetJob(jobEnumerator.Current);
             }
-            for(;i > buttons.Count(); i++)
+            for (;i < buttons.Count(); i++)
             {
                 buttons[i].SetJob(null);
             }
         }
         NextPageButton.interactable = nextpage;
+        PreviousPageButton.interactable = page > 1;
     }
 
-    private void NextPage()
+    private async void NextPage()
     {
         page += 1;
-        SetJobs();
+        await SetJobs();
         
     }
 
-    private void PreviousPage()
+    private async void PreviousPage()
     {
         page -= 1;
-        SetJobs();
+        await SetJobs();
     }
 
     private void CreateJobButtons()

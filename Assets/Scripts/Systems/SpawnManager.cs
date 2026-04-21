@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Alchemy.Inspector;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
 {
@@ -20,16 +19,16 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
     public HashSet<GameObject> npcPrefabs = new();
     
 
-    private void OnSceneChange(Scene _, Scene __)
+    public void UpdateScene()
     {
         spawnLocations = FindObjectsByType<NPCSpawnPoint>(sortMode: FindObjectsSortMode.None);
         nPCRegistry.Clear();
         nPCRegistry.Add(FindAnyObjectByType<NPC>());
     }
 
-    void Start()
+    void Awake()
     {
-        SceneManager.activeSceneChanged += OnSceneChange;
+        //SceneManager.activeSceneChanged += OnSceneChange;
     }
 
     void INPCEventListener.OnCreateNPC(NPC nPC)
@@ -46,4 +45,5 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
     {
         throw new NotImplementedException();
     }
+
 }

@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
@@ -16,12 +17,15 @@ public class JobButton : MonoBehaviour
 
     private Image ButtonImage;
 
-
     void Awake()
     {
         Button = GetComponent<Button>();
         ButtonImage = GetComponent<Image>();
-        Button.onClick.AddListener(() => {});
+        Button.onClick.AddListener(() =>
+        {
+            BootStrap.Instance.GetComponentInChildren<ScenarioSettingsWrapper>().getScenarioSettings().SetJob(Job.GetJob());
+            SceneManager.LoadScene("ConferanceRoom");
+        });
         SetJob(null);
     }
 

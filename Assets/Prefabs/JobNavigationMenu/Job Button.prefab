@@ -83,7 +83,7 @@ MeshRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &8177437637732731858
@@ -377,7 +377,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd28c2f4124fcbfd3b4329de48647c9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JobButton
-  Button: {fileID: 2483640664071079583}
   Text: {fileID: 8177437637732731858}
   Picture: {fileID: 7877511216797940447}
 --- !u!222 &8991715385535768778

@@ -32,13 +32,19 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
 
     private void ResetDialogueSystem(Scene scene1, Scene scene2)
     {
-        if (scene2.name.Equals("Start") || dialogueSystem == null)
+        spawnManager.UpdateScene();
+        if (!scene2.name.Equals("Start") && dialogueSystem != null)
+        {
+            onMicrophoneStopRecording(new(Environment.Actor.Director, "Introduce yourself"));
+        }    
+        else
         {
             dialogueSystem?.RemoveListener(this);
             dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), prompt);
             dialogueSystem.AddListener(this);    
         }
-    }
+
+        }
 
 
     public void onMicrophoneStartRecording()
