@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.Haptics;
 using UnityEngine.SceneManagement;
 
 public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit, IDialogueReady, IEvent<IDialoguePlaying>, IPause
@@ -46,7 +47,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
         //Okey, I need the following setup:
         // 1. If we are paused, the microphone is recording or the the last npc or dialogui is playing. Don't do jack shit
-        if (micRecording || (lastDialogue.npc != null && (lastDialogue.npc.audioSource.isPlaying || PauseAudio.paused || PauseAudio.audiopaused))) return;
+        if (micRecording || (lastDialogue.npc != null && (lastDialogue.npc.audioSource.isPlaying  || PauseAudio.paused || PauseAudio.audiopaused))) return;
         bool setText = false;
         
         //Next, we will check if we latest is finished and if not, we are fetching the next one
@@ -66,7 +67,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
         if (lastDialogue.npc != null)
         {
             lastDialogue.npc.audioSource.clip = await lastDialogue.dialog.Next();
-            AudioActionQueue.Enqueue(() => {ModifyAudio(AudioActions.Play);});
+            if(lastDialogue.npc.audioSource.clip != null) AudioActionQueue.Enqueue(() => {ModifyAudio(AudioActions.Play);});
             if (first)
             {
                 OnDialoguePlaying?.Invoke(lastDialogue.dialog);
