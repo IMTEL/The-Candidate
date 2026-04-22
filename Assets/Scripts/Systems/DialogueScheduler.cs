@@ -77,7 +77,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     public void onDialogueReady((NPC, Dialog) queueItem)
     {
-        voiceQueue.Enqueue(queueItem);
+        if(!micRecording)voiceQueue.Enqueue(queueItem);
     }
 
     public void AddListener(IDialoguePlaying listener)
