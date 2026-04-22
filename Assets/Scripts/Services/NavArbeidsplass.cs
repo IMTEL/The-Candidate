@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using UnityEditor.TestTools.CodeCoverage;
 
 public class NavArbeidsPlass : IJobSelectionService
 {
@@ -19,7 +18,7 @@ public class NavArbeidsPlass : IJobSelectionService
     List<JobContainer> cache = new();
     HashSet<string> JobUUID = new();
 
-    SemaphoreSlim threadpools = new(6);
+    SemaphoreSlim threadpools = new(10);
 
     Task setAccesstoken;
 
@@ -60,9 +59,7 @@ public class NavArbeidsPlass : IJobSelectionService
                         tasks.Add(FetchAdData(uuid));
                     }
                 }
-                while(tasks.Any(task => task.Status == TaskStatus.Running))
-                {
-                }
+                Task.WaitAll(tasks.ToArray());
             }
         }
 

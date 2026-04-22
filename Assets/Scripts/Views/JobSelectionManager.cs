@@ -1,8 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Alchemy.Inspector;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,7 +37,9 @@ public class JobSelectionManager : MonoBehaviour
         }
         perPageAmount = value;
         CreateJobButtons();
-        await SetJobs();
+        #if !UNITY_EDITOR 
+            StartFetchingJobs();
+        #endif
     }
 
     public GameObject jobButtonPrefab;
@@ -47,42 +52,36 @@ public class JobSelectionManager : MonoBehaviour
 
     public Button NextPageButton;
 
+    public TMP_Text pageNumber;
+
     public Button PreviousPageButton;
 
-    public async void Awake()
+    private Dictionary<IJobSelectionService, Task<(IEnumerable<JobContainer> jobs, bool nextpage)>> jobtasks = new();
+
+    public void Awake()
     {
         page = 1;
         foreach (JobSelection item in jobServices)
         {
             GameObject serviceButton = Instantiate(serviceButtonPrefab,ServiceContainer.transform);
-            serviceButton.GetComponent<Button>().onClick.AddListener(async () => {await SwitchJobService(item);});
+            serviceButton.GetComponent<Button>().onClick.AddListener(async () => {SwitchJobService(item);});
             serviceButton.GetComponent<RawImage>().texture = item.GetIcon();
         }
         if(jobServices.Count > 0)
         {
-            await SwitchJobService(jobServices[0]);
+            SwitchJobService(jobServices[0]);
         }
         NextPageButton.onClick.AddListener(NextPage);
         PreviousPageButton.onClick.AddListener(PreviousPage);
         PreviousPageButton.interactable = false;
     }
 
-    private async Task SwitchJobService(JobSelection jobSelectionService)
+    private void Update()
     {
-        if (jobServices.Contains(jobSelectionService))
-        {
-            page = 0;
-            jobservice = jobSelectionService.CreateTypedService();
-            await SetJobs();
-        }
-    }
-    
-    private async Task SetJobs()
-    {
-        jobservice ??= jobServices[0].CreateTypedService();
-        page = page > 0 ? page : 1;
-        (IEnumerable<JobContainer> jobs, bool nextpage)  = await jobservice.GetJobs(page, amount: GetPerPageAmount());
-        IEnumerator<JobContainer> jobEnumerator = jobs.GetEnumerator();
+        jobtasks.TryGetValue(jobservice, out Task<(IEnumerable<JobContainer> jobs, bool nextpage)> task);
+        if(task == null || !task.IsCompleted) return;
+        jobtasks[jobservice] = null;
+        IEnumerator<JobContainer> jobEnumerator = task.Result.jobs.GetEnumerator();
         foreach (GameObject row in JobContainers)
         {
             JobButton[] buttons = row.GetComponentsInChildren<JobButton>();
@@ -96,21 +95,53 @@ public class JobSelectionManager : MonoBehaviour
                 buttons[i].SetJob(null);
             }
         }
-        NextPageButton.interactable = nextpage;
+        NextPageButton.interactable = task.Result.nextpage;
         PreviousPageButton.interactable = page > 1;
     }
 
-    private async void NextPage()
+    private void SwitchJobService(JobSelection jobSelectionService)
+    {
+        if (jobServices.Contains(jobSelectionService))
+        {
+            page = 0;
+            jobservice = jobSelectionService.CreateTypedService();
+            StartFetchingJobs();
+        }
+    }
+    
+    private void StartFetchingJobs()
+    {
+        jobservice ??= jobServices[0].CreateTypedService();
+        page = page > 0 ? page : 1;
+        jobtasks.TryGetValue(jobservice, out Task<(IEnumerable<JobContainer> jobs, bool nextpage)> task);
+        if(task == null)
+        {
+            Thread thread = new(ThreadMethod);
+            thread.Start();            
+        }
+
+
+    }
+
+    private async void ThreadMethod()
+    {
+        jobtasks[jobservice] = jobservice.GetJobs(page, amount: GetPerPageAmount());
+        jobtasks[jobservice].Wait();
+    }
+
+    private void NextPage()
     {
         page += 1;
-        await SetJobs();
+        pageNumber.text = page.ToString();
+        StartFetchingJobs();
         
     }
 
-    private async void PreviousPage()
+    private void PreviousPage()
     {
         page -= 1;
-        await SetJobs();
+        pageNumber.text = page.ToString();
+        StartFetchingJobs();
     }
 
     private void CreateJobButtons()
