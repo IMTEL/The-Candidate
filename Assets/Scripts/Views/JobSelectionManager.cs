@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -15,9 +14,11 @@ using UnityEngine.UI;
 public class JobSelectionManager : MonoBehaviour
 {
 
-    public List<JobSelection> jobServices; 
+    public List<JobSelection> jobServices;
 
     public List<GameObject> JobContainers;
+
+    public SpriteImageAnimation animator;
 
     [ShowInInspector]
     private int page = 1;
@@ -37,9 +38,9 @@ public class JobSelectionManager : MonoBehaviour
         }
         perPageAmount = value;
         CreateJobButtons();
-        #if !UNITY_EDITOR 
+#if !UNITY_EDITOR
             StartFetchingJobs();
-        #endif
+#endif
     }
 
     public GameObject jobButtonPrefab;
@@ -56,18 +57,18 @@ public class JobSelectionManager : MonoBehaviour
 
     public Button PreviousPageButton;
 
-    private Dictionary<IJobSelectionService, Task<(IEnumerable<JobContainer> jobs, bool nextpage)>> jobtasks = new();
+    private readonly Dictionary<(IJobSelectionService, int), Task<(IEnumerable<JobContainer> jobs, bool nextpage)>> jobtasks = new();
 
     public void Awake()
     {
         page = 1;
         foreach (JobSelection item in jobServices)
         {
-            GameObject serviceButton = Instantiate(serviceButtonPrefab,ServiceContainer.transform);
-            serviceButton.GetComponent<Button>().onClick.AddListener(async () => {SwitchJobService(item);});
+            GameObject serviceButton = Instantiate(serviceButtonPrefab, ServiceContainer.transform);
+            serviceButton.GetComponent<Button>().onClick.AddListener(() => { SwitchJobService(item); });
             serviceButton.GetComponent<RawImage>().texture = item.GetIcon();
         }
-        if(jobServices.Count > 0)
+        if (jobServices.Count > 0)
         {
             SwitchJobService(jobServices[0]);
         }
@@ -78,9 +79,14 @@ public class JobSelectionManager : MonoBehaviour
 
     private void Update()
     {
-        jobtasks.TryGetValue(jobservice, out Task<(IEnumerable<JobContainer> jobs, bool nextpage)> task);
-        if(task == null || !task.IsCompleted) return;
-        jobtasks[jobservice] = null;
+        Task<(IEnumerable<JobContainer> jobs, bool nextpage)> task;
+        lock (jobtasks)
+        {
+            jobtasks.TryGetValue((jobservice, page), out task);
+            if (task == null || !task.IsCompleted) return;
+            jobtasks[(jobservice, page)] = null;
+        }
+        animator.StopAnimation();
         IEnumerator<JobContainer> jobEnumerator = task.Result.jobs.GetEnumerator();
         foreach (GameObject row in JobContainers)
         {
@@ -90,7 +96,7 @@ public class JobSelectionManager : MonoBehaviour
             {
                 buttons[i].SetJob(jobEnumerator.Current);
             }
-            for (;i < buttons.Count(); i++)
+            for (; i < buttons.Count(); i++)
             {
                 buttons[i].SetJob(null);
             }
@@ -103,21 +109,37 @@ public class JobSelectionManager : MonoBehaviour
     {
         if (jobServices.Contains(jobSelectionService))
         {
-            page = 0;
+            SetPage(1);
             jobservice = jobSelectionService.CreateTypedService();
             StartFetchingJobs();
         }
     }
-    
+
     private void StartFetchingJobs()
     {
         jobservice ??= jobServices[0].CreateTypedService();
-        page = page > 0 ? page : 1;
-        jobtasks.TryGetValue(jobservice, out Task<(IEnumerable<JobContainer> jobs, bool nextpage)> task);
-        if(task == null)
+        jobtasks.TryGetValue((jobservice, page), out Task<(IEnumerable<JobContainer> jobs, bool nextpage)> task);
+        //Reset the buttons if we need to fetch 
+        foreach (GameObject row in JobContainers)
         {
+            JobButton[] buttons = row.GetComponentsInChildren<JobButton>();
+            for (int i = 0; i < buttons.Count(); i++)
+            {
+                buttons[i].SetJob(null);
+            }
+        }
+        //Start Doing loading animations
+        animator.PlayAnimation();
+        //Disable both buttons
+        NextPageButton.interactable = false;
+        PreviousPageButton.interactable = page > 1;
+
+        //If the user has not already invoked this service or the fetching of this already.
+        if (task == null)
+        {
+            //Build thread and start the fetching
             Thread thread = new(ThreadMethod);
-            thread.Start();            
+            thread.Start();
         }
 
 
@@ -125,23 +147,27 @@ public class JobSelectionManager : MonoBehaviour
 
     private async void ThreadMethod()
     {
-        jobtasks[jobservice] = jobservice.GetJobs(page, amount: GetPerPageAmount());
-        jobtasks[jobservice].Wait();
+        jobtasks[(jobservice, page)] = jobservice.GetJobs(page, amount: GetPerPageAmount());
+        jobtasks[(jobservice, page)].Wait();
     }
 
     private void NextPage()
     {
-        page += 1;
-        pageNumber.text = page.ToString();
+        SetPage(page+1);
         StartFetchingJobs();
-        
+
     }
 
     private void PreviousPage()
     {
-        page -= 1;
-        pageNumber.text = page.ToString();
+        SetPage(page-1);
         StartFetchingJobs();
+    }
+
+    private void SetPage(int page)
+    {
+        this.page = page <= 0 ? 1 : page;
+        pageNumber.text = this.page.ToString();
     }
 
     private void CreateJobButtons()
@@ -152,25 +178,25 @@ public class JobSelectionManager : MonoBehaviour
         {
             JobButton[] jobButtons = row.GetComponentsInChildren<JobButton>();
             int count = jobButtons.Count();
-            
-            if(jobButtons.Count() <= amount + (reminder > 0 ? 1 : 0))
+
+            if (jobButtons.Count() <= amount + (reminder > 0 ? 1 : 0))
             {
-                for(int i = 0; i < amount + reminder - count; i++)
+                for (int i = 0; i < amount + reminder - count; i++)
                 {
                     Instantiate(jobButtonPrefab, row.transform);
-                } 
+                }
             }
             else
             {
-                for(int i = 0; i < count - (amount + (reminder > 0 ? 1 : 0)); i++)
+                for (int i = 0; i < count - (amount + (reminder > 0 ? 1 : 0)); i++)
                 {
                     //Maybe just disable them and instantiate when we need to? I don't know
-                    #if UNITY_EDITOR 
-                        DestroyImmediate(jobButtons.Last().gameObject);
-                    #else 
+#if UNITY_EDITOR
+                    DestroyImmediate(jobButtons.Last().gameObject);
+#else
                         Destroy(jobButtons.Last().gameObject);
-                    #endif   
-                } 
+#endif
+                }
             }
             reminder += reminder > 0 ? -1 : 0;
         }

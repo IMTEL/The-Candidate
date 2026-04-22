@@ -20,6 +20,8 @@ public class NavArbeidsPlass : IJobSelectionService
 
     SemaphoreSlim threadpools = new(10);
 
+    SemaphoreSlim requestLocker = new(1);
+
     Task setAccesstoken;
 
     public NavArbeidsPlass()
@@ -37,7 +39,8 @@ public class NavArbeidsPlass : IJobSelectionService
     {
         await setAccesstoken;
         if (!fetchingDone && page * amount > cache.Count)
-        {
+        {   
+            await requestLocker.WaitAsync();
             HttpResponseMessage response = await httpClient.GetAsync("v1/feed" + (nextpage != null ? "/" + nextpage : ""));
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -61,6 +64,7 @@ public class NavArbeidsPlass : IJobSelectionService
                 }
                 Task.WaitAll(tasks.ToArray());
             }
+            requestLocker.Release();
         }
 
         bool hasNextPage = false;
