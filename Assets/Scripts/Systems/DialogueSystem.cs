@@ -71,7 +71,7 @@ public class DialogueSystem : IEvent<IDialogueReady>
             token.ThrowIfCancellationRequested();
             dialogs.Add(dialog);
             onDialogueReady?.Invoke((npc, dialog));
-            createAudioClip(npc, dialog, token).Start();
+            createAudioClip(npc, dialog, token);
         }
     }
 

@@ -10,6 +10,8 @@ using Unity.InferenceEngine;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NUnit.Framework.Internal;
+using UnityEngine.AI;
 
 
 /// <summary>
@@ -153,7 +155,7 @@ public class PiperManager : ITTService
         string nonDelayPunctuationPattern = @"[^\w\s,.?!;:]";
 
         string[] parts = Regex.Split(text, delayPunctuationPattern);
-        List<AudioClip> audioClips = new();
+        List<float[]> audioClips = new();
         foreach (string part in parts)
         {
             if (string.IsNullOrEmpty(part.Trim()))
@@ -170,14 +172,14 @@ public class PiperManager : ITTService
                     case ",":
                     case ";":
                     case ":":
-                        audioClips.Add(AudioClip.Create("Silence1", (int)Math.Round(tokenizer.SampleRate * commaDelay, MidpointRounding.AwayFromZero), 1, tokenizer.SampleRate, false));
+                        audioClips.Add(new float[(int)(tokenizer.SampleRate*commaDelay)]);
                         break;
                     case ".":
-                        audioClips.Add(AudioClip.Create("Silence2", (int)Math.Round(tokenizer.SampleRate * periodDelay, MidpointRounding.AwayFromZero), 1, tokenizer.SampleRate, false));
+                        audioClips.Add(new float[(int)(tokenizer.SampleRate*periodDelay)]);
                         break;
                     case "?":
                     case "!":
-                        audioClips.Add(AudioClip.Create("Silence3", (int)Math.Round(tokenizer.SampleRate * questionExclamationDelay, MidpointRounding.AwayFromZero), 1, tokenizer.SampleRate, false));
+                        audioClips.Add(new float[(int)(tokenizer.SampleRate*questionExclamationDelay)]);
                         break;
                 }
             }
@@ -189,11 +191,11 @@ public class PiperManager : ITTService
                 if (!string.IsNullOrEmpty(cleanedChunk))
                 {
                     Debug.Log($"Processing text chunk: \"{cleanedChunk}\"");
-                    audioClips.Add(SynthesizeChunk(cleanedChunk, tokenizer, lodedModel));
+                    audioClips.Add(await SynthesizeChunk(cleanedChunk, tokenizer, lodedModel));
                 }
             }
         }
-        return ConcatenateClips(audioClips);
+        return ConcatenateClips(audioClips, tokenizer.SampleRate, 1);
     }
 
     /// <summary>
@@ -234,27 +236,22 @@ public class PiperManager : ITTService
     /// </summary>
     /// <param name="clips">The clips to be stitched together</param>
     /// <returns>The full audioclip to be</returns>
-    private AudioClip ConcatenateClips(List<AudioClip> clips)
+    private AudioClip ConcatenateClips(List<float[]> clips, int sampleRate, int channels)
     {
         if (clips == null || clips.Count == 0) return null;
-
-        int sampleRate = clips[0].frequency;
-        int channels = clips[0].channels;
 
         // Total samples across all clips (silence clips included)
         int totalSamples = 0;
         foreach (var clip in clips)
-            totalSamples += clip.samples * clip.channels;
+            totalSamples += clip.Count();
 
         float[] combinedData = new float[totalSamples];
         int offset = 0;
 
         foreach (var clip in clips)
         {
-            float[] clipData = new float[clip.samples * clip.channels];
-            clip.GetData(clipData, 0);
-            System.Array.Copy(clipData, 0, combinedData, offset, clipData.Length);
-            offset += clipData.Length;
+            Array.Copy(clip, 0, combinedData, offset, clip.Count());
+            offset += clip.Count();
         }
 
         AudioClip merged = AudioClip.Create("MergedClip", totalSamples / channels, channels, sampleRate, false);
@@ -270,12 +267,12 @@ public class PiperManager : ITTService
     /// <param name="speakTokenizer"></param>
     /// <param name="model"></param>
     /// <returns></returns>
-    private AudioClip SynthesizeChunk(string textChunk, ESpeakTokenizer speakTokenizer, (Model, Worker) model)
+    private async Task<float[]> SynthesizeChunk(string textChunk, ESpeakTokenizer speakTokenizer, (Model, Worker) model)
     {
-        return SynthesizeChunk(textChunk, speakTokenizer, model.Item1, model.Item2);
+        return await SynthesizeChunk(textChunk, speakTokenizer, model.Item1, model.Item2);
     }
 
-    private AudioClip SynthesizeChunk(string textChunk, ESpeakTokenizer speakTokenizer, Model model, Worker engine) 
+    private async Task<float[]> SynthesizeChunk(string textChunk, ESpeakTokenizer speakTokenizer, Model model, Worker engine) 
     {
         string phonemeStr = Phonemize(textChunk);
         if (string.IsNullOrEmpty(phonemeStr))
@@ -315,13 +312,7 @@ public class PiperManager : ITTService
             throw new Exception("Failed to generate audio data or the data is empty.");
         }
         Debug.Log($"Generated audio data length: {audioData.Length}");
-
-        int sampleRate = speakTokenizer.SampleRate;
-        AudioClip clip = AudioClip.Create("GeneratedSpeech", audioData.Length, 1, sampleRate, false);
-        clip.SetData(audioData, 0);
-
-        Debug.Log($"Speech generated! AudioClip length: {clip.length:F2}s.");
-        return clip;
+        return audioData;
     }
 
     private string Phonemize(string text)
