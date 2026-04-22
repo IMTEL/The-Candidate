@@ -1,0 +1,20 @@
+VR Testing:
+- Stagger under laging av dialog
+- Usikkerhet om iconet tar opp eller ikke.
+- Skulle ha sitti med
+- kroppspråk (nikk og smil)
+- miljø litt mer tryggere mer dekorasjoner
+- Litt mer tydlig fra mikrofon. Helfarga istedenfor outline
+- Heng, svarer på et tidliger spørsmål.
+- (BUG) Tale til tekst modellen som feilet (Might be user error due to poor microphone state visibility)
+- (BUG) svar ble gjentatt
+
+Summary:
+- Begynner å bli bra
+- Flere karkaterer: variasjon + i intervjuet
+- Dobbeltsjekk for fargeblindhet (Contrast checker it is)
+- Blinker, nikker og smiler i blant
+- - Animasjoner under tale hadde vært flott men er ikke et must i utgangspunkte inntil videre
+
+
+
