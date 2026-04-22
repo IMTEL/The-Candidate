@@ -2,13 +2,14 @@ using System.Linq;
 using Alchemy.Inspector;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Whisper;
 using Whisper.Utils;
 
 [RequireComponent(typeof(MicrophoneRecord))]
 [RequireComponent(typeof(WhisperManager))]
-public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventListener>, IButtonListener
+public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventListener>
 {
     MicrophoneRecord mic;
 
@@ -22,6 +23,18 @@ public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventList
         mic = GetComponent<MicrophoneRecord>();
         whisperManager = GetComponent<WhisperManager>();
         mic.OnRecordStop += SendChunk;
+        SceneManager.activeSceneChanged += OnSceneChange;
+    }
+
+    private void OnSceneChange(Scene _, Scene __)
+    {
+        //Just a precaution if the microphone should be on or not;
+        if (mic.IsRecording)
+        {
+            mic.OnRecordStop -= SendChunk;
+            ToggleMicrophone();
+            mic.OnRecordStop += SendChunk;
+        }
     }
 
     private async void SendChunk(AudioChunk recordedAudio)
@@ -70,8 +83,4 @@ public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventList
         onMicrophoneEndRecording -= listener.onMicrophoneStopRecording; 
     }
 
-    public void OnClick()
-    {
-        ToggleMicrophone();
-    }
 }
