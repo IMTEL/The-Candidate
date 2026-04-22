@@ -31,7 +31,7 @@ public class JobSelectionManager : MonoBehaviour
     }
 
     [Button]
-    public async void SetPerPageAmount(int value)
+    public void SetPerPageAmount(int value)
     {
         if (value < 0)
         {
@@ -40,7 +40,7 @@ public class JobSelectionManager : MonoBehaviour
         perPageAmount = value;
         CreateJobButtons();
 #if !UNITY_EDITOR
-            StartFetchingJobs();
+        StartFetchingJobs();
 #endif
     }
 
