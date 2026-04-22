@@ -9,7 +9,7 @@ public class DialogUI : MonoBehaviour
     public float AfterSeconds = 2;
     private float timer = 0;
     private string dialogue = "";
-    public Button button;
+    public Toggle toggle;
     public TMP_Text text;
 
     private int pages;
@@ -17,37 +17,28 @@ public class DialogUI : MonoBehaviour
     public Button NextButton;
     public Button PreviousButton;
 
-    public Color OnrecordColor;
-    public Color OnRecordHighlightColor;
-    public Color OnRecordselectedColor;
-
-    ColorBlock buttonColorDefualt = new();
+    ColorBlock toggleColorDefualt = new();
 
     ColorBlock OnRecord = new();
 
     private void Awake()
     {
-        button = button != null ? button : GetComponentInChildren<Button>();
+        toggle = toggle != null ? toggle : GetComponentInChildren<Toggle>();
         text = text != null ? text : GetComponentInChildren<TMP_Text>();
-        buttonColorDefualt = button.colors;
-        OnRecord = button.colors;
-        OnRecord.normalColor = OnrecordColor;
-        OnRecord.highlightedColor = OnRecordHighlightColor;
-        OnRecord.selectedColor = OnRecordselectedColor;
     }
 
     private void Start()
     {
         ExtendedWhisperManager extendedWhisperManager = BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>();
-        button.onClick.AddListener(() =>
+        toggle.onValueChanged.AddListener(_ =>
         {
             if (extendedWhisperManager.ToggleMicrophone())
             {
-                button.colors = OnRecord;
+                toggle.colors = OnRecord;
             }
             else
             {
-                button.colors = buttonColorDefualt;    
+                toggle.colors = toggleColorDefualt;    
             }
             ;});
     } 
@@ -56,10 +47,10 @@ public class DialogUI : MonoBehaviour
     void Update()
     {
         UpdateText();
-        UpdateButtons();
+        Updatetoggles();
     }
 
-    private void UpdateButtons()
+    private void Updatetoggles()
     {
         NextButton.interactable = pages > text.pageToDisplay;
         PreviousButton.interactable = pages > 1 && text.pageToDisplay > 1;
@@ -101,17 +92,17 @@ public class DialogUI : MonoBehaviour
     public void NextPage()
     {
         text.pageToDisplay += 1;
-        UpdateButtons();
+        Updatetoggles();
     }
 
     public void PreviousPage()
     {
         text.pageToDisplay -= 1;
-        UpdateButtons();
+        Updatetoggles();
     }
 
-    public Button GetButton()
+    public Toggle Gettoggle()
     {
-        return button;
+        return toggle;
     }
 }
