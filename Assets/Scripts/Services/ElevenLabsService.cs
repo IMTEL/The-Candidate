@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -67,8 +68,9 @@ public class ElevenLabsService : ITTService
         };
     }
 
-    public Task<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options)
-    {
-        throw new System.NotImplementedException();
+    public async IAsyncEnumerator<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options)
+    {   PickOption<VoiceProfile> voices = (PickOption<VoiceProfile>)options.First(option => option.GetName().Equals("voice"));
+        AudioClip clip = await SendPostRequest(dialogue, voices.GetCurrentValue().getId());
+        yield return clip;
     }
 }

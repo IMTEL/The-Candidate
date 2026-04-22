@@ -14,7 +14,7 @@ public interface ITTService
     /// <param name="voice">the voiceprofile</param>
     /// <param name="dialogue">the dialogue to speak</param>
     /// <returns></returns>
-    public Task<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options);
+    public IAsyncEnumerator<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options);
     public static IEnumerable<OptionBase> GetTTSOptions()  => throw new NotImplementedException("The implementation for option is not implemented within this instance. Add it :)");
 
 }

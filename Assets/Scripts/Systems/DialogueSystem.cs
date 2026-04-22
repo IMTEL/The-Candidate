@@ -67,36 +67,12 @@ public class DialogueSystem : IEvent<IDialogueReady>
         dialogs.Add(userDialog);
         foreach (NPC npc in NPCRegistry.GetNPCEnumerable())
         {
-            Dialog dialog = new(npc.actor, await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc.actor, npc.name), dialogs));
+            string text = await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc.actor, npc.name), dialogs);
+            Dialog dialog = new(npc.actor, text, ((ITTService)npc.TTService.CreateService()).getAudioClip(text, npc.GetTTSOptions()));
             token.ThrowIfCancellationRequested();
             dialogs.Add(dialog);
             onDialogueReady?.Invoke((npc, dialog));
-            createAudioClip(npc, dialog, token);
         }
-    }
-
-    /// <summary>
-    /// Create a Audioclip trough the TTService and links it to the dialog in question.
-    /// 
-    /// Limited trough the use a simulatnousVoiceRequests attribute to x amount a the same time and can be cancelled trough a cancellationToken
-    /// </summary>
-    /// <param name="nPC">The NPC that is gonna talk</param>
-    /// <param name="dialog">The dialog object to be created</param>
-    /// <param name="token">A cancellation token if the it should stop</param>
-    /// <returns></returns>
-    private async Task createAudioClip(NPC npc, Dialog dialog, CancellationToken token)
-    {
-        await simulatnousVoiceRequests.WaitAsync();
-        try
-        {
-            if (token.IsCancellationRequested)
-            {
-                simulatnousVoiceRequests.Release();
-                return;
-            }
-            dialog.audioClip = await ((ITTService)npc.TTService.CreateService()).getAudioClip(dialog.dialog, npc.GetTTSOptions());
-        }
-        finally { simulatnousVoiceRequests.Release(); }
     }
 
     public void AddListener(IDialogueReady listener)

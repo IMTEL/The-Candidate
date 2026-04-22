@@ -10,8 +10,6 @@ using Unity.InferenceEngine;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NUnit.Framework.Internal;
-using UnityEngine.AI;
 
 
 /// <summary>
@@ -23,19 +21,19 @@ public class PiperManager : ITTService
     /// <summary>
     /// One out of 2 for caching the models. Keeps the order of the modelassets when they were last called
     /// </summary>
-    private LinkedList<ModelAsset> modelsLastUse = new();
+    private readonly LinkedList<ModelAsset> modelsLastUse = new();
 
     /// <summary>
     /// One out of 2 for caching the models. Lookuptable for getting the models fast
     /// </summary>
-    private Dictionary<ModelAsset, (Model, Worker)> modelsLookupTable = new();
+    private readonly Dictionary<ModelAsset, (Model, Worker)> modelsLookupTable = new();
 
     /// <summary>
     /// A value for the amount of models this can use... Arguably should be a option, which I am gonna consider
     /// </summary>
-    private int modelCapacity;
+    private readonly int modelCapacity;
 
-    private Task initilize;
+    private readonly Task initilize;
 
     private static PiperManager instance;
 
@@ -63,7 +61,7 @@ public class PiperManager : ITTService
     private async Task AMagicalCrashingFunction()
     {
         string espeakDataPath;
-        #if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
             espeakDataPath = Path.Combine(Application.persistentDataPath, "espeak-ng-data");
 
             if (!Directory.Exists(espeakDataPath))
@@ -106,10 +104,10 @@ public class PiperManager : ITTService
             {
                 Debug.Log("Android: eSpeak data already exists in persistentDataPath.");
             }
-        #else
-            espeakDataPath = Path.Combine(Application.streamingAssetsPath, "espeak-ng-data");
-            Debug.Log($"Editor/Standalone: Using eSpeak data directly from StreamingAssets: {espeakDataPath}");
-        #endif
+#else
+        espeakDataPath = Path.Combine(Application.streamingAssetsPath, "espeak-ng-data");
+        Debug.Log($"Editor/Standalone: Using eSpeak data directly from StreamingAssets: {espeakDataPath}");
+#endif
         AnotherMagicalCrashingFunction(espeakDataPath);
         Debug.Log("Piper Manager initialized.");
     }
@@ -127,8 +125,8 @@ public class PiperManager : ITTService
             Debug.LogError($"[PiperManager] eSpeak-ng Initialization FAILED. Error code: {initResult}");
         }
     }
-    
-    public Task<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options)
+
+    public IAsyncEnumerator<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options)
     {
         Debug.Log("Creating audioclip from piper model");
         PickOption<ESpeakVoiceContainer> important = options.OfType<PickOption<ESpeakVoiceContainer>>().First() ?? throw new ArgumentException("Oy, we are missing a model information for this one. Plz fix");
@@ -140,24 +138,21 @@ public class PiperManager : ITTService
     /// </summary>
     /// <param name="text">Things to be said</param>
     /// <returns>A audioclip to be voiced</returns>s
-    private async Task<AudioClip> Synthesize(string text, ESpeakTokenizer tokenizer, ModelAsset model)
+    private async IAsyncEnumerator<AudioClip> Synthesize(string text, ESpeakTokenizer tokenizer, ModelAsset model)
     {
         if (tokenizer == null || string.IsNullOrEmpty(tokenizer.Voice))
         {
             Debug.LogError("[PiperManager] Tokenizer is not assigned or has no voice name.");
             throw new ArgumentException("Tokenizer is either null or is missing a voice");
         }
-        string voiceName = tokenizer.Voice;
         await initilize;
-        int voiceResult = ESpeakNG.espeak_SetVoiceByName(voiceName);
-        (Model, Worker) lodedModel = FetchModel(model);
         string delayPunctuationPattern = @"([,.?!;:])";
         string nonDelayPunctuationPattern = @"[^\w\s,.?!;:]";
 
         string[] parts = Regex.Split(text, delayPunctuationPattern);
-        List<float[]> audioClips = new();
         foreach (string part in parts)
         {
+            (Model, Worker) lodedModel = FetchModel(model);
             if (string.IsNullOrEmpty(part.Trim()))
             {
                 continue;
@@ -172,14 +167,14 @@ public class PiperManager : ITTService
                     case ",":
                     case ";":
                     case ":":
-                        audioClips.Add(new float[(int)(tokenizer.SampleRate*commaDelay)]);
+                        yield return AudioClip.Create("Silence1", (int)Math.Round(tokenizer.SampleRate * commaDelay, MidpointRounding.AwayFromZero), 1, tokenizer.SampleRate, false);
                         break;
                     case ".":
-                        audioClips.Add(new float[(int)(tokenizer.SampleRate*periodDelay)]);
+                        yield return AudioClip.Create("Silence2", (int)Math.Round(tokenizer.SampleRate * periodDelay, MidpointRounding.AwayFromZero), 1, tokenizer.SampleRate, false);
                         break;
                     case "?":
                     case "!":
-                        audioClips.Add(new float[(int)(tokenizer.SampleRate*questionExclamationDelay)]);
+                        yield return AudioClip.Create("Silence3", (int)Math.Round(tokenizer.SampleRate * questionExclamationDelay, MidpointRounding.AwayFromZero), 1, tokenizer.SampleRate, false);
                         break;
                 }
             }
@@ -191,11 +186,10 @@ public class PiperManager : ITTService
                 if (!string.IsNullOrEmpty(cleanedChunk))
                 {
                     Debug.Log($"Processing text chunk: \"{cleanedChunk}\"");
-                    audioClips.Add(await SynthesizeChunk(cleanedChunk, tokenizer, lodedModel));
+                    yield return SynthesizeChunk(cleanedChunk, tokenizer, lodedModel);
                 }
             }
         }
-        return ConcatenateClips(audioClips, tokenizer.SampleRate, 1);
     }
 
     /// <summary>
@@ -207,7 +201,7 @@ public class PiperManager : ITTService
     /// <exception cref="ArgumentException"></exception>
     private (Model, Worker) FetchModel(ModelAsset modelAsset)
     {
-        if(modelAsset == null)
+        if (modelAsset == null)
         {
             throw new ArgumentException("ModelAsset is null");
         }
@@ -217,7 +211,7 @@ public class PiperManager : ITTService
             modelsLastUse.AddFirst(modelAsset);
             return model;
         }
-        if(modelsLastUse.Count() >= modelCapacity)
+        if (modelsLastUse.Count() >= modelCapacity)
         {
             modelsLookupTable.Remove(modelsLastUse.Last.Value, out (Model, Worker) value);
             value.Item2.Dispose();
@@ -231,48 +225,18 @@ public class PiperManager : ITTService
     }
 
     /// <summary>
-    /// Stitces audioclips together to one version
-    /// Written by Claude since my knowledge of audio stuff is limited
-    /// </summary>
-    /// <param name="clips">The clips to be stitched together</param>
-    /// <returns>The full audioclip to be</returns>
-    private AudioClip ConcatenateClips(List<float[]> clips, int sampleRate, int channels)
-    {
-        if (clips == null || clips.Count == 0) return null;
-
-        // Total samples across all clips (silence clips included)
-        int totalSamples = 0;
-        foreach (var clip in clips)
-            totalSamples += clip.Count();
-
-        float[] combinedData = new float[totalSamples];
-        int offset = 0;
-
-        foreach (var clip in clips)
-        {
-            Array.Copy(clip, 0, combinedData, offset, clip.Count());
-            offset += clip.Count();
-        }
-
-        AudioClip merged = AudioClip.Create("MergedClip", totalSamples / channels, channels, sampleRate, false);
-        merged.SetData(combinedData, 0);
-
-        return merged;
-    }
-
-    /// <summary>
     /// A decorated function becouse lazyiness is such a wonder.
     /// </summary>
     /// <param name="textChunk"></param>
     /// <param name="speakTokenizer"></param>
     /// <param name="model"></param>
     /// <returns></returns>
-    private async Task<float[]> SynthesizeChunk(string textChunk, ESpeakTokenizer speakTokenizer, (Model, Worker) model)
+    private AudioClip SynthesizeChunk(string textChunk, ESpeakTokenizer speakTokenizer, (Model, Worker) model)
     {
-        return await SynthesizeChunk(textChunk, speakTokenizer, model.Item1, model.Item2);
+        return SynthesizeChunk(textChunk, speakTokenizer, model.Item1, model.Item2);
     }
 
-    private async Task<float[]> SynthesizeChunk(string textChunk, ESpeakTokenizer speakTokenizer, Model model, Worker engine) 
+    private AudioClip SynthesizeChunk(string textChunk, ESpeakTokenizer speakTokenizer, Model model, Worker engine)
     {
         string phonemeStr = Phonemize(textChunk);
         if (string.IsNullOrEmpty(phonemeStr))
@@ -312,7 +276,12 @@ public class PiperManager : ITTService
             throw new Exception("Failed to generate audio data or the data is empty.");
         }
         Debug.Log($"Generated audio data length: {audioData.Length}");
-        return audioData;
+        int sampleRate = speakTokenizer.SampleRate;
+        AudioClip clip = AudioClip.Create("GeneratedSpeech", audioData.Length, 1, sampleRate, false);
+        clip.SetData(audioData, 0);
+
+        Debug.Log($"Speech generated! AudioClip length: {clip.length:F2}s.");
+        return clip;
     }
 
     private string Phonemize(string text)
@@ -379,4 +348,5 @@ public class PiperManager : ITTService
             new FloatBoundOption("QuestionExclamationDelay", Minvalue: 0, MaxValue: 3)
         };
     }
+
 }

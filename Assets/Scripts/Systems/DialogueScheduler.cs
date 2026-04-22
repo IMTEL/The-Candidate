@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit, IDialogueReady, IEvent<IDialoguePlaying>, IPause
 {
-    private Queue<(NPC, Dialog)> voiceQueue = new();
-    private NPC lastNPC;
+    private readonly Queue<(NPC npc, Dialog dialog)> voiceQueue = new();
+    private (NPC npc, Dialog dialog) lastDialogue;
     private bool micRecording = false;
     private DialogUI dialogUI;
 
@@ -16,11 +16,11 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     //So we need two PauseAudio. One to indicate that we are supposed to pause it
     //And one to ensure that we actually paused it
-    private (bool, bool) PauseAudio = (false, false);
+    private (bool paused, bool audiopaused) PauseAudio = (false, false);
 
     void Start()
     {
-        SceneManager.activeSceneChanged += (_, _) => { RefreshUIObject(); PauseAudio = (false, false); lastNPC = null; };
+        SceneManager.activeSceneChanged += (_, _) => { RefreshUIObject(); PauseAudio = (false, false); lastDialogue = (null, null); };
         RefreshUIObject();
     }
 
@@ -36,34 +36,50 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
         dialogueSystem.AddListener(this);
     }
 
-    void Update()
+    private void Update()
     {
         //Reset Audio stupidity
-        while(AudioActionQueue.TryDequeue(out Action result))
+        while (AudioActionQueue.TryDequeue(out Action result))
         {
             result.Invoke();
         }
-        
 
-        (NPC, Dialog) nextVoiceLine = (null, null);
-        //If the next voice line is not ready or if either the user or the npc's are talking, do not run anything
-        if (!(voiceQueue.TryPeek(out nextVoiceLine) && (nextVoiceLine.Item1.TTService == null || nextVoiceLine.Item2.audioClip != null))
-            || micRecording
-            || (lastNPC != null && (lastNPC.audioSource.isPlaying || dialogUI.TextPlaying() || PauseAudio.Item1 || PauseAudio.Item2))) return;
-        if (voiceQueue.TryDequeue(out _))
+        //Okey, I need the following setup:
+        // 1. If we are paused, the microphone is recording or the the last npc or dialogui is playing. Don't do jack shit
+        if (micRecording || (lastDialogue.npc != null && (lastDialogue.npc.audioSource.isPlaying || PauseAudio.paused || PauseAudio.audiopaused))) return;
+        bool setText = false;
+        
+        //Next, we will check if we latest is finished and if not, we are fetching the next one
+        if ((lastDialogue.dialog == null || lastDialogue.dialog.IsFinished)  && voiceQueue.TryDequeue(out lastDialogue))
         {
-            nextVoiceLine.Item1.audioSource.clip = nextVoiceLine.Item2.audioClip;
-            nextVoiceLine.Item1.audioSource.Play();
-            lastNPC = nextVoiceLine.Item1;
-            dialogUI.SetText(nextVoiceLine.Item2.dialog);
-            OnDialoguePlaying?.Invoke(nextVoiceLine.Item2);
+            setText = true;
         }
+        //I am unsure about the behaviour, so I am adding this as a precaution
+        if (lastDialogue.dialog != null && !lastDialogue.dialog.IsFinished)
+        {
+            SetupVoiceline(setText);
+        }
+    }
+
+    private async void SetupVoiceline(bool first = false)
+    {
+        if (lastDialogue.npc != null)
+        {
+            lastDialogue.npc.audioSource.clip = await lastDialogue.dialog.Next();
+            AudioActionQueue.Enqueue(() => {ModifyAudio(AudioActions.Play);});
+            if (first)
+            {
+                OnDialoguePlaying?.Invoke(lastDialogue.dialog);
+                dialogUI.SetText(lastDialogue.dialog.dialog);
+            }
+
+        } 
     }
 
     public void onMicrophoneStartRecording()
     {
         micRecording = true;
-        if (lastNPC != null)
+        if (lastDialogue.npc != null)
         {
             AudioActionQueue.Enqueue(() => ModifyAudio(AudioActions.Stop));
         }
@@ -77,7 +93,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     public void onDialogueReady((NPC, Dialog) queueItem)
     {
-        if(!micRecording)voiceQueue.Enqueue(queueItem);
+        if (!micRecording) voiceQueue.Enqueue(queueItem);
     }
 
     public void AddListener(IDialoguePlaying listener)
@@ -92,12 +108,12 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     public void OnPauseClick(bool paused)
     {
-        PauseAudio.Item1 = paused;
-        if (PauseAudio.Item1)
+        PauseAudio.paused = paused;
+        if (PauseAudio.paused)
         {
             AudioActionQueue.Enqueue(() => { ModifyAudio(AudioActions.Pause); });
         }
-        else if (PauseAudio.Item2 && lastNPC != null)
+        else if (PauseAudio.audiopaused && lastDialogue.npc != null)
         {
             AudioActionQueue.Enqueue(() => { ModifyAudio(AudioActions.Resume); });
         }
@@ -107,23 +123,29 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
     {
         switch (action)
         {
-            case AudioActions.Resume:
-                if (lastNPC != null && PauseAudio.Item2)
+            case AudioActions.Play:
+                if(lastDialogue.npc != null)
                 {
-                    lastNPC.audioSource.Play();
+                    lastDialogue.npc.audioSource.Play();
                 }
-                PauseAudio.Item2 = false;
                 return;
-                
+            case AudioActions.Resume:
+                if (lastDialogue.npc != null && PauseAudio.audiopaused)
+                {
+                    lastDialogue.npc.audioSource.Play();
+                }
+                PauseAudio.audiopaused = false;
+                return;
+
             case AudioActions.Stop:
-                lastNPC.audioSource.Stop();
+                lastDialogue.npc.audioSource.Stop();
                 return;
 
             case AudioActions.Pause:
-                if (lastNPC != null && lastNPC.audioSource.isPlaying)
+                if (lastDialogue.npc != null && lastDialogue.npc.audioSource.isPlaying)
                 {
-                    PauseAudio.Item2 = true;
-                    lastNPC.audioSource.Pause();
+                    PauseAudio.audiopaused = true;
+                    lastDialogue.npc.audioSource.Pause();
                 }
                 return;
         }
@@ -131,6 +153,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     private enum AudioActions
     {
+        Play,
         Pause,
         Stop,
         Resume
