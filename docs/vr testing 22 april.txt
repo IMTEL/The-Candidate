@@ -5,7 +5,7 @@ VR Testing:
 - kroppspråk (nikk og smil)
 - miljø litt mer tryggere mer dekorasjoner
 - Litt mer tydlig fra mikrofon. Helfarga istedenfor outline
-- Heng, svarer på et tidliger spørsmål.
+- Heng, svarer på et tidligere spørsmål.
 - (BUG) Tale til tekst modellen som feilet (Might be user error due to poor microphone state visibility)
 - (BUG) svar ble gjentatt
 
@@ -17,4 +17,12 @@ Summary:
 - - Animasjoner under tale hadde vært flott men er ikke et must i utgangspunkte inntil videre
 
 
-
+Retrospekt (Interne tanker etter møte)
+- Microphone farger har blitt løst ved å kjøre sprite swap med toggle istedenfor knapp (Why did I not think of that before..... Actually, this might cause a bug where if you don't end the microphone after quitting. Need to check that)
+- Blinking har vært animert med kontrolleren har vært kasta ut av NPC-ene, pågrunn av horribel kvalitet på andre animasjoner. Kan fikse nikking, smiling litt mer usikker og en sitte pose blir horribelt.
+- Selv om jeg har lyst til å sjekke for kontraster er det vanskelig pågrunn av flere lag. Skulle ønske jeg viste om noen som var det
+- Bug med talene kan ha vært en ekstrem uheldighet med timing. Fiksen ligger i dialogue scheduler å hindre at den pusher noen flere dialoger mens mikrofonen tas opp
+- Har funnet 2 hele dekorasjon assets (yippie). Treng selvfølgelig flere, men det er en start
+- Pipeline for figurer er egentlig veldig greit. Blender -> Create human -> give clothes -> Run python script -> Run Unity script (I knew making this pipeline would save me work )
+- Jeg vet om staggeringen. Kan hende jeg skal se igjennom koden til sky kim igjen å se om det var noen ting jeg har oversett/reskrevet som forersaker det. Skulle gjerne kjørt diagnose og sett hvor den tar mest tid
+- Selv om tjeneste sjekkingen ikke ble testet under denne, kan det være greit å dobbeltsjekke om de er fortsatt intresserte + litt mer bruker feedback gjennom buffering icon.

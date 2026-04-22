@@ -17,10 +17,6 @@ public class DialogUI : MonoBehaviour
     public Button NextButton;
     public Button PreviousButton;
 
-    ColorBlock toggleColorDefualt = new();
-
-    ColorBlock OnRecord = new();
-
     private void Awake()
     {
         toggle = toggle != null ? toggle : GetComponentInChildren<Toggle>();
@@ -30,17 +26,7 @@ public class DialogUI : MonoBehaviour
     private void Start()
     {
         ExtendedWhisperManager extendedWhisperManager = BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>();
-        toggle.onValueChanged.AddListener(_ =>
-        {
-            if (extendedWhisperManager.ToggleMicrophone())
-            {
-                toggle.colors = OnRecord;
-            }
-            else
-            {
-                toggle.colors = toggleColorDefualt;    
-            }
-            ;});
+        toggle.onValueChanged.AddListener(_ => {extendedWhisperManager.ToggleMicrophone();});
     } 
 
     // Update is called once per frame
