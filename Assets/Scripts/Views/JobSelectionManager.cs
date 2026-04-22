@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -57,11 +58,12 @@ public class JobSelectionManager : MonoBehaviour
 
     public Button PreviousPageButton;
 
-    private readonly Dictionary<(IJobSelectionService, int), Task<(IEnumerable<JobContainer> jobs, bool nextpage)>> jobtasks = new();
+    private readonly ConcurrentDictionary<(IJobSelectionService, int), Task<(IEnumerable<JobContainer> jobs, bool nextpage)>> jobtasks = new();
 
-    public void Awake()
+    private void Start()
     {
         page = 1;
+        CreateJobButtons();
         foreach (JobSelection item in jobServices)
         {
             GameObject serviceButton = Instantiate(serviceButtonPrefab, ServiceContainer.transform);
@@ -153,14 +155,14 @@ public class JobSelectionManager : MonoBehaviour
 
     private void NextPage()
     {
-        SetPage(page+1);
+        SetPage(page + 1);
         StartFetchingJobs();
 
     }
 
     private void PreviousPage()
     {
-        SetPage(page-1);
+        SetPage(page - 1);
         StartFetchingJobs();
     }
 
