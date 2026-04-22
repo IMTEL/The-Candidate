@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.Haptics;
 using UnityEngine.SceneManagement;
 
 public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit, IDialogueReady, IEvent<IDialoguePlaying>, IPause
@@ -10,6 +9,8 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
     private (NPC npc, Dialog dialog) lastDialogue;
     private bool micRecording = false;
     private DialogUI dialogUI;
+
+    private bool _fetchingClip = false;
 
     private Action<Dialog> OnDialoguePlaying;
 
@@ -27,7 +28,11 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     void RefreshUIObject()
     {
-        dialogUI = FindFirstObjectByType<DialogUI>();
+        dialogUI = GameObject.FindWithTag("Player").GetComponentInChildren<DialogUI>();
+        if(!dialogUI)
+        {
+            Debug.LogError("DialogUI not found");
+        }
     }
 
     [Init]
@@ -39,6 +44,10 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     private void Update()
     {
+        if(!dialogUI)
+        {
+            RefreshUIObject();
+        }
         //Reset Audio stupidity
         while (AudioActionQueue.TryDequeue(out Action result))
         {
@@ -47,11 +56,11 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
         //Okey, I need the following setup:
         // 1. If we are paused, the microphone is recording or the the last npc or dialogui is playing. Don't do jack shit
-        if (micRecording || (lastDialogue.npc != null && (lastDialogue.npc.audioSource.isPlaying  || PauseAudio.paused || PauseAudio.audiopaused))) return;
+        if (micRecording || (lastDialogue.npc && (lastDialogue.npc.audioSource.isPlaying || PauseAudio.paused || PauseAudio.audiopaused))) return;
         bool setText = false;
-        
+
         //Next, we will check if we latest is finished and if not, we are fetching the next one
-        if ((lastDialogue.dialog == null || lastDialogue.dialog.IsFinished)  && voiceQueue.TryDequeue(out lastDialogue))
+        if ((lastDialogue.dialog == null || lastDialogue.dialog.IsFinished) && voiceQueue.TryDequeue(out lastDialogue))
         {
             setText = true;
         }
@@ -64,23 +73,31 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     private async void SetupVoiceline(bool first = false)
     {
-        if (lastDialogue.npc != null)
-        {
-            lastDialogue.npc.audioSource.clip = await lastDialogue.dialog.Next();
-            if(lastDialogue.npc.audioSource.clip != null) AudioActionQueue.Enqueue(() => {ModifyAudio(AudioActions.Play);});
-            if (first)
+            if (_fetchingClip) return;
+            _fetchingClip = true;
+            try
             {
-                OnDialoguePlaying?.Invoke(lastDialogue.dialog);
-                dialogUI.SetText(lastDialogue.dialog.dialog);
+                if (lastDialogue.npc)
+                {
+                    lastDialogue.npc.audioSource.clip = await lastDialogue.dialog.Next();
+                    if (lastDialogue.npc.audioSource.clip) AudioActionQueue.Enqueue(() => { ModifyAudio(AudioActions.Play); });
+                    if (first)
+                    {
+                        OnDialoguePlaying?.Invoke(lastDialogue.dialog);
+                        AudioActionQueue.Enqueue(() => {dialogUI.SetText(lastDialogue.dialog.dialog);});
+                    }
+                }
             }
-
-        } 
+            finally
+            {
+                _fetchingClip = false;
+            }
     }
 
     public void onMicrophoneStartRecording()
     {
         micRecording = true;
-        if (lastDialogue.npc != null)
+        if (lastDialogue.npc)
         {
             AudioActionQueue.Enqueue(() => ModifyAudio(AudioActions.Stop));
         }
@@ -114,7 +131,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
         {
             AudioActionQueue.Enqueue(() => { ModifyAudio(AudioActions.Pause); });
         }
-        else if (PauseAudio.audiopaused && lastDialogue.npc != null)
+        else if (PauseAudio.audiopaused && lastDialogue.npc)
         {
             AudioActionQueue.Enqueue(() => { ModifyAudio(AudioActions.Resume); });
         }
@@ -125,13 +142,13 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
         switch (action)
         {
             case AudioActions.Play:
-                if(lastDialogue.npc != null)
+                if (lastDialogue.npc)
                 {
                     lastDialogue.npc.audioSource.Play();
                 }
                 return;
             case AudioActions.Resume:
-                if (lastDialogue.npc != null && PauseAudio.audiopaused)
+                if (lastDialogue.npc && PauseAudio.audiopaused)
                 {
                     lastDialogue.npc.audioSource.Play();
                 }
@@ -143,7 +160,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
                 return;
 
             case AudioActions.Pause:
-                if (lastDialogue.npc != null && lastDialogue.npc.audioSource.isPlaying)
+                if (lastDialogue.npc && lastDialogue.npc.audioSource.isPlaying)
                 {
                     PauseAudio.audiopaused = true;
                     lastDialogue.npc.audioSource.Pause();

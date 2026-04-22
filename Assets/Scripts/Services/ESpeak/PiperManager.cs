@@ -148,10 +148,10 @@ public class PiperManager : ITTService
         await initilize;
         string delayPunctuationPattern = @"([,.?!;:])";
         string nonDelayPunctuationPattern = @"[^\w\s,.?!;:]";
-
         string[] parts = Regex.Split(text, delayPunctuationPattern);
         foreach (string part in parts)
         {
+            int voiceResult = ESpeakNG.espeak_SetVoiceByName(tokenizer.Voice);
             (Model, Worker) lodedModel = FetchModel(model);
             if (string.IsNullOrEmpty(part.Trim()))
             {
