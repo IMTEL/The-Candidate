@@ -29,7 +29,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
     void RefreshUIObject()
     {
         dialogUI = GameObject.FindWithTag("Player").GetComponentInChildren<DialogUI>();
-        if(!dialogUI)
+        if (!dialogUI)
         {
             Debug.LogError("DialogUI not found");
         }
@@ -44,7 +44,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     private void Update()
     {
-        if(!dialogUI)
+        if (!dialogUI)
         {
             RefreshUIObject();
         }
@@ -73,25 +73,26 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     private async void SetupVoiceline(bool first = false)
     {
-            if (_fetchingClip) return;
-            _fetchingClip = true;
-            try
+        if (_fetchingClip) return;
+        _fetchingClip = true;
+        if (first)
+        {
+            dialogUI.SetText(lastDialogue.dialog.dialog);
+            OnDialoguePlaying?.Invoke(lastDialogue.dialog);
+        }
+        try
+        {
+            if (lastDialogue.npc)
             {
-                if (lastDialogue.npc)
-                {
-                    lastDialogue.npc.audioSource.clip = await lastDialogue.dialog.Next();
-                    if (lastDialogue.npc.audioSource.clip) AudioActionQueue.Enqueue(() => { ModifyAudio(AudioActions.Play); });
-                    if (first)
-                    {
-                        OnDialoguePlaying?.Invoke(lastDialogue.dialog);
-                        AudioActionQueue.Enqueue(() => {dialogUI.SetText(lastDialogue.dialog.dialog);});
-                    }
-                }
+                lastDialogue.npc.audioSource.clip = await lastDialogue.dialog.Next();
+                if (lastDialogue.npc.audioSource.clip) AudioActionQueue.Enqueue(() => { ModifyAudio(AudioActions.Play); });
+
             }
-            finally
-            {
-                _fetchingClip = false;
-            }
+        }
+        finally
+        {
+            _fetchingClip = false;
+        }
     }
 
     public void onMicrophoneStartRecording()
