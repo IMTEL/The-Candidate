@@ -60,7 +60,8 @@ public class DialogUI : MonoBehaviour
             modifiedText = $"{modifiedText[..(int)(letterPerSecond * timer)]}<color=#FFFFFF00>{modifiedText[(int)(letterPerSecond * timer)..]} </color>" ;
             //We are setting the text and reading the amount of pages it would give us. This way, we can't browse to the next page before it is visible
             text.text = modifiedText[..(int)(letterPerSecond * timer)];
-            text.ForceMeshUpdate();
+            try{text.ForceMeshUpdate();}
+            catch{}
             pages = text.textInfo.pageCount;
         }
         text.text = modifiedText;

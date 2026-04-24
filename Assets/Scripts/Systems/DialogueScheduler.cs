@@ -44,10 +44,6 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     private void Update()
     {
-        if (!dialogUI)
-        {
-            RefreshUIObject();
-        }
         //Reset Audio stupidity
         while (AudioActionQueue.TryDequeue(out Action result))
         {
@@ -77,7 +73,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
         _fetchingClip = true;
         if (first)
         {
-            dialogUI.SetText(lastDialogue.dialog.dialog);
+            if(dialogUI) dialogUI.SetText(lastDialogue.dialog.dialog);
             OnDialoguePlaying?.Invoke(lastDialogue.dialog);
         }
         try
