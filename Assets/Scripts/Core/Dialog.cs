@@ -22,9 +22,9 @@ public class Dialog
     /// <summary>
     /// The audioclip of the dialog if created.
     /// </summary>
-    private IAsyncEnumerator<AudioClip> _stream ;
+    private readonly IAsyncEnumerator<AudioClip> _stream ;
 
-    private List<AudioClip> audioClips = new();
+    private readonly List<AudioClip> audioClips = new();
 
     public bool IsFinished {get; private set;} = false; 
 

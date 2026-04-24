@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 /// </summary>
 public class DialogueSystem : IEvent<IDialogueReady>
 {
-    private ScenarioSettings scenario;
-    private NPCRegistry NPCRegistry;
+    private readonly ScenarioSettings scenario;
+    private readonly NPCRegistry NPCRegistry;
 
-    private List<Dialog> dialogs = new();
+    private readonly List<Dialog> dialogs = new();
     public Action<(NPC, Dialog)> onDialogueReady;
 
     public DialogueSystem(ScenarioSettings scenario, NPCRegistry nPCRegistry, string startingprompt = "")

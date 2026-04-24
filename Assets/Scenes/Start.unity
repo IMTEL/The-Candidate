@@ -127,14 +127,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4269212132517703431, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
-      propertyPath: useGpu
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4269212132517703431, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
-      propertyPath: flashAttention
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6430455684545150473, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.66226
