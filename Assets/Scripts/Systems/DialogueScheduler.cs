@@ -143,6 +143,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
             case AudioActions.Stop:
                 lastDialogue.npc.audioSource.Stop();
+                lastDialogue = (null, null);
                 return;
 
             case AudioActions.Pause:

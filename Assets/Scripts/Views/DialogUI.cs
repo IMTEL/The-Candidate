@@ -29,7 +29,7 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying
     {
         ExtendedWhisperManager extendedWhisperManager = BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>();
         DialogueScheduler dialogueScheduler = BootStrap.Instance.GetComponentInChildren<DialogueScheduler>();
-        toggle.onValueChanged.AddListener(_ => {extendedWhisperManager.ToggleMicrophone();});
+        toggle.onValueChanged.AddListener(_ => {SetText(""); extendedWhisperManager.ToggleMicrophone();});
         dialogueScheduler.AddListener(this);
     } 
 
@@ -61,7 +61,7 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying
         
         if(dialogue.Length > letterPerSecond * timer)
         {
-            modifiedText = $"{modifiedText[..(int)(letterPerSecond * timer)]}<color=#FFFFFF00>{modifiedText[(int)(letterPerSecond * timer)..]} </color>" ;
+            modifiedText = $"{modifiedText[..(int)(letterPerSecond * timer)]}<color=#FFFFFF00>{modifiedText[(int)(letterPerSecond * timer)..]}</color>" ;
             //We are setting the text and reading the amount of pages it would give us. This way, we can't browse to the next page before it is visible
             text.text = modifiedText[..(int)(letterPerSecond * timer)];
             try{text.ForceMeshUpdate();}
@@ -92,7 +92,7 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying
         Updatetoggles();
     }
 
-    public Toggle Gettoggle()
+    public Toggle GetToggle()
     {
         return toggle;
     }
