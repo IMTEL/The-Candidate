@@ -146,14 +146,14 @@ MonoBehaviour:
   name: 
   TTService: {fileID: 11400000, guid: c9a2c02402109f51b9924762e532ccbc, type: 2}
   TTSOptions:
-  - rid: 8779510745972081285
-  - rid: 8779510745972081286
-  - rid: 8779510745972081287
-  - rid: 8779510745972081288
+  - rid: 8779510746093977820
+  - rid: 8779510746093977821
+  - rid: 8779510746093977822
+  - rid: 8779510746093977823
   LLMService: {fileID: 11400000, guid: c38be792e74a11d45ba8ec8bf608b36d, type: 2}
   LLMOptions:
-  - rid: 8779510745972081289
-  - rid: 8779510745972081290
+  - rid: 8779510746093977824
+  - rid: 8779510746093977825
   head: {fileID: 6264685101861471853}
   voiceProfile:
     displayName: 
@@ -163,53 +163,53 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 8779510745972081285
+    - rid: 8779510746093977820
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: CommaDelay
         value: 0
         minBound: 0
         maxBound: 3
-    - rid: 8779510745972081286
+    - rid: 8779510746093977821
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: PeriodDelay
         value: 0
         minBound: 0
         maxBound: 3
-    - rid: 8779510745972081287
+    - rid: 8779510746093977822
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: QuestionExclamationDelay
         value: 0
         minBound: 0
         maxBound: 3
-    - rid: 8779510745972081288
+    - rid: 8779510746093977823
       type: {class: 'PickOption`1[[ESpeakVoiceContainer, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         name: voice
         value:
           value:
-            rid: 8779510745972081291
+            rid: 8779510746093977826
           displayName: no_NO-talesyntese-medium.onnx
         options:
         - value:
-            rid: 8779510745972081291
+            rid: 8779510746093977826
           displayName: no_NO-talesyntese-medium.onnx
         - value:
-            rid: 8779510745972081292
+            rid: 8779510746093977827
           displayName: no_NO-talesyntese-medium.danish
         - value:
-            rid: 8779510745972081293
+            rid: 8779510746093977828
           displayName: no_NO-talesyntese-medium.se
-    - rid: 8779510745972081289
+    - rid: 8779510746093977824
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: Temprature
         value: 1
         minBound: 0
         maxBound: 2
-    - rid: 8779510745972081290
+    - rid: 8779510746093977825
       type: {class: 'PickOption`1[[OpenAICompletionRequest/Model, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         name: Model
@@ -223,19 +223,19 @@ MonoBehaviour:
           displayName: Minstral 3
         - value: 5
           displayName: NorwAI 24B
-    - rid: 8779510745972081291
+    - rid: 8779510746093977826
       type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
       data:
         name: no_NO-talesyntese-medium.onnx
         jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
         modelAsset: {fileID: 5022602860645237092, guid: be1e8ff26d600ef60b8db8bcbcb1c47b, type: 3}
-    - rid: 8779510745972081292
+    - rid: 8779510746093977827
       type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
       data:
         name: no_NO-talesyntese-medium.danish
         jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
         modelAsset: {fileID: 5022602860645237092, guid: 59236cad42a7fc53e8fea1b57e04c997, type: 3}
-    - rid: 8779510745972081293
+    - rid: 8779510746093977828
       type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
       data:
         name: no_NO-talesyntese-medium.se
@@ -448,6 +448,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c0110856213b11b4ca16ec9e98b46b7e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2310421203194092278}
     - targetCorrespondingSourceObject: {fileID: -5780060127800888363, guid: c0110856213b11b4ca16ec9e98b46b7e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5835163075126923548}
@@ -505,6 +508,33 @@ SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1690070752621290186, guid: c0110856213b11b4ca16ec9e98b46b7e, type: 3}
   m_PrefabInstance: {fileID: 9186194612173488041}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8339121170661507832 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c0110856213b11b4ca16ec9e98b46b7e, type: 3}
+  m_PrefabInstance: {fileID: 9186194612173488041}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2310421203194092278
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8339121170661507832}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
+  m_Controller: {fileID: 9100000, guid: 5b89920f295446b44b0fb882ebc8e626, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &8714837090900662338 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c0110856213b11b4ca16ec9e98b46b7e, type: 3}
