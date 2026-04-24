@@ -138,7 +138,9 @@ public class BootStrap : MonoBehaviour
 
     private void OnValidate()
     {
-        GetComponenentDependencyOrdered();
+        #if UNITY_EDITOR
+            GetComponenentDependencyOrdered();
+        #endif
     }
 
     private class DependencyNode

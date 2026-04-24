@@ -62,7 +62,7 @@ public class NavArbeidsPlass : IJobSelectionService
                         tasks.Add(FetchAdData(uuid));
                     }
                 }
-                Task.WaitAll(tasks.ToArray());
+                await Task.WhenAll(tasks.ToArray());
             }
             requestLocker.Release();
         }
@@ -102,7 +102,7 @@ public class NavArbeidsPlass : IJobSelectionService
     private async Task GetAndSetAccessToken()
     {
         Task<HttpResponseMessage> response = httpClient.GetAsync("publicToken");
-        response.Wait();
+        await response;
         string responseString = await response.Result.Content.ReadAsStringAsync();
         //Find offset of the beginning of the JWT token... if the type or algorithm is changed this line probably has to as well
         int offset = responseString.IndexOf("ey");

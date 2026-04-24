@@ -48,25 +48,9 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
         onNPCDestroy?.Invoke(this);
     }
 
-    public void AddListener(IEnumerable<INPCEventListener> listeners)
-    {
-        foreach (INPCEventListener item in listeners)
-        {
-            AddListener(item);
-        }
-    }
-
     public void AddListener(INPCEventListener listener)
     {
         onNPCDestroy += listener.OnDestroyNPC;
-    }
-
-    public void RemoveListener(IEnumerable<INPCEventListener> listeners)
-    {
-        foreach (INPCEventListener item in listeners)
-        {
-            AddListener(item);
-        }
     }
 
     public void RemoveListener(INPCEventListener listener)
@@ -86,7 +70,7 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
     public void SetLLMOverrideValue(OptionBase optionBase)
     {
         OptionBase option = LLMOptions.Find(option => option.Equals(optionBase));
-        if(option != null)
+        if (option != null)
         {
             option.TrySetValue(optionBase.GetObjectValue());
         }
@@ -101,14 +85,14 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
         TTSOptions.Clear();
         foreach (OptionBase item in values)
         {
-            SetTTSOverrideValue(item);        
+            SetTTSOverrideValue(item);
         }
     }
 
     public void SetTTSOverrideValue(OptionBase optionBase)
     {
         OptionBase option = TTSOptions.Find(option => option.Equals(optionBase));
-        if(option != null)
+        if (option != null)
         {
             option.TrySetValue(optionBase.GetObjectValue());
         }
@@ -121,38 +105,41 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
     public IEnumerable<OptionBase> GetLLMOptions()
     {
         IEnumerable<OptionBase> baseline = new List<OptionBase>();
-        if(LLMService != null)
+        if (LLMService != null)
         {
             baseline = LLMService.GetLLMOptions();
         }
-        LLMOptions = CompareAndGetOpptions(LLMOptions, baseline);
-        return LLMOptions; 
+        LLMOptions = CompareAndGetOptions(LLMOptions, baseline);
+        return LLMOptions;
     }
 
     public IEnumerable<OptionBase> GetTTSOptions()
     {
         IEnumerable<OptionBase> baseline = new List<OptionBase>();
-        if(TTService != null)
+        if (TTService != null)
         {
             baseline = TTService.GetTTSOptions();
         }
-        TTSOptions = CompareAndGetOpptions(TTSOptions, baseline);
+        TTSOptions = CompareAndGetOptions(TTSOptions, baseline);
         return TTSOptions;
     }
 
-    public List<OptionBase> CompareAndGetOpptions(List<OptionBase> localOptionBases, IEnumerable<OptionBase> options)
+    public List<OptionBase> CompareAndGetOptions(List<OptionBase> localOptionBases, IEnumerable<OptionBase> options)
     {
         List<OptionBase> optionBases = new();
         foreach (OptionBase item in options)
         {
-            OptionBase optionBase = localOptionBases.Find(option => option.Equals(item)); 
+            OptionBase optionBase = localOptionBases.Find(option => option.Equals(item));
             if (optionBase != null)
             {
                 try
                 {
                     item.TrySetValue(optionBase.GetObjectValue());
                 }
-                catch (Exception){};
+                catch (Exception e)
+                {
+                    Debug.LogError(e.Message);
+                }
             }
             optionBases.Add(item);
         }
@@ -164,7 +151,7 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
     {
         if (LLMService == null)
         {
-            throw new ArgumentException("You need to set minium the LLM service");
+            Debug.LogError("You need to set minium the LLM service");
         }
         GetLLMOptions();
         GetTTSOptions();

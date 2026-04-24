@@ -129,7 +129,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4269212132517703431, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
       propertyPath: useGpu
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4269212132517703431, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
       propertyPath: flashAttention

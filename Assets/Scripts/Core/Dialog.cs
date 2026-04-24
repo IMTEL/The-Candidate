@@ -48,7 +48,7 @@ public class Dialog
     public async Task<AudioClip> Next()
     {
         if(IsFinished) return null;
-        if(!await _stream.MoveNextAsync()) {IsFinished = true; return null;}
+        if(_stream == null || !await _stream.MoveNextAsync()) {IsFinished = true; return null;}
         audioClips.Add(_stream.Current);
         return _stream.Current;
     }

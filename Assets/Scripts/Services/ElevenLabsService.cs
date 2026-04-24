@@ -9,9 +9,9 @@ using UnityEngine.Networking;
 /// <summary>
 /// A TTS Script using the ElevenLabs API TTS Service. Requires the a enviroment variable for the API key.
 /// </summary>
-public class ElevenLabsService : ITTService 
+public class ElevenLabsService : ITTService
 {
-    
+
     private readonly string url = "https://api.elevenlabs.io/v1/text-to-speech/";
     readonly string apiKey;
 
@@ -30,26 +30,34 @@ public class ElevenLabsService : ITTService
     private async Task<AudioClip> SendPostRequest(string voiceid, string dialogue)
     {
         await semaphore.WaitAsync();
-        string jsonPayload = new ElevenLabsRequest(dialogue).ToJson();
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonPayload);
+        try
+        {
+            string jsonPayload = new ElevenLabsRequest(dialogue).ToJson();
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonPayload);
 
-        // Create request
-        UnityWebRequest request = new(url + voiceid, "POST")
-        {
-            uploadHandler = new UploadHandlerRaw(bodyRaw),
-            downloadHandler = new DownloadHandlerAudioClip(url + voiceid, AudioType.MPEG)
-        };
-        request.SetRequestHeader("Content-Type", "application/json");
-        request.SetRequestHeader("xi-api-key", apiKey);
-        await request.SendWebRequest();
-        semaphore.Release();
-        if (request.result != UnityWebRequest.Result.Success)
-        {
-            string errorMsg = $"Request failed: {request.responseCode} - {request.error}";
-            Debug.LogError(errorMsg);
-            return null;
+            // Create request
+            UnityWebRequest request = new(url + voiceid, "POST")
+            {
+                uploadHandler = new UploadHandlerRaw(bodyRaw),
+                downloadHandler = new DownloadHandlerAudioClip(url + voiceid, AudioType.MPEG)
+            };
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.SetRequestHeader("xi-api-key", apiKey);
+            await request.SendWebRequest();
+            semaphore.Release();
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                string errorMsg = $"Request failed: {request.responseCode} - {request.error}";
+                Debug.LogError(errorMsg);
+                return null;
+            }
+            return DownloadHandlerAudioClip.GetContent(request);
         }
-        return DownloadHandlerAudioClip.GetContent(request);
+        finally
+        {
+            semaphore.Release();
+        }
+
 
     }
 
@@ -69,8 +77,9 @@ public class ElevenLabsService : ITTService
     }
 
     public async IAsyncEnumerator<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options)
-    {   PickOption<VoiceProfile> voices = (PickOption<VoiceProfile>)options.First(option => option.GetName().Equals("voice"));
-        AudioClip clip = await SendPostRequest(dialogue, voices.GetCurrentValue().getId());
+    {
+        PickOption<VoiceProfile> voices = (PickOption<VoiceProfile>)options.First(option => option.GetName().Equals("voice"));
+        AudioClip clip = await SendPostRequest(voices.GetCurrentValue().getId(), dialogue);
         yield return clip;
     }
 }

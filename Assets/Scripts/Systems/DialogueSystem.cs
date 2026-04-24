@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEngine;
 
 
 /// <summary>
@@ -24,9 +23,6 @@ public class DialogueSystem : IEvent<IDialogueReady>
         this.startPrompt = startingprompt;
     }
 
-    private SemaphoreSlim simulatnousVoiceRequests = new(2);
-
-
     /// <summary>
     /// The starting prompt within the message
     /// </summary>
@@ -45,7 +41,7 @@ public class DialogueSystem : IEvent<IDialogueReady>
             name = "Dict up a name for yourself";
         }
         string setting = job.ToString();
-        string actors = string.Join("\n - ", job.actors.Select(actor => actor.GetString()));
+        string actors = string.Join("\n - ", job.actors.Select(jobActor => jobActor.GetString()));
         return string.Format(startPrompt, setting, $"{actor?.GetString()}\nYour name is: {name}", actors);
     }
 
