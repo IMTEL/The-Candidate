@@ -22,17 +22,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
 
     void Start()
     {
-        SceneManager.activeSceneChanged += (_, _) => { RefreshUIObject(); PauseAudio = (false, false); lastDialogue = (null, null); };
-        RefreshUIObject();
-    }
-
-    void RefreshUIObject()
-    {
-        dialogUI = GameObject.FindWithTag("Player").GetComponentInChildren<DialogUI>();
-        if (!dialogUI)
-        {
-            Debug.LogError("DialogUI not found");
-        }
+        SceneManager.activeSceneChanged += (_, _) => { PauseAudio = (false, false); lastDialogue = (null, null); };
     }
 
     [Init]
@@ -51,7 +41,7 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
         }
 
         //Okey, I need the following setup:
-        // 1. If we are paused, the microphone is recording or the the last npc or dialogui is playing. Don't do jack shit
+        // 1. If we are paused, the microphone is recording or the the last npc. Don't do jack shit
         if (micRecording || (lastDialogue.npc && (lastDialogue.npc.audioSource.isPlaying || PauseAudio.paused || PauseAudio.audiopaused))) return;
         bool setText = false;
 
@@ -73,7 +63,6 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
         _fetchingClip = true;
         if (first)
         {
-            if(dialogUI) dialogUI.SetText(lastDialogue.dialog.dialog);
             OnDialoguePlaying?.Invoke(lastDialogue.dialog);
         }
         try

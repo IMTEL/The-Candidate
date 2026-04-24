@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogUI : MonoBehaviour
+public class DialogUI : MonoBehaviour, IDialoguePlaying
 {
 
     public float letterPerSecond = 8;
@@ -11,6 +11,8 @@ public class DialogUI : MonoBehaviour
     private string dialogue = "";
     public Toggle toggle;
     public TMP_Text text;
+
+    private DialogueScheduler dialogueScheduler;
 
     private int pages;
 
@@ -26,7 +28,9 @@ public class DialogUI : MonoBehaviour
     private void Start()
     {
         ExtendedWhisperManager extendedWhisperManager = BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>();
+        DialogueScheduler dialogueScheduler = BootStrap.Instance.GetComponentInChildren<DialogueScheduler>();
         toggle.onValueChanged.AddListener(_ => {extendedWhisperManager.ToggleMicrophone();});
+        dialogueScheduler.AddListener(this);
     } 
 
     // Update is called once per frame
@@ -91,5 +95,15 @@ public class DialogUI : MonoBehaviour
     public Toggle Gettoggle()
     {
         return toggle;
+    }
+
+    public void OnDialoguePlaying(Dialog dialog)
+    {
+        SetText(dialog.dialog);
+    }
+
+    private void OnDestroy()
+    {
+        dialogueScheduler.RemoveListener(this);
     }
 }
