@@ -23,7 +23,11 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
     {
         spawnLocations = FindObjectsByType<NPCSpawnPoint>(sortMode: FindObjectsSortMode.None);
         nPCRegistry.Clear();
-        nPCRegistry.Add(FindAnyObjectByType<NPC>());
+        foreach (NPC item in FindObjectsByType<NPC>(sortMode: FindObjectsSortMode.None))
+        {
+            nPCRegistry.Add(item);
+        }
+        
     }
 
     void Awake()
