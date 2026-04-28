@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.ShortcutManagement;
 
 /// <summary>
 /// A enviroment contains jobs and actors that the candidate can try out
