@@ -37,8 +37,8 @@ public class DialogueSystem : IEvent<IDialogueReady>
     string BuildPrompt(Environment.Job job, NPC npc)
     {
         string setting = job.ToString();
-        string actors = string.Join("\n - ", NPCRegistry.GetNPCEnumerable().Select((npc) => $"{npc.actor}: {npc.name}"));
-        return string.Format(startPrompt, setting, $"{npc.actor?.GetString()}\nYour name is: {npc.name}", actors);
+        string actors = string.Join("\n - ", NPCRegistry.GetNPCEnumerable().Select((npc) => $"{npc.actor.getName()}: {npc.name}"));
+        return string.Format(startPrompt, setting, $"{npc.actor?.ToString()}\nYour name is: {npc.name}", actors);
     }
 
     public (Task, CancellationTokenSource) HandleUserDialog(Dialog userDialog, CancellationTokenSource tokenSource = null)
@@ -57,9 +57,15 @@ public class DialogueSystem : IEvent<IDialogueReady>
     private async Task HandleUserDialog(Dialog userDialog, CancellationToken token)
     {
         dialogs.Add(userDialog);
-        foreach (NPC npc in NPCRegistry.GetNPCEnumerable())
+        IEnumerator<NPC> npcs = NPCRegistry.GetNPCEnumerable().GetEnumerator();
+        npcs.MoveNext();
+        while(npcs.Current)
         {
-            string text = await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogs);
+            NPC npc = npcs.Current;
+            List<Dialog> dialogsCopy = new(dialogs);
+            if (npcs.MoveNext()) dialogsCopy.Add(new(Environment.Actor.Director, "Say your thoughts, DON'T Ask a question"));
+            else dialogsCopy.Add(new(Environment.Actor.Director, "Ask a question after your response"));
+            string text = await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogsCopy);
             Dialog dialog = new(npc.actor, text, ((ITTService)npc.TTService.CreateService()).getAudioClip(text, npc.GetTTSOptions()));
             token.ThrowIfCancellationRequested();
             dialogs.Add(dialog);
