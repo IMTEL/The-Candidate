@@ -15,9 +15,13 @@ public class Transcript : MonoBehaviour, IMicrophoneEventListener, IDialoguePlay
     void Awake()
     {
         text = text != null ? text : GetComponentInChildren<Text>();
+        scrollRect = GetComponentInChildren<ScrollRect>();
+    }
+
+    void Start()
+    {
         extendedWhisperManager = BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>();
         dialogueSystem = BootStrap.Instance.GetComponentInChildren<DialogueScheduler>();
-        scrollRect = GetComponentInChildren<ScrollRect>();
         extendedWhisperManager.AddListener(this);
         dialogueSystem.AddListener(this);
     }

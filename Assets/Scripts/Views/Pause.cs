@@ -56,6 +56,10 @@ public class Pause : MonoBehaviour, IPauseMenuEventListener, IEvent<IPause>
             instatiesMenues.Add(menu);
         }
         pause.action.performed += OnPauseClick;
+       
+    }
+    void Start()
+    {
         this.AddListener(BootStrap.Instance.GetComponentInChildren<DialogueScheduler>());
     }
 
