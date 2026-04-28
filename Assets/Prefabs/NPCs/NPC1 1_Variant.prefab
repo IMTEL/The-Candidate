@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 810716682776590596}
   - component: {fileID: 1479169848142359401}
   - component: {fileID: 6503413330868627490}
-  - component: {fileID: 2906903084754816206}
+  - component: {fileID: 3652275484217935633}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 2915450333982436751}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5793518, z: -0.046995044}
+  m_LocalPosition: {x: -0.0000000053660187, y: 1.5793514, z: -0.046995163}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -146,15 +146,15 @@ MonoBehaviour:
   name: Arne
   TTService: {fileID: 11400000, guid: c9a2c02402109f51b9924762e532ccbc, type: 2}
   TTSOptions:
-  - rid: 8779510811904181123
-  - rid: 8779510811904181124
-  - rid: 8779510811904181125
-  - rid: 8779510811904181126
+  - rid: 8779510834419991518
+  - rid: 8779510834419991519
+  - rid: 8779510834419991520
+  - rid: 8779510834419991521
   LLMService: {fileID: 11400000, guid: c38be792e74a11d45ba8ec8bf608b36d, type: 2}
   LLMOptions:
-  - rid: 8779510811904181127
-  - rid: 8779510811904181128
-  head: {fileID: 0}
+  - rid: 8779510834419991522
+  - rid: 8779510834419991523
+  head: {fileID: 6357334982433173249}
   voiceProfile:
     displayName: 
     id: 
@@ -163,47 +163,47 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 8779510811904181123
+    - rid: 8779510834419991518
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: CommaDelay
         value: 0
         minBound: 0
         maxBound: 3
-    - rid: 8779510811904181124
+    - rid: 8779510834419991519
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: PeriodDelay
         value: 0
         minBound: 0
         maxBound: 3
-    - rid: 8779510811904181125
+    - rid: 8779510834419991520
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: QuestionExclamationDelay
         value: 0
         minBound: 0
         maxBound: 3
-    - rid: 8779510811904181126
+    - rid: 8779510834419991521
       type: {class: 'PickOption`1[[ESpeakVoiceContainer, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         name: voice
         value:
           value:
-            rid: 8779510811904181129
+            rid: 8779510834419991524
           displayName: no_NO-talesyntese-medium.onnx
         options:
         - value:
-            rid: 8779510811904181129
+            rid: 8779510834419991524
           displayName: no_NO-talesyntese-medium.onnx
-    - rid: 8779510811904181127
+    - rid: 8779510834419991522
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: Temprature
         value: 1
         minBound: 0
         maxBound: 2
-    - rid: 8779510811904181128
+    - rid: 8779510834419991523
       type: {class: 'PickOption`1[[OpenAICompletionRequest/Model, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         name: Model
@@ -217,13 +217,13 @@ MonoBehaviour:
           displayName: Minstral 3
         - value: 5
           displayName: NorwAI 24B
-    - rid: 8779510811904181129
+    - rid: 8779510834419991524
       type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
       data:
         name: no_NO-talesyntese-medium.onnx
         jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
         modelAsset: {fileID: 5022602860645237092, guid: be1e8ff26d600ef60b8db8bcbcb1c47b, type: 3}
---- !u!114 &2906903084754816206
+--- !u!114 &3652275484217935633
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -239,7 +239,7 @@ MonoBehaviour:
   onLipSyncUpdate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 602368154567721246}
         m_TargetAssemblyTypeName: uLipSync.uLipSyncBlendShape, uLipSync.Runtime
         m_MethodName: OnLipSyncUpdate
         m_Mode: 0
@@ -283,10 +283,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 810716682776590596}
-  - {fileID: 2540901561260902964}
+  - {fileID: 738635297196873598}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!1001 &2650827961645428191
+--- !u!1001 &993766779157311637
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -426,117 +426,76 @@ PrefabInstance:
       propertyPath: 'm_BlendShapeWeights.Array.data[21]'
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4504578304540096179, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 5b89920f295446b44b0fb882ebc8e626, type: 2}
-    - target: {fileID: 5866666021909216657, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: m_ApplyRootMotion
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[0]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[1]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[2]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[3]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[4]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[5]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[6]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[7]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[8]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[9]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[10]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[11]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[12]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[13]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[14]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[15]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[16]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[17]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[18]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[19]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[20]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060787082339184816, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: 'm_BlendShapeWeights.Array.data[21]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8325778258031654203, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -5780060127800888363, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 602368154567721246}
   m_SourcePrefab: {fileID: 100100000, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
---- !u!4 &2540901561260902964 stripped
+--- !u!4 &738635297196873598 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
-  m_PrefabInstance: {fileID: 2650827961645428191}
+  m_PrefabInstance: {fileID: 993766779157311637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &1927197575472321119 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1690070752621290186, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
+  m_PrefabInstance: {fileID: 993766779157311637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2450952631523607360 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -5780060127800888363, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
+  m_PrefabInstance: {fileID: 993766779157311637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &602368154567721246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2450952631523607360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2163de355e8fd8e4b83b631e07455323, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: uLipSync.Runtime::uLipSync.uLipSyncBlendShape
+  updateMethod: 0
+  skinnedMeshRenderer: {fileID: 1927197575472321119}
+  blendShapes:
+  - phoneme: A
+    index: 0
+    maxWeight: 1
+  - phoneme: I
+    index: -1
+    maxWeight: 1
+  - phoneme: U
+    index: -1
+    maxWeight: 1
+  - phoneme: E
+    index: 6
+    maxWeight: 1
+  - phoneme: O
+    index: 12
+    maxWeight: 1
+  - phoneme: '-'
+    index: -1
+    maxWeight: 1
+  - phoneme: S
+    index: 16
+    maxWeight: 1
+  maxBlendShapeValue: 100
+  minVolume: -2.5
+  maxVolume: -1.5
+  smoothness: 0.05
+  usePhonemeBlend: 0
+--- !u!1 &6357334982433173249 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -3029977084256149612, guid: 3dc23ccc33771876da399fb5c48b7ebf, type: 3}
+  m_PrefabInstance: {fileID: 993766779157311637}
   m_PrefabAsset: {fileID: 0}

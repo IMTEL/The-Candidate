@@ -16,23 +16,38 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
     
     [ShowInInspector]
     [LabelText("NPC Prefabs")]
-    public HashSet<GameObject> npcPrefabs = new();
-    
+    public List<GameObject> npcPrefabs = new();
 
     public void UpdateScene()
     {
         spawnLocations = FindObjectsByType<NPCSpawnPoint>(sortMode: FindObjectsSortMode.None);
         nPCRegistry.Clear();
-        foreach (NPC item in FindObjectsByType<NPC>(sortMode: FindObjectsSortMode.None))
+        List<GameObject> npcCopies = new(npcPrefabs); 
+        System.Random random = new();
+        foreach (NPCSpawnPoint spawnPoint in spawnLocations)
         {
-            nPCRegistry.Add(item);
+            if(npcCopies.Count > 0 && spawnPoint.GetComponentInChildren<NPC>() == null)
+            {
+                int index = random.Next(1, npcCopies.Count)-1;
+                GameObject gameObject = Instantiate(npcCopies[index], spawnPoint.location);
+                nPCRegistry.Add(gameObject.GetComponent<NPC>());
+                npcCopies.RemoveAt(index);
+            }
         }
         
     }
 
     void Awake()
     {
-        //SceneManager.activeSceneChanged += OnSceneChange;
+        List<GameObject> npcPrefabsCopy = new(npcPrefabs);
+        foreach (GameObject item in npcPrefabsCopy)
+        {
+            if (!item.GetComponentInChildren<NPC>())
+            {
+                npcPrefabs.Remove(item);
+            }
+        }
+        UpdateScene();
     }
 
     void INPCEventListener.OnCreateNPC(NPC nPC)

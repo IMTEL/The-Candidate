@@ -172,6 +172,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92a59c454a895cc469b31185e198cfed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnManager
+  npcPrefabs:
+  - {fileID: 6685602297755913791, guid: b4c97f92643e1c34e80261becd46c2fe, type: 3}
+  - {fileID: 6685602297755913791, guid: dde7c0f1422623e4f8ff249c40924bbd, type: 3}
 --- !u!1 &6901510977062062484
 GameObject:
   m_ObjectHideFlags: 0
