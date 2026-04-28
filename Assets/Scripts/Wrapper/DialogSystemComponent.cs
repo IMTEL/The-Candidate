@@ -25,14 +25,15 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
     {
         spawnManager = nPCRegistry;
         scenarioSettings = scenarioSettingsWrapper;
-        SceneManager.activeSceneChanged += ResetDialogueSystem;
-        ResetDialogueSystem(SceneManager.GetActiveScene(), SceneManager.GetActiveScene());
+        dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), prompt);
+        dialogueSystem.AddListener(this);    
+        SceneManager.activeSceneChanged += (_, Scene2) => {spawnManager.UpdateScene(); ResetDialogueSystem(Scene2);};
+        ResetDialogueSystem(SceneManager.GetActiveScene());
         extendedWhisperManager.AddListener(this);
     }
 
-    private void ResetDialogueSystem(Scene scene1, Scene scene2)
+    private void ResetDialogueSystem(Scene scene2)
     {
-        spawnManager.UpdateScene();
         if (!scene2.name.Equals("Start") && dialogueSystem != null)
         {
             onMicrophoneStopRecording(new(Environment.Actor.Director, "Introduce yourself"));
