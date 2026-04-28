@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -15,7 +16,7 @@ public class NavArbeidsPlass : IJobSelectionService
     string nextpage;
     private bool fetchingDone = false;
 
-    List<JobContainer> cache = new();
+    ConcurrentBag<JobContainer> cache = new();
     HashSet<string> JobUUID = new();
 
     SemaphoreSlim threadpools = new(10);
@@ -78,7 +79,7 @@ public class NavArbeidsPlass : IJobSelectionService
         }
         int startIndex = (page - 1) * amount;
         int endIndex = Math.Min(cache.Count(), page * amount);
-        return (cache.GetRange(startIndex, endIndex - startIndex), hasNextPage);
+        return (cache.ToList().GetRange(startIndex, endIndex - startIndex), hasNextPage);
     }
 
     private async Task FetchAdData(string id)
