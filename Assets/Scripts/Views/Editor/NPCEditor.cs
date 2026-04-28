@@ -10,7 +10,7 @@ public class NPCEditor : Editor
     private SerializedProperty TTService;
 
     private SerializedProperty LLMService;
-    
+    private SerializedProperty head;
     new private SerializedProperty name;
     
     void OnEnable()
@@ -19,11 +19,14 @@ public class NPCEditor : Editor
         TTService = serializedObject.FindProperty("TTService");
         LLMService = serializedObject.FindProperty("LLMService");
         name = serializedObject.FindProperty("name");
+        head = serializedObject.FindProperty("head");
+        
     }
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
         EditorGUILayout.PropertyField(name, new GUIContent("Name"));
+        EditorGUILayout.PropertyField(head, new GUIContent("Head"));
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(LLMService, new GUIContent("LLMService"));
         if (EditorGUI.EndChangeCheck())
