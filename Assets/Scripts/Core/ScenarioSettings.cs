@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Newtonsoft.Json.Utilities;
+
 /// <summary>
 /// Settings for the scenario
 /// </summary>
@@ -5,11 +8,15 @@ public class ScenarioSettings {
 
     public Environment.Job job {get; private set;} = Environment.Job.Store;
 
-    public int amountOfPeople {get; private set;} = 1;
+    private Dictionary<Environment.Actor, int> actors = new();
 
-    public void SetAmountOfPeople(int amount)
+
+    public ScenarioSettings()
     {
-        this.amountOfPeople = amount > job.actors.Count && amount > 0 ? amount  : amountOfPeople;
+        foreach (Environment.Actor item in Environment.Actor.NPCactors)
+        {
+            actors.Add(item, 0);
+        }
     }
 
     /// <summary>
@@ -20,9 +27,28 @@ public class ScenarioSettings {
     public void SetJob(Environment.Job job)
     {
         this.job = job ?? this.job;
-        if(job.actors.Count > amountOfPeople)
+    }
+
+    public void SetAmount(Environment.Actor actorType, int amount)
+    {
+        if(!actors.ContainsKey(actorType)) return;
+        if (amount < 0) amount = 0;
+        actors[actorType] = amount;
+    }
+
+    public IEnumerable<(Environment.Actor actor, int amount)> GetActors()
+    {
+        List<(Environment.Actor, int)> list = new();
+        foreach (Environment.Actor item in actors.Keys)
         {
-            SetAmountOfPeople(job.actors.Count);
+            list.Add((item, actors[item]));
         }
+        return list;
+    }
+
+    public int GetActorAmount(Environment.Actor actor)
+    {
+        if(!actors.ContainsKey(actor)) return 0;
+        return actors[actor];
     }
 }

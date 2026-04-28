@@ -34,15 +34,11 @@ public class DialogueSystem : IEvent<IDialogueReady>
     /// <param name="job"></param>
     /// <param name="actor"></param>
     /// <returns></returns>
-    string BuildPrompt(Environment.Job job, Environment.Actor actor, string name = "")
+    string BuildPrompt(Environment.Job job, NPC npc)
     {
-        if(name == "")
-        {
-            name = "Dict up a name for yourself";
-        }
         string setting = job.ToString();
-        string actors = string.Join("\n - ", job.actors.Select(jobActor => jobActor.GetString()));
-        return string.Format(startPrompt, setting, $"{actor?.GetString()}\nYour name is: {name}", actors);
+        string actors = string.Join("\n - ", NPCRegistry.GetNPCEnumerable().Select((npc) => $"{npc.actor}: {npc.name}"));
+        return string.Format(startPrompt, setting, $"{npc.actor?.GetString()}\nYour name is: {npc.name}", actors);
     }
 
     public (Task, CancellationTokenSource) HandleUserDialog(Dialog userDialog, CancellationTokenSource tokenSource = null)
@@ -63,7 +59,7 @@ public class DialogueSystem : IEvent<IDialogueReady>
         dialogs.Add(userDialog);
         foreach (NPC npc in NPCRegistry.GetNPCEnumerable())
         {
-            string text = await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc.actor, npc.name), dialogs);
+            string text = await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogs);
             Dialog dialog = new(npc.actor, text, ((ITTService)npc.TTService.CreateService()).getAudioClip(text, npc.GetTTSOptions()));
             token.ThrowIfCancellationRequested();
             dialogs.Add(dialog);

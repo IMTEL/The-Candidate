@@ -5,9 +5,14 @@ using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 [DisallowMultipleComponent]
-public class NPC : MonoBehaviour, IEvent<INPCEventListener>
+public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventListener
 {
+    private static readonly int BlinkingBlinkHash = Animator.StringToHash("Blinking.Blink");
+    private static readonly int NoddingHash = Animator.StringToHash("Actions.Nodding");
 
+    private bool recording = false;
+
+    private System.Random random = new();
     public new string name;
 
     [LabelText("TTS Service")]
@@ -22,18 +27,39 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
     public AudioSource audioSource { get; private set; }
     public GameObject head;
 
+    private float timeForBlink;
+    private float timeForNodding;
+
     public VoiceProfile voiceProfile;
 
     public Action<NPC> onNPCDestroy;
+    
+    private Animator animator;
 
-    void Start()
+    void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        animator = transform.parent.GetComponentInChildren<Animator>();
+        timeForBlink = random.Next(2, 5);
+    }
+    void Start()
+    {
+        BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>().AddListener(this);
     }
 
     void Update()
     {
         audioSource.transform.position = head.transform.position;
+        timeForBlink -= Time.deltaTime;
+        if(timeForBlink <= 0){
+            animator.Play(BlinkingBlinkHash);
+            timeForBlink = random.Next(2, 5);
+        }
+        if (recording && timeForNodding <= 0)
+        {
+            animator.Play(NoddingHash);
+            timeForNodding = random.Next(1, 7);
+        }
     }
 
     public void Talk(AudioClip clip)
@@ -41,11 +67,6 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
         audioSource.Stop();
         audioSource.clip = clip;
         audioSource.Play();
-    }
-
-    private void OnDestroy()
-    {
-        onNPCDestroy?.Invoke(this);
     }
 
     public void AddListener(INPCEventListener listener)
@@ -156,4 +177,24 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>
         GetLLMOptions();
         GetTTSOptions();
     }
+
+    public void onMicrophoneStartRecording()
+    {
+        audioSource.Stop();
+        audioSource.clip = null;
+        timeForNodding = random.Next(1, 7);
+        recording = true;
+    }
+
+    public void onMicrophoneStopRecording(Dialog recordedaudio)
+    {
+        recording = false;
+    }
+
+    private void OnDestroy()
+    {
+        onNPCDestroy?.Invoke(this);
+        BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>().RemoveListener(this);
+    }
+
 }

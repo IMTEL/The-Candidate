@@ -146,14 +146,14 @@ MonoBehaviour:
   name: Heidi
   TTService: {fileID: 11400000, guid: c9a2c02402109f51b9924762e532ccbc, type: 2}
   TTSOptions:
-  - rid: 8779510834419991532
-  - rid: 8779510834419991533
-  - rid: 8779510834419991534
-  - rid: 8779510834419991535
+  - rid: 8779510834799837745
+  - rid: 8779510834799837746
+  - rid: 8779510834799837747
+  - rid: 8779510834799837748
   LLMService: {fileID: 11400000, guid: c38be792e74a11d45ba8ec8bf608b36d, type: 2}
   LLMOptions:
-  - rid: 8779510834419991536
-  - rid: 8779510834419991537
+  - rid: 8779510834799837749
+  - rid: 8779510834799837750
   head: {fileID: 9132388168791727238}
   voiceProfile:
     displayName: 
@@ -163,47 +163,47 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 8779510834419991532
+    - rid: 8779510834799837745
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: CommaDelay
         value: 0
         minBound: 0
         maxBound: 3
-    - rid: 8779510834419991533
+    - rid: 8779510834799837746
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: PeriodDelay
         value: 0
         minBound: 0
         maxBound: 3
-    - rid: 8779510834419991534
+    - rid: 8779510834799837747
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: QuestionExclamationDelay
         value: 0
         minBound: 0
         maxBound: 3
-    - rid: 8779510834419991535
+    - rid: 8779510834799837748
       type: {class: 'PickOption`1[[ESpeakVoiceContainer, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         name: voice
         value:
           value:
-            rid: 8779510834419991538
+            rid: 8779510834799837751
           displayName: no_NO-talesyntese-medium.onnx
         options:
         - value:
-            rid: 8779510834419991538
+            rid: 8779510834799837751
           displayName: no_NO-talesyntese-medium.onnx
-    - rid: 8779510834419991536
+    - rid: 8779510834799837749
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: Temprature
         value: 1
         minBound: 0
         maxBound: 2
-    - rid: 8779510834419991537
+    - rid: 8779510834799837750
       type: {class: 'PickOption`1[[OpenAICompletionRequest/Model, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         name: Model
@@ -217,7 +217,7 @@ MonoBehaviour:
           displayName: Minstral 3
         - value: 5
           displayName: NorwAI 24B
-    - rid: 8779510834419991538
+    - rid: 8779510834799837751
       type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
       data:
         name: no_NO-talesyntese-medium.onnx
@@ -342,6 +342,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 5b89920f295446b44b0fb882ebc8e626, type: 2}
+    - target: {fileID: 5866666021909216657, guid: c0110856213b11b4ca16ec9e98b46b7e, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6787643579738576467, guid: c0110856213b11b4ca16ec9e98b46b7e, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[0]'
       value: 0

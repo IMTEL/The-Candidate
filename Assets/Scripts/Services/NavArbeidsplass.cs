@@ -94,7 +94,7 @@ public class NavArbeidsPlass : IJobSelectionService
             if (AdContent != null)
             {
                 string title = AdContent["jobtitle"].ToString() == "" ? AdContent["title"].ToString() : AdContent["jobtitle"].ToString();
-                Environment.Job job = new(title, new() { Environment.Actor.Manager }, AdContent["description"].ToString());
+                Environment.Job job = new(title, AdContent["description"].ToString());
                 cache.Add(new(job, null));
             }
         }
