@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.Tutorials.Core.Editor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -57,7 +56,7 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying
     {
         timer = 0;
         dialogue = newText;
-        if (newText.IsNotNullOrEmpty())
+        if (newText == null || newText.Replace(" ", "").Equals(""))
         {
             bufferAnimation.PlayAnimation();
         }
