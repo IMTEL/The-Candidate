@@ -171,6 +171,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: BootStrap
       objectReference: {fileID: 0}
+    - target: {fileID: 8887670477299499436, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
+      propertyPath: prompt
+      value: "# Context\r\nYou are an actor within a movie where you are with different
+        other people to interview a potential candidate. \r\nYour goal is to help
+        the candidate in performing well under the interview and try to get the best
+        possible answer out the candidate.\r\n\r\n## Setting\r\n{0}\r\n\r\n## Your
+        Role\r\n{1}\r\n\r\n## Actors\nThese actors are your fellow interviewers:\r\n{2}\r\n\r\n#
+        Glossary\r\n- Theme refers to subjects within the interview like, but not
+        limited to, stress handling, previous work experience, opinons and questions\r\n-
+        Plain Text refers to text that ONLY contains alphabetic letters, numbers,
+        comma, slash, period and question mark\r\n\r\n# Guidelines\r\n- Always follow
+        the directors command. \r\n- You are ONLY allowed up to 2 follow up question
+        for a theme. NOTHING MORE These should arrive after the candidate have answered
+        and only if you are allowed to. \r- The candidate might repond with not knowing
+        or unsure about the answer, try mentioning different examples as your next
+        response\r\n- Focus on being friendly, nice and human. This includes, but
+        are not limited to, adding different remarks to answers, saying hi back and
+        introducing yourself.\n- Don't be overly friendly. Behaviour like thanking
+        for everything\r\n- IN ADDITION, give feedback on the answers. These NEEDS
+        to be constructive, BRIEF and contain your thought process.\r\n- ALL DIALOGS
+        SHOULD BE IN NORWEGIAN\r\n- You might sample a couple of questions from the
+        list within the question section, BUT it should be used as purely inspiration.\r\n-
+        Your reponse MUST be plain text as it is said verbally\r\n\r\n## Sample Questions\r\n-
+        Could you tell a bit about yourself?\r\n- What is your goal of getting a
+        job?\r\n- What is some of your positive qualitives?\r\n- What is some of
+        your negative qualitives?\r\n- How would your previous kolleages or friends
+        describe you?\r\n- Who is your inspiration?\r\n- Tell about a conflict or
+        challange you have experienced and how you handled that\r\n- Tell us about
+        a situation where you got stressed. How did you handle it? \r\n- What type
+        of expectations do you have to the job?\r\n- Why should we hire you specefically?\r\n-
+        Is there anything else you are"
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -484,7 +516,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6893068318990075702, guid: 8144c8180f67b8f4e802d1557184ec2a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 550
       objectReference: {fileID: 0}
     - target: {fileID: 6893068318990075702, guid: 8144c8180f67b8f4e802d1557184ec2a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -496,7 +528,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6893068318990075702, guid: 8144c8180f67b8f4e802d1557184ec2a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -11
       objectReference: {fileID: 0}
     - target: {fileID: 6893068318990075702, guid: 8144c8180f67b8f4e802d1557184ec2a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -731,7 +763,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4027005048603279614, guid: 4e5f33f58c0e04e429c706942f2192e3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.175
       objectReference: {fileID: 0}
     - target: {fileID: 4027005048603279614, guid: 4e5f33f58c0e04e429c706942f2192e3, type: 3}
       propertyPath: m_LocalPosition.y
@@ -739,7 +771,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4027005048603279614, guid: 4e5f33f58c0e04e429c706942f2192e3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.581
+      value: -3.578
       objectReference: {fileID: 0}
     - target: {fileID: 4027005048603279614, guid: 4e5f33f58c0e04e429c706942f2192e3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -822,72 +854,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5140844392570453728}
   m_CullTransparentMesh: 1
---- !u!114 &3347311275615343298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4015128326502819035}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 4
-  m_Spacing: 24.12
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 1
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
---- !u!114 &4015128326502819032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4015128326502819035}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
---- !u!114 &4015128326502819033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4015128326502819035}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
-  m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
-  m_PhysicalUnit: 3
-  m_FallbackScreenDPI: 96
-  m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
 --- !u!1 &4015128326502819035
 GameObject:
   m_ObjectHideFlags: 0
@@ -897,11 +863,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4015128326502819039}
-  - component: {fileID: 4015128326502819038}
-  - component: {fileID: 4015128326502819033}
-  - component: {fileID: 4015128326502819032}
-  - component: {fileID: 4015128326502819036}
-  - component: {fileID: 3347311275615343298}
+  - component: {fileID: 4015128326502819040}
   m_Layer: 5
   m_Name: 'UI '
   m_TagString: Untagged
@@ -909,48 +871,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &4015128326502819036
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4015128326502819035}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 0
-  m_CheckFor2DOcclusion: 0
-  m_CheckFor3DOcclusion: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RaycastTriggerInteraction: 1
---- !u!223 &4015128326502819038
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4015128326502819035}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
 --- !u!224 &4015128326502819039
 RectTransform:
   m_ObjectHideFlags: 0
@@ -959,7 +879,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4015128326502819035}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.803}
+  m_LocalPosition: {x: 0, y: 0, z: -1.611}
   m_LocalScale: {x: 0.002, y: 0.002, z: 0.002}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -970,9 +890,35 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.781, y: 1.1}
+  m_AnchoredPosition: {x: -0.9, y: 1}
   m_SizeDelta: {x: 950, y: 550}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4015128326502819040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4015128326502819035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.HorizontalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 1
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!224 &4220274216338775315
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1052,7 +998,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3218343592089456934, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 550
       objectReference: {fileID: 0}
     - target: {fileID: 3218343592089456934, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1064,23 +1010,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3218343592089456934, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -254.2
       objectReference: {fileID: 0}
     - target: {fileID: 3218343592089456934, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.92387956
       objectReference: {fileID: 0}
     - target: {fileID: 3218343592089456934, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3218343592089456934, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0.38268343
       objectReference: {fileID: 0}
     - target: {fileID: 3218343592089456934, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3218343592089456934, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1096,7 +1042,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3218343592089456934, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 3218343592089456934, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -1117,6 +1063,14 @@ PrefabInstance:
     - target: {fileID: 4886141116574303128, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7285336038133347070, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
+      propertyPath: m_Text
+      value: "Akt\xF8rer"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7285336038133347070, guid: 5028a24680b78154cb1613ffb0e4db1d, type: 3}
+      propertyPath: m_FontData.m_VerticalOverflow
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1276,7 +1230,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0001373291, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.00048828125}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5849765079443244007
@@ -1435,8 +1389,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5849765080255549893}
-  m_LocalRotation: {x: -0, y: -0.00000020861623, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: -0.38268343, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 0, z: -254.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1444,11 +1398,11 @@ RectTransform:
   - {fileID: 5849765079241435754}
   - {fileID: 5849765080757526433}
   m_Father: {fileID: 4015128326502819039}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 460, y: 0}
+  m_SizeDelta: {x: 460, y: 550}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5849765080255549891
 MonoBehaviour:
@@ -1483,6 +1437,7 @@ GameObject:
   - component: {fileID: 5849765080255549888}
   - component: {fileID: 5849765080255549891}
   - component: {fileID: 5849765080255549894}
+  - component: {fileID: 5849765080255549895}
   m_Layer: 5
   m_Name: Scroll UI Sample
   m_TagString: Untagged
@@ -1516,6 +1471,29 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!223 &5849765080255549895
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5849765080255549893}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!114 &5849765080719539874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1742,8 +1720,9 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "Velkommen til The Candidate, hvor du kan trene p\xE5 \xE5 bli intervjuet
-    til ulike stillinger. \n\nTil h\xF8yre finn du et panel med ulike jobber og ulike
-    tjenester du kan hente jobber fra. Vennligst plukk en for \xE5 starte"
+    til ulike stillinger. \n\nTil h\xF8yre finn du 2 paneler.\n\n- Midterste panelet
+    har de ulike jobbene vi henter fra tjenester\n\n- Panelet lengs til h\xF8yre
+    legger du inn de ulike akt\xF8reren du er intressert skal intervjue deg"
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
