@@ -60,6 +60,10 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying
         {
             bufferAnimation.PlayAnimation();
         }
+        else
+        {
+            bufferAnimation.StopAnimation();
+        }
     }
 
     private void UpdateText()
