@@ -51,6 +51,7 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
     {
         audioSource.transform.position = head.transform.position;
         timeForBlink -= Time.deltaTime;
+        timeForNodding -= Time.deltaTime;
         if(timeForBlink <= 0){
             animator.Play(BlinkingBlinkHash);
             timeForBlink = random.Next(1, 3);
