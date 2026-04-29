@@ -62,16 +62,16 @@ public class Environment {
     {
         public static readonly Actor Director = new("Director", "A actor that tells other actors what to do. Their dialogue is always a instructions to the next actor. CAN NEVER BE REFERENCED OR TALKED TO");
         public static readonly Actor Candidate = new("Candidate", "The candidate you are interviewing. YOU CAN NEVER BECOME THIS ROLE");
-        public static readonly Actor Manager = new("Manager", "");
+        public static readonly Actor Manager = new("Daglig Leder", "");
         public static readonly Actor HiringManger = new("Hiring Manager",
         "You are the one that has called in the candidate for a interview. You assume this is one of your potential candidates looking trough their CV. You are here to confirm this trough what you think the company needs");
         public static readonly Actor HR = new("HR", "Your main focus should be in assesing how you think the candidate would fit in with the rest of the company.");
         public static readonly Actor Expert = new("Expert", "You are here to assess the persons skills. You are familiar with most of the tasks they will undertake and are interested in knowing what they would do in rare scenarios.");
-        public static readonly Actor Employee = new("Employee", "");
+        public static readonly Actor Employee = new("Ansatt", "");
 
         public static readonly List<Actor> NPCactors = new() {Manager, HiringManger, HR, Expert, Employee}; 
-        private string name;
-        private string roleDescription;
+        private readonly string name;
+        private readonly string roleDescription;
 
         private Actor(string name, string roleDescription)
         {

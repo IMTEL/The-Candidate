@@ -8,12 +8,12 @@ public class ScenarioSettings {
 
     public Environment.Job job {get; private set;} = Environment.Job.Store;
 
-    private Dictionary<Environment.Actor, int> actors = new();
+    private readonly Dictionary<Environment.Actor, int> actors = new();
 
 
     public ScenarioSettings()
     {
-        foreach (Environment.Actor item in Environment.Actor.NPCactors)
+        foreach (Environment.Actor item in new List<Environment.Actor>() {Environment.Actor.HR, Environment.Actor.Manager, Environment.Actor.Employee})
         {
             actors.Add(item, 0);
         }
