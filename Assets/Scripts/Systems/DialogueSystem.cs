@@ -16,6 +16,8 @@ public class DialogueSystem : IEvent<IDialogueReady>
     private readonly List<Dialog> dialogs = new();
     public Action<(NPC, Dialog)> onDialogueReady;
 
+    private readonly Random random = new();
+
     public DialogueSystem(ScenarioSettings scenario, NPCRegistry nPCRegistry, string startingprompt = "")
     {
         this.scenario = scenario;
@@ -57,14 +59,16 @@ public class DialogueSystem : IEvent<IDialogueReady>
     private async Task HandleUserDialog(Dialog userDialog, CancellationToken token)
     {
         dialogs.Add(userDialog);
-        IEnumerator<NPC> npcs = NPCRegistry.GetNPCEnumerable().GetEnumerator();
+        List<NPC> listnpcs = NPCRegistry.GetNPCEnumerable().ToList().OrderBy((_) => random.Next()).ToList();
+        IEnumerator<NPC> npcs = listnpcs.GetEnumerator();
         npcs.MoveNext();
         while(npcs.Current)
         {
             NPC npc = npcs.Current;
             List<Dialog> dialogsCopy = new(dialogs);
-            if (npcs.MoveNext()) dialogsCopy.Add(new(Environment.Actor.Director, "Say your thoughts, DON'T Ask a question"));
+            if (npcs.MoveNext()) dialogsCopy.Add(new(Environment.Actor.Director, $"DON'T Ask a question. After you ${npcs.Current.name} will speak"));
             else dialogsCopy.Add(new(Environment.Actor.Director, "Ask a question after your response"));
+
             string text = await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogsCopy);
             Dialog dialog = new(npc.actor, text, ((ITTService)npc.TTService.CreateService()).getAudioClip(text, npc.GetTTSOptions()));
             token.ThrowIfCancellationRequested();

@@ -40,7 +40,7 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
     {
         audioSource = GetComponent<AudioSource>();
         animator = transform.parent.GetComponentInChildren<Animator>();
-        timeForBlink = random.Next(2, 5);
+        timeForBlink = random.Next(1, 3);
     }
     void Start()
     {
@@ -53,12 +53,12 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
         timeForBlink -= Time.deltaTime;
         if(timeForBlink <= 0){
             animator.Play(BlinkingBlinkHash);
-            timeForBlink = random.Next(2, 5);
+            timeForBlink = random.Next(1, 3);
         }
         if (recording && timeForNodding <= 0)
         {
             animator.Play(NoddingHash);
-            timeForNodding = random.Next(1, 7);
+            timeForNodding = random.Next(1, 5);
         }
     }
 
