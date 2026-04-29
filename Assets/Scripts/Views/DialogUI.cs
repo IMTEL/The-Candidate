@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Tutorials.Core.Editor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +14,9 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying
     public TMP_Text text;
 
     private DialogueScheduler dialogueScheduler;
-
+    
+    private SpriteImageAnimation bufferAnimation;
+    
     private int pages;
 
     public Button NextButton;
@@ -23,13 +26,17 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying
     {
         toggle = toggle != null ? toggle : GetComponentInChildren<Toggle>();
         text = text != null ? text : GetComponentInChildren<TMP_Text>();
+        bufferAnimation = GetComponentInChildren<SpriteImageAnimation>();
+
     }
 
     private void Start()
     {
         ExtendedWhisperManager extendedWhisperManager = BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>();
         DialogueScheduler dialogueScheduler = BootStrap.Instance.GetComponentInChildren<DialogueScheduler>();
-        toggle.onValueChanged.AddListener(_ => {SetText(""); extendedWhisperManager.ToggleMicrophone();});
+        toggle.onValueChanged.AddListener(_ => 
+            {if (!extendedWhisperManager.ToggleMicrophone()) SetText("");}
+        );
         dialogueScheduler.AddListener(this);
     } 
 
@@ -50,6 +57,10 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying
     {
         timer = 0;
         dialogue = newText;
+        if (newText.IsNotNullOrEmpty())
+        {
+            bufferAnimation.PlayAnimation();
+        }
     }
 
     private void UpdateText()

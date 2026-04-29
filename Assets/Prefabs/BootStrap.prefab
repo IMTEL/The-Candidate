@@ -266,7 +266,7 @@ MonoBehaviour:
   modelPath: Whisper/nb-whisper-tiny.bin
   isModelPathInStreamingAssets: 1
   initOnAwake: 1
-  useGpu: 0
+  useGpu: 1
   flashAttention: 1
   language: no
   translateToEnglish: 0
