@@ -33,7 +33,7 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying, IMicrophoneEventListene
     {
         ExtendedWhisperManager extendedWhisperManager = BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>();
         DialogueScheduler dialogueScheduler = BootStrap.Instance.GetComponentInChildren<DialogueScheduler>();
-        toggle.onValueChanged.AddListener(value => { extendedWhisperManager.ToggleMicrophone(value); if (!value) { text.SetText(""); } });
+        toggle.onValueChanged.AddListener(value => { extendedWhisperManager.ToggleMicrophone(value); if (!value) { SetText(""); } });
         dialogueScheduler.AddListener(this);
     }
 
