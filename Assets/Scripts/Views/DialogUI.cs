@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogUI : MonoBehaviour, IDialoguePlaying
+public class DialogUI : MonoBehaviour, IDialoguePlaying, IMicrophoneEventListener
 {
 
     public float letterPerSecond = 8;
@@ -13,9 +13,9 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying
     public TMP_Text text;
 
     private DialogueScheduler dialogueScheduler;
-    
+
     private SpriteImageAnimation bufferAnimation;
-    
+
     private int pages;
 
     public Button NextButton;
@@ -33,11 +33,9 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying
     {
         ExtendedWhisperManager extendedWhisperManager = BootStrap.Instance.GetComponentInChildren<ExtendedWhisperManager>();
         DialogueScheduler dialogueScheduler = BootStrap.Instance.GetComponentInChildren<DialogueScheduler>();
-        toggle.onValueChanged.AddListener(_ => 
-            {if (!extendedWhisperManager.ToggleMicrophone()) SetText("");}
-        );
+        toggle.onValueChanged.AddListener(value => { extendedWhisperManager.ToggleMicrophone(value); if (!value) { text.SetText(""); } });
         dialogueScheduler.AddListener(this);
-    } 
+    }
 
     // Update is called once per frame
     void Update()
@@ -70,23 +68,23 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying
     {
         string modifiedText = dialogue;
         pages = text.textInfo.pageCount;
-        
-        if(dialogue.Length/letterPerSecond + AfterSeconds > timer) timer += Time.deltaTime;
-        
-        if(dialogue.Length > letterPerSecond * timer)
+
+        if (dialogue.Length / letterPerSecond + AfterSeconds > timer) timer += Time.deltaTime;
+
+        if (dialogue.Length > letterPerSecond * timer)
         {
-            modifiedText = $"{modifiedText[..(int)(letterPerSecond * timer)]}<color=#FFFFFF00>{modifiedText[(int)(letterPerSecond * timer)..]}</color>" ;
+            modifiedText = $"{modifiedText[..(int)(letterPerSecond * timer)]}<color=#FFFFFF00>{modifiedText[(int)(letterPerSecond * timer)..]}</color>";
             //We are setting the text and reading the amount of pages it would give us. This way, we can't browse to the next page before it is visible
             text.text = modifiedText[..(int)(letterPerSecond * timer)];
-            try{text.ForceMeshUpdate();}
-            catch{}
+            try { text.ForceMeshUpdate(); }
+            catch { }
             pages = text.textInfo.pageCount;
         }
         text.text = modifiedText;
-        if(pages < text.pageToDisplay && pages != 0)
+        if (pages < text.pageToDisplay && pages != 0)
         {
             text.pageToDisplay = text.textInfo.pageCount;
-        }   
+        }
     }
 
     public bool TextPlaying()
@@ -120,4 +118,15 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying
     {
         dialogueScheduler.RemoveListener(this);
     }
+
+    public void onMicrophoneStartRecording()
+    {
+        toggle.isOn = true;
+    }
+
+    public void onMicrophoneStopRecording(Dialog _)
+    {
+        toggle.isOn = false;
+    }
+
 }

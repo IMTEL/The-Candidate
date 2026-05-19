@@ -22,12 +22,6 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
     private ScenarioSettings settings;
 
 
-    [Init]
-    private void Init(ScenarioSettingsWrapper scenarioSettingsWrapper)
-    {
-        this.settings = scenarioSettingsWrapper.getScenarioSettings();
-    }
-
     public void UpdateScene()
     {
         spawnLocations = FindObjectsByType<NPCSpawnPoint>(sortMode: FindObjectsSortMode.None);
@@ -69,6 +63,7 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
 
     void Start()
     {
+        this.settings = BootStrap.Instance.GetComponentInChildren<ScenarioSettingsWrapper>().getScenarioSettings();
         UpdateScene();
     }
     void INPCEventListener.OnCreateNPC(NPC nPC)

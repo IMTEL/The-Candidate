@@ -49,8 +49,16 @@ public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventList
     [Button]
     public bool ToggleMicrophone()
     {
-        if (!mic.IsRecording) StartRecording();
-        else StopRecording();
+        return ToggleMicrophone(!mic.IsRecording);
+    }
+
+    public bool ToggleMicrophone(bool value)
+    {
+        if(value != mic.IsRecording)
+        {
+            if (value) StartRecording();
+            else StopRecording(); 
+        }
         return mic.IsRecording; 
     }
 
