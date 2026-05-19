@@ -17,6 +17,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Human.eyebrow002
+    second: {fileID: 2100000, guid: d42d766ac43affb4ea343e7e10f8af55, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Human.high-poly
     second: {fileID: 2100000, guid: eb3a9347aa13a334b8138143c5014be9, type: 2}
   - first:
@@ -59,6 +64,11 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Human.short02
     second: {fileID: 2100000, guid: 003bbe121eb3c5c4db4d46835986964f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Human.tongue01
+    second: {fileID: 2100000, guid: df1e693467da3e849a619bdc8bda72a8, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
