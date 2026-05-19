@@ -24,11 +24,11 @@ public class Environment {
     /// </summary>
     public class Job
     {
-        public static Job Store = new("Store worker", "A store worker for a store. Standard work tasks being filling shelfs and helping customers.");
-        public static Job Sales = new("Phone Seller", "Phone seller within a phone center. Standard work includes convincing customer in shifting providers, make them buy goods or handle complaints/questions.");
-        public static Job Post = new("Postal Serice", "Postman delivering packages. Needs to have a access to a driving license. ");
-        public static Job Cleaner = new("Cleaner",  "");
-        public static Job Assistant = new("Assistant","");
+        public static Job Store = new("Butikkmedarbeider", "En butikkmedarbeider kan arbeide innenfor mange forskjellige bransjer, for eksempel dagligvarer, klær, sport eller kosmetikk. Som butikkmedarbeider må du ha kunnskap om produktene du skal selge for å kunne gi kundene den informasjonen og veiledningen de trenger.");
+        public static Job Sales = new("Telefonselger", "En telefonselger er en salgsmedarbeider som jobber med salg av ulike varer og tjenester over telefon. Som telefonselger består jobben din av salg, markedsføring og kundebehandling over telefon til privatkunder eller bedrifter. For å lykkes i jobben bør du ha god kunnskap om produktene og kundene. ");
+        public static Job Post = new("Postbud", "Som postbud består arbeidet i å levere post til private husstander og bedrifter. Postbud distribuerer all type post - alt av brev, pakker, blader, aviser, reklame og annet. Utdelingen foregår utendørs, i hovedsak i tidsrommet fra klokka 07.00 til 17.00. Stort sett foregår utdelingen til fots, med sykkel, moped eller bil, avhengig av arbeidssted.");
+        public static Job Cleaner = new("Renholdsoperatør",  "Renholdsoperatøren utfører daglig rengjøring i offentlige og private bygg som kontorer, sykehus, skoler, industribygg, tog, buss og andre steder der mennesker oppholder seg på jobb og i fritiden. Arbeidet kan innebære oppgaver som gulvrengjøring, vinduspuss, smitteforebyggende renhold og bruk av avanserte rengjøringsmaskiner. Moderne renhold handler ikke bare om rengjøring. Det handler også om å ta gode valg for klima og miljø og bruk av utstyr som reduserer helsebelastningen og øker effektiviteten.");
+        public static Job Assistant = new("Sekretær","Sekretærer spiller en viktig rolle i den daglige driften av kontorer og arbeidsplasser. De har ansvar for en rekke administrative oppgaver, som er sentrale for å sikre en effektiv og velfungerende arbeidshverdag. Sekretærer er ofte en nøkkelperson i organisasjonen, og deres arbeid er avgjørende for å sikre at arbeidsflyten er jevn og produktiv.");
         public static HashSet<Job> All = new() { Cleaner, Store, Post, Sales, Assistant };
         public string name {get; private set;} = ""; 
         public string description {get; private set;} = "";
