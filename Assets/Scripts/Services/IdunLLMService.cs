@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,10 +35,18 @@ public class IdunLLMService : ILLMService
         this.apiKey ??= apiKey;
     }
 
-    public async Task<string> GetAIResponse(string startPrompt, List<Dialog> dialogs)
-    {
+    public async Task<string> GetAIResponse(string startingPrompt, List<Dialog> dialogs, IEnumerable<OptionBase> options)
+    {   OpenAICompletionRequest.Model model;
+        try
+        {
+            model = (OpenAICompletionRequest.Model)options.First(option => option.GetName().Equals("Model")).GetObjectValue();
+        }
+        catch
+        {
+            model = OpenAICompletionRequest.Model.IDUN_GPT_OSS_120b;
+        }
         await simulationousRequests.WaitAsync();
-        OpenAICompletionRequest requestBody = new(startPrompt, model: OpenAICompletionRequest.Model.IDUN_GPT_OSS_120b, dialogs);
+        OpenAICompletionRequest requestBody = new(startingPrompt, model: model, dialogs);
         UnityWebRequest request = new(url, "POST")
         {
             uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(requestBody.ToJson())),
@@ -68,7 +78,7 @@ public class IdunLLMService : ILLMService
 
         return new List<OptionBase>
         {
-            new FloatBoundOption("Temprature",1,0,2),
+            new FloatBoundOption("Temperature",1,0,2),
             // supply explicit display names for clarity
             new PickOption<OpenAICompletionRequest.Model>(
                 "Model",

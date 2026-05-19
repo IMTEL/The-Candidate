@@ -69,7 +69,7 @@ public class DialogueSystem : IEvent<IDialogueReady>
             if (npcs.MoveNext()) dialogsCopy.Add(new(Environment.Actor.Director, $"DON'T Ask a question. After you ${npcs.Current.name} will speak"));
             else dialogsCopy.Add(new(Environment.Actor.Director, "Ask a question after your response"));
 
-            string text = await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogsCopy);
+            string text = await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogsCopy, npc.GetLLMOptions());
             Dialog dialog = new(npc.actor, text, ((ITTService)npc.TTService.CreateService()).getAudioClip(text, npc.GetTTSOptions()));
             token.ThrowIfCancellationRequested();
             dialogs.Add(dialog);

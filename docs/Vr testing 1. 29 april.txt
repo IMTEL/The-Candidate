@@ -1,0 +1,25 @@
+# Testing 28.04 NR 1
+- Litt usikkerhet bak funksjoner for hvordan man kommer seg gjennom applikasjonen (knapper på kontroller, hvordan man setter den opp). FIKS tutorial eller kontroller oppsett bilde
+- Fortsatt ekstremt treg STT. Røffelig 40s
+- Får "teken" med engang man får instrukser.
+- Ble mørkt (Stagger av TTS, How the fuck do I fix that)
+- Stopper midt i setninger for å gjøre noe (RAM issues? Saving the audioclips to memory might be the cause)
+- Stiller samme spørsmål igjen
+
+## Kommentarer
+- Unaturlig lang pause tid. Hindrer/stopper samtalen, føles unaturlig. Folk vil miste tålmodigheten. 
+- Kvinne får mer kvinnelig klær for autentisk
+- Sitter rart med henda. Mer avslappa, arma på arm lene og og henda rundt enden eller åpene
+- Har notatblokker eller annet tilgjenglig
+- Ser ut til at dem ikke rekker ned til gulvet
+- Transkrivert feil på STT modellen  (Hele setninger)
+
+## Spørsmå
+- Intrykket?
+- Bedre enn tidligere, fint med kommentarer. Bør være mer imøtekommende i starten (takk for å dukke opp). Tilbakemelding bør være mer konkret, med eksempler og støttende. Tilbakemeldingene bør kunne gi en refleksjon om hva som skal til for en bedre itlbakemedling. Legge ut ulike nivåer, for erfaringer (Fullt støttte, gir tilbakemedling og iskald).
+
+- Åpenbare feil
+- Settingen er mer naturlig (Henda igjen). Folk uten utdanning fokuserer kanskje på feil ting. Så nær en real sitashun som mulig
+
+- Noe feil eller noe som må snues i AI
+- Ekke noe feil, men kan utvikles mer (Notatene fra over).
