@@ -6,10 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class Pause : MonoBehaviour, IPauseMenuEventListener, IEvent<IPause>
 {
-    public List<GameObject> pauseMenues;
+    public List<GameObject> pauseMenues = new();
 
     private readonly List<GameObject> instatiesMenues = new();
-    public List<GameObject> DeactiveOnPause;
+    public List<GameObject> DeactiveOnPause = new();
 
     public InputActionReference pause;
 
