@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: com.whisper.unity::Whisper.Utils.MicrophoneRecord
   maxLengthSec: 60
-  loop: 0
+  loop: 1
   frequency: 16000
   chunksLengthSec: 0.5
   echo: 0
