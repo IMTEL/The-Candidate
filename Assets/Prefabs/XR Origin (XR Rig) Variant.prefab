@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6047561343969032855, guid: 85cd6e95bf77fa749baec6b2ae250b5c, type: 3}
       propertyPath: DeactiveOnPause.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6195731949916457162, guid: 85cd6e95bf77fa749baec6b2ae250b5c, type: 3}
       propertyPath: m_Name
