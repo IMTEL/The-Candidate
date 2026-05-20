@@ -1,5 +1,9 @@
 # Test 2, April 28
-- Igjen, litt usikkherhet bak applikasjonen og hvordan man navigerer.
+2 personer fra fylkes kommunen. En med liten erfaring og en med grei erfaring
+
+
+## Observasjoner
+- Igjen, litt usikkherhet bak applikasjonen og hvordan man navigerer. (Referer til tidligere test samme dag)
 - Ser snapp turn driv å ødelegger opplevelsen igjen.. SKRU AV
 - Lengden på svaret tar å æker lengden på response tid drastisk (MÅ SJEKKES, tilfedlig sample test var 5.5min)
 
@@ -15,7 +19,7 @@
 - Hadde vært flott å kunne hente tidligere
 
 - Svaret var oppfyllende og nok. Bra et den er positiv og ber om eksempler.
--Trener på å respondere raskt.
+- Trener på å respondere raskt.
 - Intriør: Bra med fint rundt bord, avslappa stoler. 
 - Responstida er treg.
 
