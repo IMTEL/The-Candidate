@@ -40,7 +40,6 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
             result.Invoke();
         }
 
-        //Okey, I need the following setup:
         // 1. If we are paused, the microphone is recording or the the last npc. Don't do jack shit
         if (micRecording || (lastDialogue.npc && (lastDialogue.npc.audioSource.isPlaying || PauseAudio.paused || PauseAudio.audiopaused))) return;
         bool setText = false;

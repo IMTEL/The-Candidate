@@ -1,4 +1,8 @@
-VR Testing:
+# VR Testing 22 april:
+
+Testing med en fra NAV med grei erfaring innenfor VR
+
+## Observasjoner
 - Stagger under laging av dialog
 - Usikkerhet om iconet tar opp eller ikke.
 - Skulle ha sitti med
@@ -9,7 +13,7 @@ VR Testing:
 - (BUG) Tale til tekst modellen som feilet (Might be user error due to poor microphone state visibility)
 - (BUG) svar ble gjentatt
 
-Summary:
+## Kommentarer:
 - Begynner å bli bra
 - Flere karkaterer: variasjon + i intervjuet
 - Dobbeltsjekk for fargeblindhet (Contrast checker it is)

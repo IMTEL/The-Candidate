@@ -30,4 +30,9 @@ public class NPCRegistry : INPCEventListener
     {
         NPCs.Clear();
     }
+
+    public int Count()
+    {
+        return NPCs.Count;
+    }
 }

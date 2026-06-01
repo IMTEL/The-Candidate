@@ -1,4 +1,8 @@
 # Testing 28.04 NR 1
+
+Professor innenfor karriere veiledning. Liten erfaring med VR
+
+## Observasjoner
 - Litt usikkerhet bak funksjoner for hvordan man kommer seg gjennom applikasjonen (knapper på kontroller, hvordan man setter den opp). FIKS tutorial eller kontroller oppsett bilde
 - Fortsatt ekstremt treg STT. Røffelig 40s
 - Får "teken" med engang man får instrukser.

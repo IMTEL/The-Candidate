@@ -1,4 +1,4 @@
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,10 +19,10 @@ public class IdunLLMService : ILLMService
 
     /// <summary>
     /// A limiter used to only allow a certain amount of requests at the same time.
-    /// This is to limit the amount of necassery traffic
+    /// This is to limit the amount of unecassery traffic
     /// </summary>
     private readonly SemaphoreSlim simulationousRequests = new(1);
-
+ 
     /// <summary>
     /// The url that should be sent to
     /// </summary>
