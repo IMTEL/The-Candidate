@@ -18,6 +18,10 @@ public class DialogueSystem : IEvent<IDialogueReady>
 
     private readonly Random random = new();
 
+    private const int INTRODUCTION_LIMIT = 2;
+
+    private const int MAIN_LIMIT = 12;
+
     public DialogueSystem(ScenarioSettings scenario, NPCRegistry nPCRegistry, string startingprompt = "")
     {
         this.scenario = scenario;
@@ -59,15 +63,20 @@ public class DialogueSystem : IEvent<IDialogueReady>
     private async Task HandleUserDialog(Dialog userDialog, CancellationToken token)
     {
         dialogs.Add(userDialog);
+        if (IntermidateDialog(out string directorDialog))
+        {
+            dialogs.Add(new(Environment.Actor.Director, directorDialog));
+        }
         List<NPC> listnpcs = NPCRegistry.GetNPCEnumerable().ToList().OrderBy((_) => random.Next()).ToList();
         IEnumerator<NPC> npcs = listnpcs.GetEnumerator();
         npcs.MoveNext();
         while(npcs.Current)
         {
             NPC npc = npcs.Current;
-            List<Dialog> dialogsCopy = new(dialogs);
-            if (npcs.MoveNext()) dialogsCopy.Add(new(Environment.Actor.Director, $"DON'T Ask a question. After you ${npcs.Current.name} will speak"));
-            else dialogsCopy.Add(new(Environment.Actor.Director, "Ask a question after your response"));
+            List<Dialog> dialogsCopy = new(dialogs)
+            {
+                new(Environment.Actor.Director, npcs.MoveNext() ? $"Don't ask a question. ${npcs.Current.name} is after you" : "Ask a question if relevant")
+            };
 
             string text = await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogsCopy, npc.GetLLMOptions());
             Dialog dialog = new(npc.actor, text, ((ITTService)npc.TTService.CreateService()).getAudioClip(text, npc.GetTTSOptions()));
@@ -75,6 +84,26 @@ public class DialogueSystem : IEvent<IDialogueReady>
             dialogs.Add(dialog);
             onDialogueReady?.Invoke((npc, dialog));
         }
+    }
+
+    private bool IntermidateDialog(out string dialog)
+    {
+        dialog = "";
+        if(dialogs.Count() == 1)
+        {
+            dialog = "Focus on introducing yourself and the candidate. These can be things about how you/they are doing and names";
+        }  
+        //The amount of the candidate has answered + 2 (one for the last intermediate and another for reaching the limit)
+        else if(dialogs.Count(dialog => dialog.actor == Environment.Actor.Candidate) == INTRODUCTION_LIMIT+2)
+        {
+            dialog = $"Time to start the interview";
+        }
+        //Same thing as above 
+        else if (dialogs.Count(dialog => dialog.actor == Environment.Actor.Candidate) == MAIN_LIMIT+INTRODUCTION_LIMIT+3)
+        {
+            dialog = $"The interview is coming to a close, start wrapping it up by allowing the candidate to ask some questions";
+        }
+        return dialog == "";
     }
 
     public void AddListener(IDialogueReady listener)
