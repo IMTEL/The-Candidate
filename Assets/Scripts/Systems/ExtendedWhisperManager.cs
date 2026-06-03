@@ -1,5 +1,10 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Threading;
+using System.Threading.Tasks;
 using Alchemy.Inspector;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -14,6 +19,9 @@ public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventList
     MicrophoneRecord mic;
 
     WhisperManager whisperManager;
+    private CancellationTokenSource cancellationToken = new();
+
+    private readonly List<Task<WhisperResult>> set = new();
 
     private event UnityAction onMicrophoneStartRecording;
     private event UnityAction<Dialog> onMicrophoneEndRecording;
@@ -39,10 +47,26 @@ public class ExtendedWhisperManager : MonoBehaviour, IEvent<IMicrophoneEventList
 
     private async void SendChunk(AudioChunk recordedAudio)
     { 
-        WhisperResult result = await whisperManager.GetTextAsync(recordedAudio.Data, recordedAudio.Frequency, recordedAudio.Channels);
-        AudioClip test = AudioClip.Create("User",recordedAudio.Data.Count()/recordedAudio.Channels,recordedAudio.Channels,recordedAudio.Frequency, false);
-        test.SetData(recordedAudio.Data,0);
-        Dialog newDialog = new(Environment.Actor.Candidate, result.Result, test);
+        cancellationToken.Cancel();
+        cancellationToken = new();
+        CancellationTokenSource thisCancellationToken = cancellationToken;
+        string dialog = "";
+        Task<WhisperResult> task = whisperManager.GetTextAsync(recordedAudio.Data, recordedAudio.Frequency, recordedAudio.Channels);
+        set.Add(task);
+        await Task.WhenAll(set.ToArray());
+        if (thisCancellationToken.IsCancellationRequested || mic.IsRecording)
+        {
+            return;
+        }
+        lock (set)
+        {
+            foreach (var item in set)
+            {
+                dialog += item.Result.Result;
+            }
+            set.Clear();            
+        }
+        Dialog newDialog = new(Environment.Actor.Candidate, dialog);
         onMicrophoneEndRecording?.Invoke(newDialog);
     }
 

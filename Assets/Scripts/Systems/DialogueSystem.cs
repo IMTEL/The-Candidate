@@ -20,7 +20,7 @@ public class DialogueSystem : IEvent<IDialogueReady>
 
     private const int INTRODUCTION_LIMIT = 2;
 
-    private const int MAIN_LIMIT = 12;
+    private const int MAIN_LIMIT = 5;
 
     public DialogueSystem(ScenarioSettings scenario, NPCRegistry nPCRegistry, string startingprompt = "")
     {
@@ -62,11 +62,12 @@ public class DialogueSystem : IEvent<IDialogueReady>
     /// <returns></returns>
     private async Task HandleUserDialog(Dialog userDialog, CancellationToken token)
     {
-        dialogs.Add(userDialog);
         if (IntermidateDialog(out string directorDialog))
         {
             dialogs.Add(new(Environment.Actor.Director, directorDialog));
         }
+        dialogs.Add(userDialog);
+
         List<NPC> listnpcs = NPCRegistry.GetNPCEnumerable().ToList().OrderBy((_) => random.Next()).ToList();
         IEnumerator<NPC> npcs = listnpcs.GetEnumerator();
         npcs.MoveNext();
@@ -75,7 +76,7 @@ public class DialogueSystem : IEvent<IDialogueReady>
             NPC npc = npcs.Current;
             List<Dialog> dialogsCopy = new(dialogs)
             {
-                new(Environment.Actor.Director, npcs.MoveNext() ? $"Don't ask a question. ${npcs.Current.name} is after you" : "Ask a question if relevant")
+                new(Environment.Actor.Director, npcs.MoveNext() ? $"DON'T YOU DARE ask a question. ${npcs.Current.name} is after you" : "Ask ONLY 1 question IF relevant")
             };
 
             string text = await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogsCopy, npc.GetLLMOptions());
@@ -89,21 +90,21 @@ public class DialogueSystem : IEvent<IDialogueReady>
     private bool IntermidateDialog(out string dialog)
     {
         dialog = "";
-        if(dialogs.Count() == 1)
+        if(dialogs.Count() == 0)
         {
-            dialog = "Focus on introducing yourself and the candidate. These can be things about how you/they are doing and names";
+            dialog = "Start introducing each other. Focus ONLY on subjective questions. NOT WORK RELATED. Examples are: How are you today?, How was it arriving here? Done anything excited lately?";
         }  
-        //The amount of the candidate has answered + 2 (one for the last intermediate and another for reaching the limit)
-        else if(dialogs.Count(dialog => dialog.actor == Environment.Actor.Candidate) == INTRODUCTION_LIMIT+2)
+        //The amount of the candidate has answered + 1 (The empty one in the beginning)
+        else if(dialogs.Count(dialog => dialog.actor == Environment.Actor.Candidate) == INTRODUCTION_LIMIT)
         {
-            dialog = $"Time to start the interview";
+            dialog = $"Time to start the interview. Focus ONLY on job related questions";
         }
         //Same thing as above 
-        else if (dialogs.Count(dialog => dialog.actor == Environment.Actor.Candidate) == MAIN_LIMIT+INTRODUCTION_LIMIT+3)
+        else if (dialogs.Count(dialog => dialog.actor == Environment.Actor.Candidate) == MAIN_LIMIT+INTRODUCTION_LIMIT)
         {
-            dialog = $"The interview is coming to a close, start wrapping it up by allowing the candidate to ask some questions";
+            dialog = $"Start wrapping up the interview by allowing the candidate to ask some questions";
         }
-        return dialog == "";
+        return dialog != "";
     }
 
     public void AddListener(IDialogueReady listener)

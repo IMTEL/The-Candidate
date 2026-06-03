@@ -144,16 +144,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
   name: Heidi
-  TTService: {fileID: 11400000, guid: c9a2c02402109f51b9924762e532ccbc, type: 2}
+  TTService: {fileID: 11400000, guid: 04044ea3e83824641aa9b63ac22d8707, type: 2}
   TTSOptions:
-  - rid: 7853209472828702899
-  - rid: 7853209472828702900
-  - rid: 7853209472828702901
-  - rid: 7853209472828702902
+  - rid: 4535282144663569350
+  - rid: 4535282144663569351
+  - rid: 4535282144663569352
+  - rid: 4535282144663569353
   LLMService: {fileID: 11400000, guid: c38be792e74a11d45ba8ec8bf608b36d, type: 2}
   LLMOptions:
-  - rid: 7853209472828702903
-  - rid: 7853209472828702904
+  - rid: 4535282144663569354
+  - rid: 4535282144663569355
   head: {fileID: 230769490402387665}
   voiceProfile:
     displayName: 
@@ -163,50 +163,50 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 7853209472828702899
+    - rid: 4535282144663569350
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: CommaDelay
         value: 0
         minBound: 0
         maxBound: 3
-    - rid: 7853209472828702900
+    - rid: 4535282144663569351
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: PeriodDelay
         value: 0
         minBound: 0
         maxBound: 3
-    - rid: 7853209472828702901
+    - rid: 4535282144663569352
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: QuestionExclamationDelay
         value: 0
         minBound: 0
         maxBound: 3
-    - rid: 7853209472828702902
+    - rid: 4535282144663569353
       type: {class: 'PickOption`1[[ESpeakVoiceContainer, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         name: voice
         value:
           value:
-            rid: 7853209472828702905
-          displayName: no_NO-talesyntese-medium.onnx
+            rid: 4535282144663569356
+          displayName: Alma
         options:
         - value:
-            rid: 7853209472828702905
-          displayName: no_NO-talesyntese-medium.onnx
+            rid: 4535282144663569356
+          displayName: Alma
         - value:
-            rid: 7853209472828702906
+            rid: 4535282144663569357
           displayName: Eva
-    - rid: 7853209472828702903
+    - rid: 4535282144663569354
       type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
       data:
         name: Temperature
         value: 1
         minBound: 0
         maxBound: 2
-    - rid: 7853209472828702904
+    - rid: 4535282144663569355
       type: {class: 'PickOption`1[[OpenAICompletionRequest/Model, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         name: Model
@@ -220,18 +220,18 @@ MonoBehaviour:
           displayName: Minstral 3
         - value: 5
           displayName: NorwAI 24B
-    - rid: 7853209472828702905
+    - rid: 4535282144663569356
       type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
       data:
-        name: no_NO-talesyntese-medium.onnx
+        name: Alma
         jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
-        modelAsset: {fileID: 5022602860645237092, guid: be1e8ff26d600ef60b8db8bcbcb1c47b, type: 3}
-    - rid: 7853209472828702906
+        modelAsset: {fileID: 5022602860645237092, guid: 571d6d52d0d81f04b834f1bc9c8a8a7b, type: 3}
+    - rid: 4535282144663569357
       type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
       data:
         name: Eva
         jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
-        modelAsset: {fileID: 5022602860645237092, guid: 6c7a709d0be4b264ebb6723ed67f7692, type: 3}
+        modelAsset: {fileID: 5022602860645237092, guid: 7845a07c7f2218f45a8a8edbf6d1d02b, type: 3}
 --- !u!114 &1099828547312552811
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -15,9 +15,23 @@ MonoBehaviour:
   values:
   - rid: 8779510811059028877
   - rid: 8779510838353461707
+  - rid: 4535282143830212827
+  - rid: 4535282143830212828
   references:
     version: 2
     RefIds:
+    - rid: 4535282143830212827
+      type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
+      data:
+        name: Alma
+        jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
+        modelAsset: {fileID: 5022602860645237092, guid: 571d6d52d0d81f04b834f1bc9c8a8a7b, type: 3}
+    - rid: 4535282143830212828
+      type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
+      data:
+        name: Lisa
+        jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
+        modelAsset: {fileID: 5022602860645237092, guid: 7845a07c7f2218f45a8a8edbf6d1d02b, type: 3}
     - rid: 8779510811059028877
       type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
       data:

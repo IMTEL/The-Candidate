@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06602b5bb61c9242185e099c01237cf4, type: 3}
+  m_Name: New Piper Provider 1
+  m_EditorClassIdentifier: Assembly-CSharp::PiperProvider
+  values:
+  - rid: 4535282144641024864
+  - rid: 4535282144641024865
+  references:
+    version: 2
+    RefIds:
+    - rid: 4535282144641024864
+      type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
+      data:
+        name: Alma
+        jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
+        modelAsset: {fileID: 5022602860645237092, guid: 571d6d52d0d81f04b834f1bc9c8a8a7b, type: 3}
+    - rid: 4535282144641024865
+      type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
+      data:
+        name: Eva
+        jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
+        modelAsset: {fileID: 5022602860645237092, guid: 7845a07c7f2218f45a8a8edbf6d1d02b, type: 3}

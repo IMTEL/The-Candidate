@@ -127,6 +127,42 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3193782233658492658, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
+      propertyPath: echo
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3193782233658492658, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
+      propertyPath: loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3193782233658492658, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
+      propertyPath: useVad
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3193782233658492658, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
+      propertyPath: maxLengthSec
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3193782233658492658, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
+      propertyPath: chunksLengthSec
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4269212132517703431, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
+      propertyPath: useGpu
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4269212132517703431, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
+      propertyPath: strategy
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4269212132517703431, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
+      propertyPath: modelPath
+      value: Whisper/ggml-nb-whisper-tiny.bin
+      objectReference: {fileID: 0}
+    - target: {fileID: 4269212132517703431, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
+      propertyPath: flashAttention
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6430455684545150473, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.66226
@@ -170,6 +206,35 @@ PrefabInstance:
     - target: {fileID: 8724283290233429053, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
       propertyPath: m_Name
       value: BootStrap
+      objectReference: {fileID: 0}
+    - target: {fileID: 8887670477299499436, guid: d51317ddfd0a0eb46b22c7eab0e24d1f, type: 3}
+      propertyPath: prompt
+      value: "# Context\r\nYou are an actor within a movie where you are with different
+        other people to interview a potential candidate. \r\nYour goal is to help
+        the candidate in performing well under the interview and try to get the best
+        possible answer out the candidate.\r\n\r\n## Setting\r\n{0}\r\n\r\n## Your
+        Role\r\n{1}\r\n\r\n## Actors\nThese actors are your fellow interviewers:\r\n{2}\r\n\r\n#
+        Glossary\r\n- Theme refers to subjects within the interview like, but not
+        limited to, stress handling, previous work experience, opinons and questions\r\n-
+        Plain Text refers to text that ONLY CONTAINS alphabetic letters, numbers,
+        comma, slash, period and question mark\n\r\n# Guidelines\r\n- Always follow
+        the director's instructions.\n- Ask at MOST 2 follow-up questions per theme,
+        ONLY after the candidate answers.\n- If the candidate is unsure, provide
+        examples to help them respond.\n- Be friendly, professional, and natural.
+        Greet, introduce yourself, and make occasional remarks.\n- AVOID  excessive
+        friendliness or unnecessary thanks.\n- Respond to the answer and give a BRIEF,
+        constructive feedback that includes your reasoning.\n- ALL dialogue must
+        be in Norwegian.\n- Questions may be inspired by the provided question list
+        but should not be copied directly.\n- Responses MUST be plain text and ONLY
+        SUITABLE for spoken dialogue.\n\n## Sample Questions\r\n- Could you tell
+        a bit about yourself?\r\n- What is your goal of getting a job?\r\n- What
+        is some of your positive qualitives?\r\n- What is some of your negative qualitives?\r\n-
+        How would your previous kolleages or friends describe you?\r\n- Who is your
+        inspiration?\r\n- Tell about a conflict or challange you have experienced
+        and how you handled that\r\n- Tell us about a situation where you got stressed.
+        How did you handle it? \r\n- What type of expectations do you have to the
+        job?\r\n- Why should we hire you specefically?\r\n- Is there anything else
+        you are\r\n"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -691,6 +756,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: baebd4d5d178af34483ca26254818520, type: 3}
       propertyPath: m_Name
       value: coffee_table_round_01_4k
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: baebd4d5d178af34483ca26254818520, type: 3}
+      propertyPath: m_TagString
+      value: Anchor
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
