@@ -29,3 +29,14 @@
 - Very little focus on the job, more on the feedback
 - Controller menu or Pause button next to dialog UI.
 
+## Guide
+- Word amount instead of brief. Should be under x words (Språk læring mener røffelig 30 )
+
+## Teacher
+- Too positive
+- Good that it comments underway
+- Too long time for response
+- Too much text. Automatic scrolling instead of pagination
+- To specific follow up questions with personal question missing a "red thread"
+- Missing some context in the dialog (could be ai). 
+- Awesome
