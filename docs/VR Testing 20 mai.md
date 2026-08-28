@@ -1,5 +1,5 @@
 # Testing 20 Mai
-Gruppe på 2 med y erfaring med vr
+Gruppe på 2 med litt erfaring med vr
 
 ## Kort introduksjon
 

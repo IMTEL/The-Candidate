@@ -1,7 +1,6 @@
 # Test 2, April 28
 2 personer fra fylkes kommunen. En med liten erfaring og en med grei erfaring
 
-
 ## Observasjoner
 - Igjen, litt usikkherhet bak applikasjonen og hvordan man navigerer. (Referer til tidligere test samme dag)
 - Ser snapp turn driv å ødelegger opplevelsen igjen.. SKRU AV
