@@ -35,7 +35,7 @@ public class IdunLLMService : ILLMService
         this.apiKey ??= apiKey;
     }
 
-    public async Task<string> GetAIResponse(string startingPrompt, List<Dialog> dialogs, IEnumerable<OptionBase> options)
+    public async Task<IEnumerable<string>> GetAIResponse(string startingPrompt, List<Dialog> dialogs, IEnumerable<OptionBase> options)
     {   OpenAICompletionRequest.Model model;
         try
         {
@@ -65,7 +65,7 @@ public class IdunLLMService : ILLMService
         JObject json = JObject.Parse(DownloadHandlerBuffer.GetContent(request));
         OpenAICompletionResponseMessage openAICompletionResponseMessage = json["choices"][0]["message"].ToObject<OpenAICompletionResponseMessage>();        
         
-        return openAICompletionResponseMessage.content;
+        return new List<string>() {openAICompletionResponseMessage.content};
     }
 
     public static IEnumerable<OptionBase> GetLLMOptions()

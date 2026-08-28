@@ -13,12 +13,12 @@ public interface ILLMService
     /// <param name="startingPrompt">the starting prompt</param>
     /// <param name="dialogs">the previous dialogs</param>
     /// <returns>The next dialog from the AI</returns>
-    public Task<string> GetAIResponse(string startingPrompt, List<Dialog> dialogs, IEnumerable<OptionBase> options);
+    public Task<IEnumerable<string>> GetAIResponse(string startingPrompt, List<Dialog> dialogs, IEnumerable<OptionBase> options);
 
     /// <summary>
     /// Returns the options within the LLMService
     /// Needs to be overwritten with the different settings for the model
     /// </summary>
-    /// <returns>The options wihtin the service</returns>
+    /// <returns>The options within the service</returns>
     static IEnumerable<OptionBase> GetLLMOptions() => throw new NotImplementedException("The implementation for option is not implemented within this instance. Add it :)");
 }
