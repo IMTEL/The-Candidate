@@ -191,7 +191,7 @@ public class OptionEntry<T> {
     // override object.GetHashCode
     public override int GetHashCode()
     {
-        return System.HashCode.Combine(value, displayName);
+        return HashCode.Combine(value, displayName);
     }
 }
 
