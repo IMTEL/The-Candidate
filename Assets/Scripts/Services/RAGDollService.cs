@@ -27,22 +27,22 @@ public class RAGDOLLService : ILLMService
     /// <summary>
     /// The url that should be sent to
     /// </summary>
-    private readonly string url = "https://iplvr.it.ntnu.no/backend/api/chat/ask";
+    private readonly string url;
 
     private readonly string apiKey;
 
-    public RAGDOLLService(string apiKey)
+    public RAGDOLLService(string apiKey) : this(apiKey, "https://iplvr.it.ntnu.no/")
+    {}
+
+    public RAGDOLLService(string apiKey, string url)
     {
         this.apiKey ??= apiKey;
+        this.url ??= url += "/backend/api/chat/ask";
     }
 
     public async Task<IEnumerable<string>> GetAIResponse(string startingPrompt, List<Dialog> dialogs, IEnumerable<OptionBase> options)
     {
-        OptionBase option = options.First(option => option.GetName().Equals("agentID"));
-        if(option == null)
-        {
-            throw new ArgumentException("Can't find Option");
-        }
+        OptionBase option = options.First(option => option.GetName().Equals("agentID")) ?? throw new ArgumentException("Can't find Option");
         await simulationousRequests.WaitAsync();
         RAGDOLLPacket requestBody = new(apiKey,(string)option.GetObjectValue(), dialogs);
         UnityWebRequest request = new(url, "POST")

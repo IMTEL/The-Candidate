@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Alchemy.Inspector;
 using UnityEngine;
 
-
 [CreateAssetMenu(menuName = "Services/LocalJobService")]
 public class LocalJobProvider : JobSelection
 {
