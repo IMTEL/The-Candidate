@@ -6,8 +6,7 @@ using UnityEngine;
 [Serializable]
 public abstract class PickOption : OptionBase{
     protected PickOption(string name) : base(name)
-    {
-    }
+    {}
 
     public abstract string  GetCurrentname();
     public abstract IEnumerable<object> GetOptionsObjects(); // all option values as objects

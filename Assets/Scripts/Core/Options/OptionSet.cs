@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class OptionSet
 {
 
@@ -29,7 +31,7 @@ public class OptionSet
         return optionBases.Add(option);
     }
 
-    public OptionSet MergeOnTop(OptionSet optionSet)
+    public OptionSet MergeOnTop(OptionSet optionSet, bool LeftUnion = false)
     {
         OptionSet merged = new(this);
         foreach (OptionBase item in optionSet.optionBases)
@@ -38,7 +40,7 @@ public class OptionSet
             {
                 merged.optionBases.TryGetValue(item, out OptionBase actualValue);
                 actualValue.TrySetValue(item.GetObjectValue());
-            } else
+            } else if(!LeftUnion)
             {
                 merged.AddOption(item);
             }

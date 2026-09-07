@@ -18,7 +18,7 @@ public class Agent
         options = LLMOverrides;
         return LLMServiceProvider != null;
     }
-    public bool GetLLMSettings(out TTSServiceProvider provider, out OptionSet options)
+    public bool GetTTSSettings(out TTSServiceProvider provider, out OptionSet options)
     {
         provider = TTServiceProvider;
         options = TTSOVerrides;
@@ -28,14 +28,12 @@ public class Agent
     public void SetLLMServiceProvider(LLMServiceProvider lLMService)
     {
         LLMServiceProvider = lLMService;
-        LLMOverrides = lLMService != null ? lLMService.GetLLMOptions() : new();
+        LLMOverrides = lLMService != null ? lLMService.GetLLMOptions().MergeOnTop(LLMOverrides) : null;
     }
 
     public void SetTTSServiceProvider(TTSServiceProvider tTSService)
     {
         TTServiceProvider = tTSService;
-        TTSOVerrides = tTSService != null ? tTSService.GetTTSOptions() : new();
+        TTSOVerrides = TTServiceProvider != null ? TTServiceProvider.GetTTSOptions().MergeOnTop(TTSOVerrides) : null;
     }
-
-
 }
