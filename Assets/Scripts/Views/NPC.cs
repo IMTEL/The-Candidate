@@ -16,13 +16,15 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
     public new string name;
 
     [LabelText("TTS Service")]
-    [SerializeReference] public TTSserviceProvider TTService = null;
+    [SerializeReference] public TTSServiceProvider TTService = null;
     [SerializeReference] private List<OptionBase> TTSOptions = new();
 
     [LabelText("AI Service")]
     [SerializeReference] public LLMServiceProvider LLMService = null;
     [SerializeReference] private List<OptionBase> LLMOptions = new();
-
+    
+    [SerializeField]
+    private Agent agent = new();
     public Environment.Actor actor = Environment.Actor.Employee;
     public AudioSource audioSource { get; private set; }
     public GameObject head;
@@ -124,28 +126,6 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
         }
     }
 
-    public IEnumerable<OptionBase> GetLLMOptions()
-    {
-        IEnumerable<OptionBase> baseline = new List<OptionBase>();
-        if (LLMService != null)
-        {
-            baseline = LLMService.GetLLMOptions();
-        }
-        LLMOptions = CompareAndGetOptions(LLMOptions, baseline);
-        return LLMOptions;
-    }
-
-    public IEnumerable<OptionBase> GetTTSOptions()
-    {
-        IEnumerable<OptionBase> baseline = new List<OptionBase>();
-        if (TTService != null)
-        {
-            baseline = TTService.GetTTSOptions();
-        }
-        TTSOptions = CompareAndGetOptions(TTSOptions, baseline);
-        return TTSOptions;
-    }
-
     public List<OptionBase> CompareAndGetOptions(List<OptionBase> localOptionBases, IEnumerable<OptionBase> options)
     {
         List<OptionBase> optionBases = new();
@@ -168,15 +148,9 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
         return optionBases;
     }
 
-
-    private void OnValidate()
+    public Agent GetAgent()
     {
-        if (LLMService == null)
-        {
-            Debug.LogError("You need to set minium the LLM service");
-        }
-        GetLLMOptions();
-        GetTTSOptions();
+        return agent;
     }
 
     public void onMicrophoneStartRecording()

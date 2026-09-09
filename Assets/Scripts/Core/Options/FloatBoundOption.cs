@@ -101,4 +101,9 @@ public class FloatBoundOption : OptionBase
         }
         return false;
     }
+
+    public override OptionBase Clone()
+    {
+        return new FloatBoundOption(GetName(), value, minBound, maxBound);
+    }
 }

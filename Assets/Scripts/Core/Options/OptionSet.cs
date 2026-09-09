@@ -6,13 +6,25 @@ using UnityEngine;
 public class OptionSet
 {
 
-    [SerializeReference]
-    private readonly HashSet<OptionBase> optionBases = new();
+    [SerializeField]
+    private HashSet<OptionBase> optionBases = new();
 
     public OptionSet(){}
 
+    public enum MergeMode
+    {
+        LeftMerge,
+        Intersect,
+        CompleteMerge
+
+    }
+
     public OptionSet(IEnumerable<OptionBase> options)
     {
+        if(options == null)
+        {
+            throw new ArgumentException("Options can't be null");
+        }
         foreach (OptionBase option in options)
         {
             optionBases.Add(option);
@@ -31,16 +43,21 @@ public class OptionSet
         return optionBases.Add(option);
     }
 
-    public OptionSet MergeOnTop(OptionSet optionSet, bool LeftUnion = false)
+    public OptionSet MergeOnTop(OptionSet optionSet, MergeMode merge = MergeMode.LeftMerge)
     {
-        OptionSet merged = new(this);
+        OptionSet merged = MergeMode.Intersect != merge ? new(this) : new();
+        if(optionSet == null) return merged;
         foreach (OptionBase item in optionSet.optionBases)
         {
-            if (merged.optionBases.Contains(item))
+            if (merged.optionBases.TryGetValue(item, out OptionBase actualValue) || optionBases.TryGetValue(item, out actualValue))
             {
-                merged.optionBases.TryGetValue(item, out OptionBase actualValue);
                 actualValue.TrySetValue(item.GetObjectValue());
-            } else if(!LeftUnion)
+                if(merge == MergeMode.Intersect)
+                {
+                    merged.AddOption(actualValue);
+                }
+            }
+            else if (merge == MergeMode.CompleteMerge)
             {
                 merged.AddOption(item);
             }
@@ -52,4 +69,14 @@ public class OptionSet
     {
         return optionBases.Remove(option);
     }
+
+    public bool ContainsOption(OptionBase option)
+    {
+        return ContainsOption(option, out _); 
+    }
+    public bool ContainsOption(OptionBase option, out OptionBase replicate)
+    {
+        return optionBases.TryGetValue(option, out replicate);
+    } 
+    
 }

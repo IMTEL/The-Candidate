@@ -31,15 +31,13 @@ public abstract class OptionBase
     public override bool Equals(object obj)
     {
         
-        if (obj == null || GetType() != obj.GetType())
+        if (obj == null || !GetType().Equals(obj.GetType()))
         {
             return false;
         }
         
         OptionBase casted = (OptionBase)obj;
-        // TODO: write your implementation of Equals() here
-        return casted.name.Equals(this.name) &&
-                casted.GetHashCode().Equals(this.GetHashCode());
+        return casted.name.Equals(name);
     }
     
     // override object.GetHashCode
@@ -47,4 +45,6 @@ public abstract class OptionBase
     {
         return 17 * 23 * name.GetHashCode();
     }
+
+    public abstract OptionBase Clone();
 }

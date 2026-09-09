@@ -14,7 +14,7 @@ public abstract class PickOption : OptionBase{
 }
 
 [Serializable]
-public class PickOption<T> : PickOption, IEvent<T>
+public class PickOption<T> : PickOption
 {
     [SerializeField] private OptionEntry<T> value;
     [SerializeField] private List<OptionEntry<T>> options;
@@ -103,26 +103,6 @@ public class PickOption<T> : PickOption, IEvent<T>
         return false;
     }
 
-    public void AddListener(IEnumerable<T> listeners)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void AddListener(T listener)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void RemoveListener(IEnumerable<T> listeners)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void RemoveListener(T listener)
-    {
-        throw new NotImplementedException();
-    }
-
     public bool Contains(OptionEntry<T> value)
     {
         return options.Contains(value);
@@ -130,7 +110,7 @@ public class PickOption<T> : PickOption, IEvent<T>
 
     public override bool Equals(object obj)
     {
-        if (obj == null || GetType() != obj.GetType())
+        if (!base.Equals(obj))
         {
             return false;
         }
@@ -154,6 +134,11 @@ public class PickOption<T> : PickOption, IEvent<T>
     public bool SetValueObject(object value)
     {
         return TrySetValue(value);
+    }
+
+    public override OptionBase Clone()
+    {
+        return new PickOption<T>(GetName(), options, value);
     }
 }
 
