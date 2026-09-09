@@ -1,6 +1,11 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// OptionBase is a class used by all options. They contain the following characteristic
+/// 1. They have a name/key specific to that option
+/// 2. When comparing options together only attributes that does not involve the value are to be used.
+/// </summary>
 [Serializable]
 public abstract class OptionBase
 {
@@ -23,8 +28,17 @@ public abstract class OptionBase
         return name;
     }
 
+    /// <summary>
+    /// Tries to set the value of the option
+    /// </summary>
+    /// <param name="value">The value to set the option to</param>
+    /// <returns>True or false depending if it could</returns>
     public abstract bool TrySetValue(object value);
-
+    
+    /// <summary>
+    /// Gets the object value
+    /// </summary>
+    /// <returns>A object that is the value of the option. Need to be casted to the correct type</returns>
     public abstract object GetObjectValue();
 
     // override object.Equals

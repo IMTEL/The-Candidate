@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A set of options. Used to contain multiple different options and save their state
+/// </summary>
 [Serializable]
 public class OptionSet
 {
@@ -13,8 +16,18 @@ public class OptionSet
 
     public enum MergeMode
     {
+
+        /// <summary>
+        /// Merges right on left only if left contains them
+        /// </summary>
         LeftMerge,
+        /// <summary>
+        /// Merges right and left to only identical elements
+        /// </summary>
         Intersect,
+        /// <summary>
+        /// Adds all elements from right to left, while also adding the rest of the elements from right.
+        /// </summary>
         CompleteMerge
 
     }
@@ -33,17 +46,32 @@ public class OptionSet
 
     public OptionSet(OptionSet optionSet) : this(optionSet.GetOptions()) {}
 
+    /// <summary>
+    /// Gets the options within the set
+    /// </summary>
+    /// <returns>Options within the set</returns>
     public IEnumerable<OptionBase> GetOptions()
     {
         return optionBases;
     }
 
+    /// <summary>
+    /// Adds a option to the set
+    /// </summary>
+    /// <param name="option">The option to be added</param>
+    /// <returns>If it got added</returns>
     public bool AddOption(OptionBase option)
     {
         return optionBases.Add(option);
     }
 
-    public OptionSet MergeOnTop(OptionSet optionSet, MergeMode merge = MergeMode.LeftMerge)
+    /// <summary>
+    /// Merges the current OptionSet with another trough a merge strategy
+    /// </summary>
+    /// <param name="optionSet">A OptionSet to merge this OptionSet with</param>
+    /// <param name="merge">A merge strategy. Default is Left</param>
+    /// <returns></returns>
+    public OptionSet Merge(OptionSet optionSet, MergeMode merge = MergeMode.LeftMerge)
     {
         OptionSet merged = MergeMode.Intersect != merge ? new(this) : new();
         if(optionSet == null) return merged;
@@ -64,16 +92,31 @@ public class OptionSet
         }
         return merged;
     }
-
+    /// <summary>
+    /// Removes a option from the set
+    /// </summary>
+    /// <param name="option">The option to remove</param>
+    /// <returns>If it got removed</returns>
     public bool RemoveOption(OptionBase option)
     {
         return optionBases.Remove(option);
     }
 
+    /// <summary>
+    /// Checks if set contains the option.
+    /// </summary>
+    /// <param name="option">The option to check for</param>
+    /// <returns>True or false depending if it is in the set</returns>
     public bool ContainsOption(OptionBase option)
     {
         return ContainsOption(option, out _); 
     }
+    /// <summary>
+    /// Checks if set contains the option.
+    /// </summary>
+    /// <param name="option">The option to check for</param>
+    /// <param name="replicate">The option it matched with</param>
+    /// <returns>True or false depending if it is in the set</returns>
     public bool ContainsOption(OptionBase option, out OptionBase replicate)
     {
         return optionBases.TryGetValue(option, out replicate);
