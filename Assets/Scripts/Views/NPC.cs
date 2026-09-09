@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Alchemy.Inspector;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
@@ -14,14 +13,6 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
 
     private System.Random random = new();
     public new string name;
-
-    [LabelText("TTS Service")]
-    [SerializeReference] public TTSServiceProvider TTService = null;
-    [SerializeReference] private List<OptionBase> TTSOptions = new();
-
-    [LabelText("AI Service")]
-    [SerializeReference] public LLMServiceProvider LLMService = null;
-    [SerializeReference] private List<OptionBase> LLMOptions = new();
     
     [SerializeField]
     private Agent agent = new();
@@ -31,8 +22,6 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
 
     private float timeForBlink;
     private float timeForNodding;
-
-    public VoiceProfile voiceProfile;
 
     public Action<NPC> onNPCDestroy;
     
@@ -80,50 +69,6 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
     public void RemoveListener(INPCEventListener listener)
     {
         onNPCDestroy -= listener.OnDestroyNPC;
-    }
-
-    public void SetLLMOptions(IEnumerable<OptionBase> values)
-    {
-        LLMOptions.Clear();
-        foreach (OptionBase item in values)
-        {
-            SetLLMOverrideValue(item);
-        }
-    }
-
-    public void SetLLMOverrideValue(OptionBase optionBase)
-    {
-        OptionBase option = LLMOptions.Find(option => option.Equals(optionBase));
-        if (option != null)
-        {
-            option.TrySetValue(optionBase.GetObjectValue());
-        }
-        else
-        {
-            LLMOptions.Add(optionBase);
-        }
-    }
-
-    public void SetTTSOptions(IEnumerable<OptionBase> values)
-    {
-        TTSOptions.Clear();
-        foreach (OptionBase item in values)
-        {
-            SetTTSOverrideValue(item);
-        }
-    }
-
-    public void SetTTSOverrideValue(OptionBase optionBase)
-    {
-        OptionBase option = TTSOptions.Find(option => option.Equals(optionBase));
-        if (option != null)
-        {
-            option.TrySetValue(optionBase.GetObjectValue());
-        }
-        else
-        {
-            TTSOptions.Add(optionBase);
-        }
     }
 
     public List<OptionBase> CompareAndGetOptions(List<OptionBase> localOptionBases, IEnumerable<OptionBase> options)

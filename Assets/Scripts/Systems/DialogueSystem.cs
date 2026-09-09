@@ -83,13 +83,16 @@ public class DialogueSystem : IEvent<IDialogueReady>
 
             IEnumerable<string> dialogues = await ((ILLMService)provider.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogsCopy, options.GetOptions());
             if(!agent.GetTTSSettings(out TTSServiceProvider TTSProvider, out OptionSet TTSOptions))
-            foreach (string dialogue in dialogues)
             {
-                Dialog dialog = new(npc.actor, dialogue, ((ITTService)npc.TTService.CreateService()).getAudioClip(dialogue, TTSOptions.GetOptions()));
+                foreach (string dialogue in dialogues)
+            {
+                Dialog dialog = new(npc.actor, dialogue, ((ITTService)TTSProvider.CreateService()).getAudioClip(dialogue, TTSOptions.GetOptions()));
                 token.ThrowIfCancellationRequested();
                 dialogs.Add(dialog);
                 onDialogueReady?.Invoke((npc, dialog));
             }
+            }
+
 
         }
     }
