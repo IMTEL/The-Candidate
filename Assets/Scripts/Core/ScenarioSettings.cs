@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Newtonsoft.Json.Utilities;
 
 /// <summary>
 /// Settings for the scenario
@@ -23,7 +22,7 @@ public class ScenarioSettings {
     /// Will set the Job for the Scenario
     /// If the amount of actors is less then previous amount, it will reset the amount to the highest amount
     /// </summary>
-    /// <param name="enviroment"></param>
+    /// <param name="job"></param>
     public void SetJob(Environment.Job job)
     {
         this.job = job ?? this.job;

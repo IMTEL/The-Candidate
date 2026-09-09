@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Services/IDUN")]
@@ -9,9 +8,9 @@ public class IdunProvider : LLMServiceProvider
     public override ILLMService CreateTypedService()
         => new IdunLLMService(apiKey);
 
-    public override IEnumerable<OptionBase> GetLLMOptions()
+    public override OptionSet GetLLMOptions()
     {
-        return IdunLLMService.GetLLMOptions();
+        return new OptionSet(IdunLLMService.GetLLMOptions());
     }
 }
 

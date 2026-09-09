@@ -144,16 +144,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
   name: Heidi
-  TTService: {fileID: 11400000, guid: 04044ea3e83824641aa9b63ac22d8707, type: 2}
-  TTSOptions:
-  - rid: 4535282144663569350
-  - rid: 4535282144663569351
-  - rid: 4535282144663569352
-  - rid: 4535282144663569353
-  LLMService: {fileID: 11400000, guid: c38be792e74a11d45ba8ec8bf608b36d, type: 2}
-  LLMOptions:
-  - rid: 4535282144663569354
-  - rid: 4535282144663569355
+  agent:
+    LLMServiceProvider: {fileID: 11400000, guid: c38be792e74a11d45ba8ec8bf608b36d, type: 2}
+    LLMOverrides:
+      rid: 5696154346667901259
+    TTServiceProvider: {fileID: 11400000, guid: 04044ea3e83824641aa9b63ac22d8707, type: 2}
+    TTSOVerrides:
+      rid: 5696154346667901244
   head: {fileID: 230769490402387665}
   voiceProfile:
     displayName: 
@@ -232,6 +229,12 @@ MonoBehaviour:
         name: Eva
         jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
         modelAsset: {fileID: 5022602860645237092, guid: 7845a07c7f2218f45a8a8edbf6d1d02b, type: 3}
+    - rid: 5696154346667901244
+      type: {class: OptionSet, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5696154346667901259
+      type: {class: OptionSet, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1099828547312552811
 MonoBehaviour:
   m_ObjectHideFlags: 0

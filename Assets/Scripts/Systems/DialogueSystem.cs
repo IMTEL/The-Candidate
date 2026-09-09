@@ -74,19 +74,25 @@ public class DialogueSystem : IEvent<IDialogueReady>
         while (npcs.Current)
         {
             NPC npc = npcs.Current;
+            Agent agent = npc.GetAgent();
+            if (!agent.GetLLMSettings(out LLMServiceProvider provider, out OptionSet options)){ return; }
             List<Dialog> dialogsCopy = new(dialogs)
             {
                 new(Environment.Actor.Director, npcs.MoveNext() ? $"DON'T YOU DARE ask a question. ${npcs.Current.name} is after you" : "Ask ONLY 1 question IF relevant")
             };
 
-            IEnumerable<string> dialogues = await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogsCopy, npc.GetLLMOptions());
-            foreach (string dialogue in dialogues)
+            IEnumerable<string> dialogues = await ((ILLMService)provider.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogsCopy, options.GetOptions());
+            if(!agent.GetTTSSettings(out TTSServiceProvider TTSProvider, out OptionSet TTSOptions))
             {
-                Dialog dialog = new(npc.actor, dialogue, ((ITTService)npc.TTService.CreateService()).getAudioClip(dialogue, npc.GetTTSOptions()));
+                foreach (string dialogue in dialogues)
+            {
+                Dialog dialog = new(npc.actor, dialogue, ((ITTService)TTSProvider.CreateService()).getAudioClip(dialogue, TTSOptions.GetOptions()));
                 token.ThrowIfCancellationRequested();
                 dialogs.Add(dialog);
                 onDialogueReady?.Invoke((npc, dialog));
             }
+            }
+
 
         }
     }

@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 [CreateAssetMenu(menuName = "Services/Elevenlabs")]
-public class ElevenLabsProvider : TTSserviceProvider
+public class ElevenLabsProvider : TTSServiceProvider
 {
     [SerializeField] private string apiKey;
     public List<VoiceProfile> voices = new();
@@ -22,11 +22,9 @@ public class ElevenLabsProvider : TTSserviceProvider
         this.voices = await getVoiceProfile();
     }
 
-    public override IEnumerable<OptionBase> GetTTSOptions()
+    public override OptionSet GetTTSOptions()
     {
-        List<OptionBase> options = new();
-
-        return ElevenLabsService.GetTTSOptions();
+        return new OptionSet(ElevenLabsService.GetTTSOptions());
     }
 
     private async Task<List<VoiceProfile>> getVoiceProfile(string nextPageToken = "")
