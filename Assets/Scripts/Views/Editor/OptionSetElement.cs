@@ -26,12 +26,13 @@ public class OptionsetElement : PopupWindow, IEvent<IOptionChange>
         }
         if (original is FloatBoundOption floatBoundOption)
         {
-            Slider field = new()
+            Slider field = new(original.GetName())
             {
                 value = current != null ? ((FloatBoundOption)current).GetValue() : floatBoundOption.GetValue(),
                 lowValue = floatBoundOption.GetBounds().Item1,
                 highValue = floatBoundOption.GetBounds().Item2,
                 direction = SliderDirection.Horizontal,
+                
             };
             field.RegisterValueChangedCallback(evt =>
             {
