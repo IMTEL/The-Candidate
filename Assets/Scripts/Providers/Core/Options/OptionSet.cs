@@ -107,19 +107,25 @@ public class OptionSet
     /// </summary>
     /// <param name="option">The option to check for</param>
     /// <returns>True or false depending if it is in the set</returns>
-    public bool ContainsOption(OptionBase option)
+    public bool ContainsOption<T>(T option) where T : OptionBase
     {
         return ContainsOption(option, out _); 
     }
+    
     /// <summary>
     /// Checks if set contains the option.
     /// </summary>
     /// <param name="option">The option to check for</param>
     /// <param name="replicate">The option it matched with</param>
     /// <returns>True or false depending if it is in the set</returns>
-    public bool ContainsOption(OptionBase option, out OptionBase replicate)
+    public bool ContainsOption<T>(T option, out T replicate) where T : OptionBase
     {
-        return optionBases.TryGetValue(option, out replicate);
+        replicate = null;
+        if(optionBases.TryGetValue(option, out OptionBase test))
+        {
+            replicate = test as T;
+        }
+        return replicate != null;
     } 
     
 }
