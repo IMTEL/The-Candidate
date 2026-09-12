@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, IEvent<IDialogueReady>, IInit, IDialogueReady
 {
     [SerializeField] private DialogueSystem dialogueSystem;
+    [SerializeField] private Agent AdSummerazation;
+    [SerializeField] private Agent Cordinator;
+
 
     private CancellationTokenSource cancellationToken;
 
