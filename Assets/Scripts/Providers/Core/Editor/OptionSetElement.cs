@@ -59,6 +59,21 @@ public class OptionsetElement : PopupWindow, IEvent<IOptionChange>
             });
             Add(dropfield);
         }
+        else if (original is TextOption textOption)
+        {
+            TextField textField = new(textOption.GetName())
+            {
+                value = textOption.GetObjectValue() as string,
+                multiline = true
+            };
+            textField.style.whiteSpace = WhiteSpace.PreWrap;
+            textField.RegisterCallback<ChangeEvent<string>>(evt =>
+            {
+               GetOptionChange(textOption).TrySetValue(evt.newValue);
+                notify?.Invoke(options);
+            });
+            Add(textField);
+        }
         // Reset button
         //ResetButton.style.display = !original.GetObjectValue().Equals(overrideOption.GetObjectValue()) ? DisplayStyle.Flex : DisplayStyle.None;
     }

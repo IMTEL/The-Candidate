@@ -27,7 +27,7 @@ public class AgentDrawer : PropertyDrawer, IOptionChange
         TabView tabs = new();
         PopupWindow popupWindow = new()
         {
-            text = "Agent settings"
+            text = $"{property.name} settings"
         };
         popupWindow.Add(tabs);
         tabs.Add(CreateLLMSettings());
