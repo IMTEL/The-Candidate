@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 /// <summary>
 /// Interface that allows for sending
+/// The function GetLLMOPtions need to be overw
 /// </summary>
 public interface ILLMService
 {
@@ -13,12 +14,12 @@ public interface ILLMService
     /// <param name="startingPrompt">the starting prompt</param>
     /// <param name="dialogs">the previous dialogs</param>
     /// <returns>The next dialog from the AI</returns>
-    public Task<IEnumerable<string>> GetAIResponse(string startingPrompt, List<Dialog> dialogs, IEnumerable<OptionBase> options);
+    public Task<IEnumerable<string>> GetAIResponse(List<Dialog> dialogs, OptionSet options);
 
     /// <summary>
     /// Returns the options within the LLMService
     /// Needs to be overwritten with the different settings for the model
     /// </summary>
     /// <returns>The options within the service</returns>
-    static IEnumerable<OptionBase> GetLLMOptions() => throw new NotImplementedException("The implementation for option is not implemented within this instance. Add it :)");
+    OptionSet GetLLMOptions();
 }

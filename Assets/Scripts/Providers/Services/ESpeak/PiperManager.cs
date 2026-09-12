@@ -126,10 +126,10 @@ public class PiperManager : ITTService
         }
     }
 
-    public IAsyncEnumerator<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options)
+    public IAsyncEnumerator<AudioClip> getAudioClip(string dialogue, OptionSet options)
     {
         Debug.Log("Creating audioclip from piper model");
-        PickOption<ESpeakVoiceContainer> important = options.OfType<PickOption<ESpeakVoiceContainer>>().First() ?? throw new ArgumentException("Oy, we are missing a model information for this one. Plz fix");
+        PickOption<ESpeakVoiceContainer> important = options.GetOptions().OfType<PickOption<ESpeakVoiceContainer>>().First() ?? throw new ArgumentException("Oy, we are missing a model information for this one. Plz fix");
         return Synthesize(dialogue, important.GetCurrentValue().GetTokenizer(), important.GetCurrentValue().GetModelAsset());
     }
 
@@ -348,5 +348,6 @@ public class PiperManager : ITTService
             new FloatBoundOption("QuestionExclamationDelay", Minvalue: 0, MaxValue: 3)
         };
     }
+
 
 }

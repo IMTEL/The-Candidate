@@ -1,16 +1,21 @@
+using Alchemy.Inspector;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Services/IDUN")]
 public class IdunProvider : LLMServiceProvider
 {
-    [SerializeField] private string apiKey;
+
+    [SerializeField] private IdunLLMService service = new();
+
+    [ShowInInspector]
+    public string ApiKey {get {return service.getAPIKey();} set {service.SetAPIKey(value);}}
 
     public override ILLMService CreateTypedService()
-        => new IdunLLMService(apiKey);
+        => service;
 
     public override OptionSet GetLLMOptions()
     {
-        return new OptionSet(IdunLLMService.GetLLMOptions());
+        return new OptionSet(service.GetLLMOptions());
     }
 }
 

@@ -24,12 +24,19 @@ public class RAGDOLLService : ILLMService
     /// </summary>
     private readonly SemaphoreSlim simulationousRequests = new(1);
 
+    private PickOption<string> pickOption = new("Agents", new List<OptionEntry<string>>(){new("hello", "hel")});
+
     /// <summary>
     /// The url that should be sent to
     /// </summary>
     private readonly string url;
 
     private readonly string apiKey;
+
+    public RAGDOLLService() : this("")
+    {
+        
+    }
 
     public RAGDOLLService(string apiKey) : this(apiKey, "https://iplvr.it.ntnu.no/")
     {}
@@ -40,11 +47,12 @@ public class RAGDOLLService : ILLMService
         this.url ??= url += "/backend/api/chat/ask";
     }
 
-    public async Task<IEnumerable<string>> GetAIResponse(string startingPrompt, List<Dialog> dialogs, IEnumerable<OptionBase> options)
+    public async Task<IEnumerable<string>> GetAIResponse(List<Dialog> dialogs, OptionSet options)
     {
-        OptionBase option = options.First(option => option.GetName().Equals("agentID")) ?? throw new ArgumentException("Can't find Option");
+        OptionSet set = GetLLMOptions().Merge(options);
+        if(set.ContainsOption(pickOption, out PickOption<string> value))
         await simulationousRequests.WaitAsync();
-        RAGDOLLPacket requestBody = new(apiKey,(string)option.GetObjectValue(), dialogs);
+        RAGDOLLPacket requestBody = new(apiKey,value.GetObjectValue() as string, dialogs);
         UnityWebRequest request = new(url, "POST")
         {
             uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JObject.FromObject(requestBody).ToString())),
@@ -65,22 +73,9 @@ public class RAGDOLLService : ILLMService
         return new List<string>() { response };
     }
 
-    public static IEnumerable<OptionBase> GetLLMOptions()
+    public OptionSet GetLLMOptions()
     {
-        List<OptionEntry<OpenAICompletionRequest.Model>> models = new(){
-            new (OpenAICompletionRequest.Model.IDUN_GPT_OSS_120b, "120b, OpenAI"),
-            new (OpenAICompletionRequest.Model.IDUN_Mistral_Large_3_675B_Instruct_2512_NVFP4, "Minstral 3"),
-            new (OpenAICompletionRequest.Model.IDUN_NorwAI_Magistral_24B_reasoning, "NorwAI 24B")
-        };
-
-        return new List<OptionBase>
-        {
-            new FloatBoundOption("Temperature",1,0,2),
-            // supply explicit display names for clarity
-            new PickOption<OpenAICompletionRequest.Model>(
-                "Model",
-                models)
-        };
+        return new();
     }
 
     internal class RAGDOLLPacket

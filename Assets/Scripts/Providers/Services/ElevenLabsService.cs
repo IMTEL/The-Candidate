@@ -76,9 +76,9 @@ public class ElevenLabsService : ITTService
         };
     }
 
-    public async IAsyncEnumerator<AudioClip> getAudioClip(string dialogue, IEnumerable<OptionBase> options)
+    public async IAsyncEnumerator<AudioClip> getAudioClip(string dialogue, OptionSet options)
     {
-        PickOption<VoiceProfile> voices = (PickOption<VoiceProfile>)options.First(option => option.GetName().Equals("voice"));
+        PickOption<VoiceProfile> voices = (PickOption<VoiceProfile>)options.GetOptions().First(option => option.GetName().Equals("voice"));
         AudioClip clip = await SendPostRequest(voices.GetCurrentValue().getId(), dialogue);
         yield return clip;
     }

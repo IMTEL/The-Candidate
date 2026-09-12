@@ -12,24 +12,24 @@ public class RAGDOLLProvider : LLMServiceProvider
 {
     [SerializeField] private string apiKey;
     [SerializeField] private string url = "https://iplvr.it.ntnu.no/";
-
-    [SerializeField] private OptionSet options = new();
+    private RAGDOLLService service = new();
 
     [Unity.Collections.ReadOnly]
     private readonly List<RAGRole> roles = new();
 
     public override ILLMService CreateTypedService()
-        => new RAGDOLLService(apiKey);
+        => service;
 
     public override OptionSet GetLLMOptions()
     {
-        foreach (OptionBase option in RAGDOLLService.GetLLMOptions()) options.AddOption(option);
-        return options;
+        OptionSet set = new(service.GetLLMOptions());
+        return set;
     }
     
     [Button]
-    private async void RefreshRoles()
+    private async void RefreshRoles(string apiKey)
     {
+        Debug.Log($"Trying to fetch roles with {apiKey}");
         if (string.IsNullOrEmpty(apiKey))
         {
             throw new ArgumentException("The apikey needs to be set for the settings to be correct");

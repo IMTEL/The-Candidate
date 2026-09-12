@@ -9,14 +9,15 @@ using UnityEngine.Networking;
 [CreateAssetMenu(menuName = "Services/Elevenlabs")]
 public class ElevenLabsProvider : TTSServiceProvider
 {
-    [SerializeField] private string apiKey;
-    public List<VoiceProfile> voices = new();
+    [ShowInInspector]
+    public string APIKey { get {return "something";}  set {}}
+    
+    private List<VoiceProfile> voices = new();
 
 
     public override ITTService CreateTypedService()
-        => new ElevenLabsService(apiKey);
+        => new ElevenLabsService(APIKey);
 
-    [Button]
     public async Task SyncVoiceProfiles()
     {
         this.voices = await getVoiceProfile();
@@ -30,7 +31,8 @@ public class ElevenLabsProvider : TTSServiceProvider
     private async Task<List<VoiceProfile>> getVoiceProfile(string nextPageToken = "")
     {
         List<VoiceProfile> voiceProfiles = new();
-        if(string.IsNullOrEmpty(apiKey))
+        Debug.Log("Test valid?");
+        if(string.IsNullOrEmpty(APIKey))
             {
                 throw new ArgumentException("The apikey needs to be set for the settings to be correct");
         }
@@ -45,7 +47,7 @@ public class ElevenLabsProvider : TTSServiceProvider
             downloadHandler = new DownloadHandlerBuffer()
         };
         request.SetRequestHeader("Content-Type", "application/json");
-        request.SetRequestHeader("xi-api-key", apiKey);
+        request.SetRequestHeader("xi-api-key", APIKey);
         await request.SendWebRequest();
         JObject json = JObject.Parse(DownloadHandlerBuffer.GetContent(request));
         JToken voices = json["voices"];
