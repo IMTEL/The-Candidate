@@ -81,12 +81,12 @@ public class DialogueSystem : IEvent<IDialogueReady>
                 new(Environment.Actor.Director, npcs.MoveNext() ? $"DON'T YOU DARE ask a question. ${npcs.Current.name} is after you" : "Ask ONLY 1 question IF relevant")
             };
 
-            IEnumerable<string> dialogues = await ((ILLMService)provider.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogsCopy, options.GetOptions());
+            IEnumerable<string> dialogues = await ((ILLMService)provider.CreateService()).GetAIResponse(dialogsCopy, options);
             if(!agent.GetTTSSettings(out TTSServiceProvider TTSProvider, out OptionSet TTSOptions))
             {
                 foreach (string dialogue in dialogues)
             {
-                Dialog dialog = new(npc.actor, dialogue, ((ITTService)TTSProvider.CreateService()).getAudioClip(dialogue, TTSOptions.GetOptions()));
+                Dialog dialog = new(npc.actor, dialogue, ((ITTService)TTSProvider.CreateService()).getAudioClip(dialogue, TTSOptions));
                 token.ThrowIfCancellationRequested();
                 dialogs.Add(dialog);
                 onDialogueReady?.Invoke((npc, dialog));
