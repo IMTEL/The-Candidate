@@ -30,6 +30,7 @@ public class OptionsetElement : PopupWindow, IEvent<IOptionChange>
             {
                 value = current != null ? ((FloatBoundOption)current).GetValue() : floatBoundOption.GetValue(),
                 lowValue = floatBoundOption.GetBounds().Item1,
+                showInputField = true,
                 highValue = floatBoundOption.GetBounds().Item2,
                 direction = SliderDirection.Horizontal,
                 
@@ -37,8 +38,8 @@ public class OptionsetElement : PopupWindow, IEvent<IOptionChange>
             field.RegisterValueChangedCallback(evt =>
             {
                 FloatBoundOption floatBound = (FloatBoundOption)GetOptionChange(floatBoundOption);
-                floatBound.TrySetValue(evt.newValue);
-                notify?.Invoke(options);
+                if (floatBound.TrySetValue(evt.newValue)) {notify?.Invoke(options);} 
+                else {field.value = floatBound.GetValue();};
             });
             Add(field);
         }
@@ -54,7 +55,7 @@ public class OptionsetElement : PopupWindow, IEvent<IOptionChange>
             {
                 int index = new List<string>(pickOption.GetOptionDisplayNames()).IndexOf(evt.newValue);
                 PickOption option = (PickOption)GetOptionChange(pickOption);
-                _ = option.TrySetValue(option.GetOptionsObjects().ElementAt(index));
+                option.TrySetValue(option.GetOptionsObjects().ElementAt(index));
                 notify?.Invoke(options);
             });
             Add(dropfield);
