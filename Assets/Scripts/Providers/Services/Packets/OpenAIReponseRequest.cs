@@ -11,11 +11,11 @@ public class OpenAICompletionRequest
     public List<OpenAIMessage> messages {get; private set;} = new();
     public bool store {get; private set;} = false;
 
-    public OpenAICompletionRequest(string instructions, Model model, List<Dialog> previousConversation = null ) : 
+    public OpenAICompletionRequest(string instructions, Model model, IEnumerable<Dialog> previousConversation = null ) : 
     this(instructions,  ModeltoString(model), previousConversation)
     {}
 
-    public OpenAICompletionRequest(string instructions, string model, List<Dialog> previousConversation = null )
+    public OpenAICompletionRequest(string instructions, string model, IEnumerable<Dialog> previousConversation = null )
     {
         messages.Add(new OpenAIMessage("developer", instructions));
         foreach(Dialog dialog in previousConversation)

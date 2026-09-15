@@ -14,7 +14,7 @@ public interface ILLMService
     /// <param name="startingPrompt">the starting prompt</param>
     /// <param name="dialogs">the previous dialogs</param>
     /// <returns>The next dialog from the AI</returns>
-    public Task<LLMResponse> GetAIResponse(List<Dialog> dialogs, OptionSet options, LLMToolRegistry lLMToolRegistry = null);
+    public Task<LLMResponse> GetAIResponse(IEnumerable<Dialog> dialogs, OptionSet options, LLMToolRegistry lLMToolRegistry = null);
 
     /// <summary>
     /// Returns the options within the LLMService

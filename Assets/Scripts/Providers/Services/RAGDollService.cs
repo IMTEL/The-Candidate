@@ -65,7 +65,7 @@ public class RAGDOLLService : ILLMService
         });
     }
 
-    public async Task<LLMResponse> GetAIResponse(List<Dialog> dialogs, OptionSet options, LLMToolRegistry lLMToolRegistry = null)
+    public async Task<LLMResponse> GetAIResponse(IEnumerable<Dialog> dialogs, OptionSet options, LLMToolRegistry lLMToolRegistry = null)
     {
         OptionSet set = GetLLMOptions().Merge(options);
         if (set.ContainsOption(OptionModel, out PickOption<RagAgent> value)) await simulationousRequests.WaitAsync();
