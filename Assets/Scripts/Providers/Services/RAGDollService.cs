@@ -59,15 +59,18 @@ public class RAGDOLLService : ILLMService
 
     public OptionSet GetLLMOptions()
     {
-        return new();
+        return new(new List<OptionBase>()
+        {
+            OptionModel
+        });
     }
 
     public async Task<LLMResponse> GetAIResponse(List<Dialog> dialogs, OptionSet options, LLMToolRegistry lLMToolRegistry = null)
     {
         OptionSet set = GetLLMOptions().Merge(options);
-        if (set.ContainsOption(OptionModel, out PickOption<RagAgent> value))
-            await simulationousRequests.WaitAsync();
-        RAGDOLLPacket requestBody = new(apiKey, value.GetObjectValue() as string, dialogs);
+        if (set.ContainsOption(OptionModel, out PickOption<RagAgent> value)) await simulationousRequests.WaitAsync();
+        else { return null; }
+        RAGDOLLPacket requestBody = new(apiKey, ((RagAgent)value.GetObjectValue()).name, dialogs);
         UnityWebRequest request = new(url, "POST")
         {
             uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JObject.FromObject(requestBody).ToString())),
@@ -83,9 +86,21 @@ public class RAGDOLLService : ILLMService
         }
 
         JObject json = JObject.Parse(DownloadHandlerBuffer.GetContent(request));
-        string response = json["response"]["response"].ToObject<string>();
+        JToken response = json["response"];
+        List<Action> actions = new();
+        if (lLMToolRegistry != null)
+        {
+            foreach (JToken item in response["function_calls"])
+            {
+                Dictionary<string, string> arguments = item["arguments"].ToObject<Dictionary<string, string>>();
+                if(lLMToolRegistry.IsMethodCallable(item["name"].ToString(), arguments, out Action callable))
+                {
+                    actions.Add(callable);
+                }
+            }
+        }
 
-        return new LLMResponse(response, null);
+        return new LLMResponse(response["response"].ToString(), actions);
     }
 
 
@@ -102,7 +117,7 @@ public class RAGDOLLService : ILLMService
 
     public async Task SetURL(string url)
     {
-        this.url = url.EndsWith("/") ? url = url[..url.Length] : url;
+        this.url = url.EndsWith("/") ? url[..url.Length] : url;
         await RefreshModels();
         UpdateModelOption();
     }
