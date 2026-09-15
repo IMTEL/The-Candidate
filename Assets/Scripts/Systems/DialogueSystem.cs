@@ -18,34 +18,18 @@ public class DialogueSystem : IEvent<IDialogueReady>
 
     private readonly Random random = new();
 
-    private const int INTRODUCTION_LIMIT = 2;
+    Agent coordinator;
 
-    private const int MAIN_LIMIT = 5;
+    Agent AdSummary;
 
-    public DialogueSystem(ScenarioSettings scenario, NPCRegistry nPCRegistry, string startingprompt = "")
+    public DialogueSystem(ScenarioSettings scenario, NPCRegistry nPCRegistry, Agent coordinator, Agent adSummary)
     {
         this.scenario = scenario;
         this.NPCRegistry = nPCRegistry;
-        this.startPrompt = startingprompt;
+        this.AdSummary = adSummary;
+        this.coordinator = coordinator;
     }
 
-    /// <summary>
-    /// The starting prompt within the message
-    /// </summary>
-    private readonly string startPrompt;
-
-    /// <summary>
-    /// Builds the prompt
-    /// </summary>
-    /// <param name="job"></param>
-    /// <param name="actor"></param>
-    /// <returns></returns>
-    string BuildPrompt(Environment.Job job, NPC npc)
-    {
-        string setting = job.ToString();
-        string actors = string.Join("\n - ", NPCRegistry.GetNPCEnumerable().Select((npc) => $"{npc.actor.getName()}: {npc.name}"));
-        return string.Format(startPrompt, setting, $"{npc.actor?.ToString()}\nYour name is: {npc.name}", actors);
-    }
 
     public (Task, CancellationTokenSource) HandleUserDialog(Dialog userDialog, CancellationTokenSource tokenSource = null)
     {

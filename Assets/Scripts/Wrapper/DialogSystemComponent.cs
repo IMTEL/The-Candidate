@@ -16,9 +16,6 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
 
     private readonly object _lock = new();
 
-    [TextArea(10,30)]
-    public string prompt;
-
     ScenarioSettingsWrapper scenarioSettings;
 
     SpawnManager spawnManager;
@@ -28,7 +25,7 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
     {
         spawnManager = nPCRegistry;
         scenarioSettings = scenarioSettingsWrapper;
-        dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), prompt);
+        dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), Cordinator, AdSummerazation);
         dialogueSystem.AddListener(this);    
         SceneManager.activeSceneChanged += (_, Scene2) => {spawnManager.UpdateScene(); ResetDialogueSystem(Scene2);};
         ResetDialogueSystem(SceneManager.GetActiveScene());
@@ -44,7 +41,7 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
         else
         {
             dialogueSystem?.RemoveListener(this);
-            dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), prompt);
+            dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), Cordinator, AdSummerazation);
             dialogueSystem.AddListener(this);    
         }
 
