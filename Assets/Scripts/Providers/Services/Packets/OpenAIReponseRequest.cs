@@ -11,14 +11,18 @@ public class OpenAICompletionRequest
     public List<OpenAIMessage> messages {get; private set;} = new();
     public bool store {get; private set;} = false;
 
-    public OpenAICompletionRequest(string instructions, Model model, List<Dialog> previousConversation = null )
+    public OpenAICompletionRequest(string instructions, Model model, List<Dialog> previousConversation = null ) : 
+    this(instructions,  ModeltoString(model), previousConversation)
+    {}
+
+    public OpenAICompletionRequest(string instructions, string model, List<Dialog> previousConversation = null )
     {
         messages.Add(new OpenAIMessage("developer", instructions));
         foreach(Dialog dialog in previousConversation)
         {
             messages.Add(new OpenAIMessage(dialog.actor == Environment.Actor.Candidate ? "user" : "system", dialog.dialog, dialog.actor.getName()));
         }
-        this.model = ModeltoString(model);
+        this.model = model;
     }
 
     public string ToJson()
