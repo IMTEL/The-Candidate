@@ -68,7 +68,7 @@ public class LLMToolRegistry
     {
         callable = null;
         LLMToolFunction function;
-        try{function = functionRegistry.First(llmtool => llmtool.GetName().Equals(name));}
+        try{function = GetMethods().First(llmtool => llmtool.GetName().Equals(name));}
         catch(Exception){return false;}
         if(function.CanBeCalled(parameters, out Action<object> method))
         {
