@@ -153,6 +153,12 @@ public class OptionEntry<T> {
         this.displayName = name; 
     }
 
+    public OptionEntry(T value)
+    {        
+        this.value = value;
+        this.displayName = value.ToString(); 
+    }
+
     public T GetValue(){
         return value;
     }
