@@ -14,12 +14,14 @@ public interface ILLMService
     /// <param name="startingPrompt">the starting prompt</param>
     /// <param name="dialogs">the previous dialogs</param>
     /// <returns>The next dialog from the AI</returns>
-    public Task<IEnumerable<string>> GetAIResponse(List<Dialog> dialogs, OptionSet options);
+    public Task<LLMResponse> GetAIResponse(List<Dialog> dialogs, OptionSet options, LLMToolRegistry lLMToolRegistry = null);
 
     /// <summary>
     /// Returns the options within the LLMService
     /// Needs to be overwritten with the different settings for the model
     /// </summary>
     /// <returns>The options within the service</returns>
-    OptionSet GetLLMOptions();
+    public OptionSet GetLLMOptions();
+
+    
 }
