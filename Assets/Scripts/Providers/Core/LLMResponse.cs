@@ -8,7 +8,7 @@ public class LLMResponse
 
     public LLMResponse(string response, IEnumerable<Action> lLMFunctions)
     {
-        Dialogue = Dialogue;
+        Dialogue = response;
         functions = new(lLMFunctions);
     }
     
