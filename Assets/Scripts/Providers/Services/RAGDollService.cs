@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +14,7 @@ using UnityEngine.Networking;
 /// Uses the chatgpt structure of request
 /// To access, call the GetInstance function on the class
 /// </summary>
+[Serializable]
 public class RAGDOLLService : ILLMService
 {
 
@@ -22,24 +22,34 @@ public class RAGDOLLService : ILLMService
     /// A limiter used to only allow a certain amount of requests at the same time.
     /// This is to limit the amount of unnecessary traffic
     /// </summary>
+    [NonSerialized]
     private readonly SemaphoreSlim simulationousRequests = new(1);
 
-    private PickOption<string> pickOption = new("Agents", new List<OptionEntry<string>>(){new("hello", "hel")});
+    [SerializeField]
+    private List<OptionEntry<RagAgent>> Models = new();
+
+    [SerializeField]
+    [HideInInspector]
+    private PickOption<RagAgent> OptionModel = new("Agents", new List<OptionEntry<RagAgent>>() { new(new("", ""), "No models :(") });
 
     /// <summary>
     /// The url that should be sent to
     /// </summary>
-    private readonly string url;
+    [SerializeField]
+    [HideInInspector]
+    private string url;
 
-    private readonly string apiKey;
+    [SerializeField]
+    [HideInInspector]
+    private string apiKey;
 
     public RAGDOLLService() : this("")
     {
-        
+
     }
 
-    public RAGDOLLService(string apiKey) : this(apiKey, "https://iplvr.it.ntnu.no/")
-    {}
+    public RAGDOLLService(string apiKey) : this(apiKey, "https://iplvr.it.ntnu.no")
+    { }
 
     public RAGDOLLService(string apiKey, string url)
     {
@@ -47,12 +57,17 @@ public class RAGDOLLService : ILLMService
         this.url ??= url += "/backend/api/chat/ask";
     }
 
-    public async Task<IEnumerable<string>> GetAIResponse(List<Dialog> dialogs, OptionSet options)
+    public OptionSet GetLLMOptions()
+    {
+        return new();
+    }
+
+    public async Task<LLMResponse> GetAIResponse(List<Dialog> dialogs, OptionSet options, LLMToolRegistry lLMToolRegistry = null)
     {
         OptionSet set = GetLLMOptions().Merge(options);
-        if(set.ContainsOption(pickOption, out PickOption<string> value))
-        await simulationousRequests.WaitAsync();
-        RAGDOLLPacket requestBody = new(apiKey,value.GetObjectValue() as string, dialogs);
+        if (set.ContainsOption(OptionModel, out PickOption<RagAgent> value))
+            await simulationousRequests.WaitAsync();
+        RAGDOLLPacket requestBody = new(apiKey, value.GetObjectValue() as string, dialogs);
         UnityWebRequest request = new(url, "POST")
         {
             uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JObject.FromObject(requestBody).ToString())),
@@ -70,12 +85,85 @@ public class RAGDOLLService : ILLMService
         JObject json = JObject.Parse(DownloadHandlerBuffer.GetContent(request));
         string response = json["response"]["response"].ToObject<string>();
 
-        return new List<string>() { response };
+        return new LLMResponse(response, null);
     }
 
-    public OptionSet GetLLMOptions()
+
+    public async Task SetAPIKey(string key)
     {
-        return new();
+        this.apiKey = key;
+        await RefreshModels();
+        UpdateModelOption();
+    }
+    public string GetAPIKey()
+    {
+        return apiKey;
+    }
+
+    public async Task SetURL(string url)
+    {
+        this.url = url.EndsWith("/") ? url = url[..url.Length] : url;
+        await RefreshModels();
+        UpdateModelOption();
+    }
+    public string GetURL()
+    {
+        return url;
+    }
+
+    public async Task RefreshModels()
+    {
+        Models.Clear();
+        UnityWebRequest request = CreateRequest("/agent-info-by-accesskey");
+        await request.SendWebRequest();
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogWarning("API key or the service is not accessible");
+            return;
+        }
+        JObject json = JObject.Parse(DownloadHandlerBuffer.GetContent(request));
+        JToken roles = json["roles"];
+        string id = json["agent_id"].ToString();
+        foreach (JToken role in roles)
+        {
+            string name = role["name"].ToString();
+            Models.Add(new(new(id, name), name));
+        }
+    }
+
+    private UnityWebRequest CreateRequest(string path)
+    {
+        UnityWebRequest request = new(url + "/backend" + path)
+        {
+            downloadHandler = new DownloadHandlerBuffer(),
+        };
+        request.SetRequestHeader("access-key", $"{apiKey}");
+        request.SetRequestHeader("Content-Type", "application/json");
+        return request;
+    }
+
+    private void UpdateModelOption()
+    {
+
+        if (Models.Count == 0)
+        {
+            Models = new() { new(new("", ""), "No Models :(") };
+        }
+        OptionModel = new("Model", Models);
+    }
+
+    [Serializable]
+    public struct RagAgent
+    {
+        public string id;
+        public string name;
+
+        public RagAgent(string id, string name)
+        {
+            this.id = id;
+            this.name = name;
+        }
+
     }
 
     internal class RAGDOLLPacket
@@ -93,7 +181,7 @@ public class RAGDOLLService : ILLMService
         }
 
         public RAGDOLLPacket(string access_key, string agent_id, IEnumerable<Dialog> Dialogues)
-            : this(access_key, agent_id, RagDialogue.FromDialogues(Dialogues)){ }
+            : this(access_key, agent_id, RagDialogue.FromDialogues(Dialogues)) { }
 
     }
 
