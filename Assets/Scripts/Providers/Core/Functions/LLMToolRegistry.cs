@@ -6,6 +6,9 @@ using System.Threading;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
+/// <summary>
+/// This class is used to register methods that is meant to be used as a LLM
+/// </summary>
 [Serializable]
 public class LLMToolRegistry
 {
@@ -19,7 +22,7 @@ public class LLMToolRegistry
     HashSet<LLMToolFunction> functionRegistry;
 
     [NonSerialized]
-    private static Dictionary<Type, HashSet<LLMToolFunction>> classFunctionRegistry = new();
+    private static readonly Dictionary<Type, HashSet<LLMToolFunction>> classFunctionRegistry = new();
 
     [NonSerialized]
     readonly SemaphoreSlim requests = new(1);
@@ -40,26 +43,28 @@ public class LLMToolRegistry
         return functionRegistry;
     }
 
+
     private void RegisterMethods()
     {
-        if (classFunctionRegistry.TryGetValue(typeof(object), out functionRegistry))
+        if (classFunctionRegistry.TryGetValue(owner.GetType(), out functionRegistry))
         {
             return;
         }
         functionRegistry = new();
-        IEnumerable<MethodInfo> methods = owner.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(LLMTool), false).Length > 0);
+        IEnumerable<MethodInfo> methods = owner.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(LLMToolParameter), false).Length > 0);
         foreach (MethodInfo method in methods)
         {
-            LLMTool toolDefinition = method.GetCustomAttribute<LLMTool>();
+            LLMToolAttribute toolDefinition = method.GetCustomAttribute<LLMToolAttribute>();
             if (toolDefinition.agentRole.Length == 0 || toolDefinition.agentRole.Contains(agentRole))
             {
                 try { functionRegistry.Add(LLMToolFunction.FromMethodInfo(method)); }
                 catch (Exception) { }
             }
         }
+        classFunctionRegistry.Add(owner.GetType(), functionRegistry);
     }
 
-    public bool IsMethodCallable(string name, Dictionary<string, object> parameters, out Action callable)
+    public bool IsMethodCallable(string name, Dictionary<string, string> parameters, out Action callable)
     {
         callable = null;
         LLMToolFunction function;
@@ -86,7 +91,7 @@ public class LLMToolRegistry
         {
             this.reference = methodInfo;
             this.name = methodInfo.Name;
-            this.description = methodInfo.GetCustomAttribute<LLMTool>().description;
+            this.description = methodInfo.GetCustomAttribute<LLMToolAttribute>().description;
         }
 
         public static LLMToolFunction FromMethodInfo(MethodInfo method)
@@ -109,29 +114,33 @@ public class LLMToolRegistry
             return name; 
         }
 
-        internal bool CanBeCalled(Dictionary<string, object> parameters, out Action<object> action)
+        internal bool CanBeCalled(Dictionary<string, string> parameters, out Action<object> action)
         {
             object[] callParams = new object[Parameters.Capacity];
             bool valid = true;
             action = null;
+            object castedObject;
             foreach (LLMToolParameter item in Parameters)
             {
                 //If it does not exist and is mandatory
-                if(!(parameters.TryGetValue(item.GetName(), out object value) || item.IsOptional()))
+                if(!(parameters.TryGetValue(item.GetName(), out string value) || item.IsOptional()))
                 {
                     return false;
                 }
                 try
                 {
-                    value = value == null ? Type.Missing : Convert.ChangeType(value, item.GetType()); 
+                    castedObject = value == null ? Type.Missing : Convert.ChangeType(value, item.GetType()); 
                     callParams.Append(value);
                 }
-                catch(Exception e){Debug.Log(e.Message);}
+                catch(Exception e){Debug.Log(e.Message); return false;}
             }
             action = value => {reference.Invoke(value, callParams);}; 
             return valid;
         }
-
+        public string GetDescription()
+        {
+            return description;
+        }
     }
 
     public class LLMToolParameter
@@ -164,8 +173,11 @@ public class LLMToolRegistry
 
         public static LLMToolParameter FromParameterInfo(ParameterInfo parameterInfo)
         {
-            LLMParameter info = parameterInfo.GetCustomAttribute<LLMParameter>() ?? throw new ArgumentException($"{parameterInfo.Name} is missing the attribute LLMParameter");
-            return new LLMToolParameter(parameterInfo.Name, info.description, parameterInfo.ParameterType);
+            LLMParameterAttribute info = parameterInfo.GetCustomAttribute<LLMParameterAttribute>() ?? throw new ArgumentException($"{parameterInfo.Name} is missing the attribute LLMParameter");
+            LLMToolParameter parameter = new(parameterInfo.Name, info.description, parameterInfo.ParameterType);
+            parameter.SetOptional(parameterInfo.IsOptional);
+            return parameter;
+
         }
         public Type GetParameterType()
         {
@@ -180,6 +192,11 @@ public class LLMToolRegistry
         internal bool IsOptional()
         {
             return optional;
+        }
+
+        public string GetDescription()
+        {
+            return description;
         }
     }
 }
