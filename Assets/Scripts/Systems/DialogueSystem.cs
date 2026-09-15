@@ -62,10 +62,6 @@ public class DialogueSystem : IEvent<IDialogueReady>
     /// <returns></returns>
     private async Task HandleUserDialog(Dialog userDialog, CancellationToken token)
     {
-        if (IntermidateDialog(out string directorDialog))
-        {
-            dialogs.Add(new(Environment.Actor.Director, directorDialog));
-        }
         dialogs.Add(userDialog);
 
         List<NPC> listnpcs = NPCRegistry.GetNPCEnumerable().ToList().OrderBy((_) => random.Next()).ToList();
@@ -76,46 +72,20 @@ public class DialogueSystem : IEvent<IDialogueReady>
             NPC npc = npcs.Current;
             Agent agent = npc.GetAgent();
             if (!agent.GetLLMSettings(out LLMServiceProvider provider, out OptionSet options)){ return; }
-            List<Dialog> dialogsCopy = new(dialogs)
-            {
-                new(Environment.Actor.Director, npcs.MoveNext() ? $"DON'T YOU DARE ask a question. ${npcs.Current.name} is after you" : "Ask ONLY 1 question IF relevant")
-            };
 
-            IEnumerable<string> dialogues = await ((ILLMService)provider.CreateService()).GetAIResponse(dialogsCopy, options);
+            LLMResponse dialogue = await ((ILLMService)provider.CreateService()).GetAIResponse(dialogs, options);
             if(!agent.GetTTSSettings(out TTSServiceProvider TTSProvider, out OptionSet TTSOptions))
             {
-                foreach (string dialogue in dialogues)
-            {
-                Dialog dialog = new(npc.actor, dialogue, ((ITTService)TTSProvider.CreateService()).getAudioClip(dialogue, TTSOptions));
+                Dialog dialog = new(npc.actor, dialogue.Dialogue, ((ITTService)TTSProvider.CreateService()).getAudioClip(dialogue.Dialogue, TTSOptions));
                 token.ThrowIfCancellationRequested();
                 dialogs.Add(dialog);
                 onDialogueReady?.Invoke((npc, dialog));
             }
-            }
 
 
         }
     }
 
-    private bool IntermidateDialog(out string dialog)
-    {
-        dialog = "";
-        if (dialogs.Count() == 0)
-        {
-            dialog = "Start introducing each other. Focus ONLY on subjective questions. NOT WORK RELATED. Examples are: How are you today?, How was it arriving here? Done anything excited lately?";
-        }
-        //The amount of the candidate has answered + 1 (The empty one in the beginning)
-        else if (dialogs.Count(dialog => dialog.actor == Environment.Actor.Candidate) == INTRODUCTION_LIMIT)
-        {
-            dialog = $"Time to start the interview. Focus ONLY on job related questions";
-        }
-        //Same thing as above 
-        else if (dialogs.Count(dialog => dialog.actor == Environment.Actor.Candidate) == MAIN_LIMIT + INTRODUCTION_LIMIT)
-        {
-            dialog = $"Start wrapping up the interview by allowing the candidate to ask some questions";
-        }
-        return dialog != "";
-    }
 
     public void AddListener(IDialogueReady listener)
     {
