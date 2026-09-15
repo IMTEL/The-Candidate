@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -30,6 +32,9 @@ public class Agent
     /// </summary>
     [SerializeReference]
     OptionSet TTSOVerrides = new();
+
+    [SerializeField]
+    LLMToolRegistry lLMToolRegistry;
 
     /// <summary>
     /// Gives out the provider and options for the LLM
@@ -94,5 +99,24 @@ public class Agent
             TTSOVerrides = TTServiceProvider.GetTTSOptions().Merge(optionSet, OptionSet.MergeMode.Intersect);
         }
         return TTSOVerrides;
+    }
+
+    public void RegisterMethods(object owner, string name = "")
+    {
+        lLMToolRegistry = new(owner, name);
+    }
+
+    /// <summary>
+    /// Sends request to the LLM with the agent settings
+    /// </summary>
+    /// <param name="dialogs">The list of dialogs</param>
+    /// <returns>The LLMResponse</returns>
+    public Task<LLMResponse> CallLLM(IEnumerable<Dialog> dialogs)
+    {
+        if(LLMServiceProvider != null)
+        {
+            return LLMServiceProvider.CreateTypedService().GetAIResponse(dialogs, LLMOverrides, lLMToolRegistry);
+        }
+        return null;
     }
 }
