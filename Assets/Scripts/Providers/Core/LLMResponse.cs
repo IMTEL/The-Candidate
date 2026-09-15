@@ -1,20 +1,15 @@
+using System;
 using System.Collections.Generic;
 
 public class LLMResponse
 {
-    readonly List<FunctionCall> functions = new();
+    readonly List<Action> functions = new();
     public string Dialogue {get; private set;}
 
-    LLMResponse(string response, IEnumerable<FunctionCall> lLMFunctions)
+    public LLMResponse(string response, IEnumerable<Action> lLMFunctions)
     {
         Dialogue = Dialogue;
         functions = new(lLMFunctions);
     }
-
-
-    internal class FunctionCall
-    {
-        public string name;
-        public Dictionary<string, object> arguemnts;
-    }
+    
 }
