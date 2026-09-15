@@ -1,14 +1,22 @@
 using System;
-
+using Unity;
 /// <summary>
 /// Mark a methods as a LLMMethod allowing to be called from a Agent
 /// </summary>
-public class LLMTool : Attribute
+/// 
+/// 
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public class LLMToolAttribute : Attribute
 {
-    public LLMTool(string description)
+    public LLMToolAttribute(string description)
     {
         this.description = description;
     }
+
+    public LLMToolAttribute()
+    {
+    }
+
     /// <summary>
     /// What agent roles are allowed to use this method
     /// </summary>
@@ -25,7 +33,8 @@ public class LLMTool : Attribute
 /// <summary>
 /// The parameter used for the method
 /// </summary>
-public class LLMParameter : Attribute
+[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
+public class LLMParameterAttribute : Attribute
 {
 
     /// <summary>
@@ -37,7 +46,7 @@ public class LLMParameter : Attribute
     /// Used on the parameters on a LLMTool
     /// </summary>
     /// <param name="description">a description of a value of the method</param>
-    LLMParameter(string description)
+    public LLMParameterAttribute(string description)
     {
         this.description = description;
     }
