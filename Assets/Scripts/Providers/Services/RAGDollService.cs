@@ -54,14 +54,14 @@ public class RAGDOLLService : ILLMService
     public RAGDOLLService(string apiKey, string url)
     {
         this.apiKey ??= apiKey;
-        this.url ??= url += "/backend/api/chat/ask";
+        this.url ??= url;
     }
 
     public OptionSet GetLLMOptions()
     {
         return new(new List<OptionBase>()
         {
-            OptionModel
+            OptionModel.Clone()
         });
     }
 
@@ -168,7 +168,7 @@ public class RAGDOLLService : ILLMService
     }
 
     [Serializable]
-    public struct RagAgent
+    public class RagAgent
     {
         public string id;
         public string name;
@@ -181,9 +181,9 @@ public class RAGDOLLService : ILLMService
 
         public override bool Equals(object obj)
         {
-            if(obj is RagAgent ragAgent)
+            if(obj != null && obj is RagAgent ragAgent)
             {
-                return id.Equals(ragAgent.id) && name.Equals(ragAgent.name);
+                return id != null && name != null && id.Equals(ragAgent.id) && name.Equals(ragAgent.name);
             }
             return false;
         }

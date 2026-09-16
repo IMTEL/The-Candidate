@@ -174,8 +174,7 @@ public class OptionEntry<T> {
             return false;
         }
         OptionEntry<T> casted = (OptionEntry<T>)obj;
-        if(value.Equals(casted.GetValue()) && displayName.Equals(casted.GetDisplayName())) return true;
-        return false;
+        return value.Equals(casted.GetValue()) && displayName.Equals(casted.GetDisplayName());
     }
     
     // override object.GetHashCode
