@@ -179,6 +179,19 @@ public class RAGDOLLService : ILLMService
             this.name = name;
         }
 
+        public override bool Equals(object obj)
+        {
+            if(obj is RagAgent ragAgent)
+            {
+                return id.Equals(ragAgent.id) && name.Equals(ragAgent.name);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(id, name);
+        }
     }
 
     internal class RAGDOLLPacket
