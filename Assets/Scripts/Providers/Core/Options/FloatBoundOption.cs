@@ -70,7 +70,7 @@ public class FloatBoundOption : OptionBase
         {
             this.value = value;
         }
-        return value == this.value;
+        return true;
     }
 
     public override bool Equals(object obj)

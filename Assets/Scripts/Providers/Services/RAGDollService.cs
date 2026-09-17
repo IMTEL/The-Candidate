@@ -6,6 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine.Networking;
 
 
@@ -28,9 +31,10 @@ public class RAGDOLLService : ILLMService
     [SerializeField]
     private List<OptionEntry<RagAgent>> Models = new();
 
-    [SerializeField]
+    [SerializeReference]
     [HideInInspector]
     private PickOption<RagAgent> OptionModel = new("Agents", new List<OptionEntry<RagAgent>>() { new(new("", ""), "No models :(") });
+
 
     /// <summary>
     /// The url that should be sent to
@@ -40,16 +44,13 @@ public class RAGDOLLService : ILLMService
     private string url;
 
     [SerializeField]
-    [HideInInspector]
     private string apiKey;
 
     public RAGDOLLService() : this("")
-    {
-
-    }
+    {}
 
     public RAGDOLLService(string apiKey) : this(apiKey, "https://iplvr.it.ntnu.no")
-    { }
+    {}
 
     public RAGDOLLService(string apiKey, string url)
     {
@@ -134,6 +135,7 @@ public class RAGDOLLService : ILLMService
         if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.LogWarning("API key or the service is not accessible");
+            Models = new() { new(new("", ""), "No Models :(") };
             return;
         }
         JObject json = JObject.Parse(DownloadHandlerBuffer.GetContent(request));
@@ -159,11 +161,6 @@ public class RAGDOLLService : ILLMService
 
     private void UpdateModelOption()
     {
-
-        if (Models.Count == 0)
-        {
-            Models = new() { new(new("", ""), "No Models :(") };
-        }
         OptionModel = new("Model", Models);
     }
 
@@ -173,10 +170,16 @@ public class RAGDOLLService : ILLMService
         public string id;
         public string name;
 
+        public RagAgent()
+        {
+            id = "";
+            name = "";
+        }
+
         public RagAgent(string id, string name)
         {
-            this.id = id;
-            this.name = name;
+            this.id = id ?? "";
+            this.name = name ?? "";
         }
 
         public override bool Equals(object obj)

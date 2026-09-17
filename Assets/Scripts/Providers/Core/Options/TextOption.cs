@@ -1,6 +1,10 @@
+using System;
+using UnityEngine;
+
+[Serializable]
 public class TextOption : OptionBase
 {
-
+    [SerializeField]
     private string value;
 
     public TextOption(string name, string value = "") : base(name)

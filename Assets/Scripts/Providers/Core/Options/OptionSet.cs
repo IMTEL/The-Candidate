@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
 /// <summary>
 /// A set of options. Used to contain multiple different options and save their state
 /// </summary>

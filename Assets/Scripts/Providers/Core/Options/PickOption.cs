@@ -16,8 +16,8 @@ public abstract class PickOption : OptionBase{
 [Serializable]
 public class PickOption<T> : PickOption
 {
-    [SerializeField] private OptionEntry<T> value;
-    [SerializeField] private List<OptionEntry<T>> options;
+    [SerializeReference] private OptionEntry<T> value;
+    [SerializeReference] private List<OptionEntry<T>> options;
 
     public PickOption(string name,  IEnumerable<OptionEntry<T>> values, OptionEntry<T> defualtValue = null) : base(name) {
         if(values == null || values.Count() == 0)
@@ -144,7 +144,7 @@ public class PickOption<T> : PickOption
 
 [Serializable]
 public class OptionEntry<T> {
-    [SerializeReference] private T value;
+    [SerializeReference] private object value;
     [SerializeField] private string displayName;
 
     public OptionEntry(T value, string name)
@@ -160,7 +160,7 @@ public class OptionEntry<T> {
     }
 
     public T GetValue(){
-        return value;
+        return (T)value ;
     }
 
     public string GetDisplayName(){
