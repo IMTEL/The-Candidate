@@ -1,8 +1,19 @@
 using UnityEngine;
-
+#if UNITY_EDITOR
+using System.Threading.Tasks;
+using UnityEditor;
+#endif
 public abstract class ServiceProviderSO : ScriptableObject
 {
     public abstract object CreateService();
+    #if UNITY_EDITOR
+    protected async Task ChangeAndWrite(Task action)
+    {
+        await action;
+        EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssetIfDirty(this);
+    }
+    #endif
 }
 
 public abstract class ServiceProviderSO<T> : ServiceProviderSO
