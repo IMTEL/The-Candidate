@@ -4,12 +4,17 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Services/RAGDOLL")]
 public class RAGDOLLProvider : LLMServiceProvider
 {
+    #if UNITY_EDITOR
     [ShowInInspector]
-    public string ApiKey {get {return service.GetAPIKey();} set {service.SetAPIKey(value);}}
+    public string ApiKey {get {return service.GetAPIKey();} set {ChangeAndWrite(service.SetAPIKey(value));}}
 
     [ShowInInspector]
-    public string url {get {return service.GetURL();} set {service.SetURL(value);}}
-    [SerializeField] private RAGDOLLService service = new();
+    public string Url {get {return service.GetURL();} set {ChangeAndWrite(service.SetURL(value));}}
+
+    #endif
+    [SerializeField]
+    [HideInInspector]
+    private RAGDOLLService service = new();
 
     public override ILLMService CreateTypedService()
         => service;
