@@ -12,7 +12,7 @@ public class LocalJobs : IJobSelectionService
     {
         jobs = new(jobContainers);
     }
-
+    
     public async Task<(IEnumerable<JobContainer>, bool)> GetJobs(int page = 1, int amount = 9)
     {
         bool hasNextPage = false;
@@ -27,6 +27,5 @@ public class LocalJobs : IJobSelectionService
         int startIndex = (page-1)*amount;
         int endIndex = Math.Min(jobs.Count(),page*amount);
         return (jobs.GetRange(startIndex, endIndex-startIndex), hasNextPage);
-        
-    }
+        }
 }

@@ -150,7 +150,7 @@ public class JobSelectionManager : MonoBehaviour
     private async void ThreadMethod()
     {
         jobtasks[(jobservice, page)] = jobservice.GetJobs(page, amount: GetPerPageAmount());
-        jobtasks[(jobservice, page)].Wait();
+        await jobtasks[(jobservice, page)];
     }
 
     private void NextPage()
