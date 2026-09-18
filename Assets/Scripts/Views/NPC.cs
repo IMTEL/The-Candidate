@@ -31,6 +31,7 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        agent.Initialize(this);
         animator = transform.parent.GetComponentInChildren<Animator>();
         timeForBlink = random.Next(1, 3);
     }

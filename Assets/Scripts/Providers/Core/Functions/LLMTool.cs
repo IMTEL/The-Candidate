@@ -20,7 +20,7 @@ public class LLMToolAttribute : Attribute
     /// <summary>
     /// What agent roles are allowed to use this method
     /// </summary>
-    public string[] agentRole = new string[10];
+    public string[] agentRole = Array.Empty<string>();
 
     /// <summary>
     /// A description of a method. Should contain:

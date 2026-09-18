@@ -130,7 +130,7 @@ public class LLMToolRegistry
                 try
                 {
                     castedObject = value == null ? Type.Missing : Convert.ChangeType(value, item.GetType()); 
-                    callParams.Append(value);
+                    callParams = new[]{callParams.Append(value)};
                 }
                 catch(Exception e){Debug.Log(e.Message); return false;}
             }

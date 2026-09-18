@@ -55,12 +55,11 @@ public class DialogueSystem : IEvent<IDialogueReady>
         {
             NPC npc = npcs.Current;
             Agent agent = npc.GetAgent();
-            if (!agent.GetLLMSettings(out LLMServiceProvider provider, out OptionSet options)){ return; }
-
-            LLMResponse dialogue = await ((ILLMService)provider.CreateService()).GetAIResponse(dialogs, options);
-            if(!agent.GetTTSSettings(out TTSServiceProvider TTSProvider, out OptionSet TTSOptions))
+            if (!agent.GetLLMSettings(out _, out _)){ return; }
+            LLMResponse dialogue = await agent.CallLLM(dialogs);
+            if(!agent.GetTTSSettings(out _, out _))
             {
-                Dialog dialog = new(npc.actor, dialogue.Dialogue, ((ITTService)TTSProvider.CreateService()).getAudioClip(dialogue.Dialogue, TTSOptions));
+                Dialog dialog = new(npc.actor, dialogue.Dialogue, agent.CreateDialog(dialogue.Dialogue));
                 token.ThrowIfCancellationRequested();
                 dialogs.Add(dialog);
                 onDialogueReady?.Invoke((npc, dialog));

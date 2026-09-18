@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro.EditorUtilities;
 using UnityEngine;
 
 /// <summary>
 /// Agent class that is used for containing the providers and settings for a specific agent
 /// </summary>
 [Serializable]
-public class Agent 
+public class Agent
 {
     /// <summary>
     /// Provider used to LLMs
     /// </summary>
     [SerializeField]
     LLMServiceProvider LLMServiceProvider;
-    
+
     /// <summary>
     /// LLM override settings
     /// </summary>
@@ -26,15 +27,30 @@ public class Agent
     /// </summary>
     [SerializeField]
     TTSServiceProvider TTServiceProvider;
-    
+
     /// <summary>
     /// TTS override settings
     /// </summary>
     [SerializeReference]
-    OptionSet TTSOVerrides = new();
+    OptionSet TTSOverrides = new();
 
     [SerializeField]
     LLMToolRegistry lLMToolRegistry;
+
+    /// <summary>
+    /// Initializes the methods for the agent to be used 
+    /// </summary>
+    /// <param name="owner">The object that has the tools</param>
+    /// <param name="name">Role name for the filter</param>
+    /// <exception cref="ArgumentException">If the owner is null</exception>
+    public void Initialize(object owner, string name = "")
+    {
+        if (owner == null)
+        {
+            throw new ArgumentException(nameof(owner));
+        }
+        lLMToolRegistry = new(owner, name);
+    }
 
     /// <summary>
     /// Gives out the provider and options for the LLM
@@ -46,7 +62,7 @@ public class Agent
     public bool GetLLMSettings(out LLMServiceProvider provider, out OptionSet options, bool CombineOptions = true)
     {
         provider = LLMServiceProvider;
-        options = CombineOptions && LLMServiceProvider != null? LLMServiceProvider.GetLLMOptions().Merge(LLMOverrides) : LLMOverrides;
+        options = CombineOptions && LLMServiceProvider != null ? LLMServiceProvider.GetLLMOptions().Merge(LLMOverrides) : LLMOverrides;
         return LLMServiceProvider != null;
     }
 
@@ -60,7 +76,7 @@ public class Agent
     public bool GetTTSSettings(out TTSServiceProvider provider, out OptionSet options, bool CombineOptions = true)
     {
         provider = TTServiceProvider;
-        options = CombineOptions && TTServiceProvider != null ? TTServiceProvider.GetTTSOptions().Merge(TTSOVerrides) : TTSOVerrides;
+        options = CombineOptions && TTServiceProvider != null ? TTServiceProvider.GetTTSOptions().Merge(TTSOverrides) : TTSOverrides;
         return TTServiceProvider != null;
     }
 
@@ -81,12 +97,12 @@ public class Agent
     public void SetTTSServiceProvider(TTSServiceProvider tTSService)
     {
         TTServiceProvider = tTSService;
-        TTSOVerrides = TTServiceProvider != null ? TTServiceProvider.GetTTSOptions().Merge(TTSOVerrides, OptionSet.MergeMode.Intersect) : new();
+        TTSOverrides = TTServiceProvider != null ? TTServiceProvider.GetTTSOptions().Merge(TTSOverrides, OptionSet.MergeMode.Intersect) : new();
     }
 
     public OptionSet SetOptionsLLM(OptionSet optionSet)
     {
-        if(LLMServiceProvider != null)
+        if (LLMServiceProvider != null)
         {
             LLMOverrides = LLMServiceProvider.GetLLMOptions().Merge(optionSet, OptionSet.MergeMode.Intersect);
         }
@@ -94,17 +110,14 @@ public class Agent
     }
     public OptionSet SetOptionsTTS(OptionSet optionSet)
     {
-        if(TTServiceProvider != null)
+        if (TTServiceProvider != null)
         {
-            TTSOVerrides = TTServiceProvider.GetTTSOptions().Merge(optionSet, OptionSet.MergeMode.Intersect);
+            TTSOverrides = TTServiceProvider.GetTTSOptions().Merge(optionSet, OptionSet.MergeMode.Intersect);
         }
-        return TTSOVerrides;
+        return TTSOverrides;
     }
 
-    public void RegisterMethods(object owner, string name = "")
-    {
-        lLMToolRegistry = new(owner, name);
-    }
+
 
     /// <summary>
     /// Sends request to the LLM with the agent settings
@@ -113,9 +126,18 @@ public class Agent
     /// <returns>The LLMResponse</returns>
     public Task<LLMResponse> CallLLM(IEnumerable<Dialog> dialogs)
     {
-        if(LLMServiceProvider != null)
+        if (LLMServiceProvider != null)
         {
             return LLMServiceProvider.CreateTypedService().GetAIResponse(dialogs, LLMOverrides, lLMToolRegistry);
+        }
+        return null;
+    }
+
+    public IAsyncEnumerator<AudioClip> CreateDialog(string dialog)
+    {
+        if (TTServiceProvider != null)
+        {
+            return TTServiceProvider.CreateTypedService().getAudioClip(dialog, TTSOverrides);
         }
         return null;
     }
