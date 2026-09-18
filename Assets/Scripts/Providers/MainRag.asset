@@ -11,65 +11,65 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be1c98c4dee09e7119558b5abcf60def, type: 3}
   m_Name: MainRag
-  m_EditorClassIdentifier: Assembly-CSharp::RAGDOLLProvider
+  m_EditorClassIdentifier: 
   service:
     Models:
     - value:
-        rid: 5696154521004933978
+        rid: 5696154521004934097
       displayName: Coordinator
     - value:
-        rid: 5696154521004933979
+        rid: 5696154521004934098
       displayName: Actor
     - value:
-        rid: 5696154521004933980
+        rid: 5696154521004934099
       displayName: AD-Summary
     OptionModel:
-      rid: 5696154521004933981
-    url: https://iplvr.it.ntnu.no/
+      rid: 5696154521004934100
+    url: https://iplvr.it.ntnu.no
     apiKey: SBLq5t9GVLIkDhITUxom8i5U0U0P2MFvwa8-QeIU14U=
   references:
     version: 2
     RefIds:
-    - rid: 5696154521004933978
+    - rid: 5696154521004934097
       type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
       data:
         id: 6a997572550ef6deab1c149d
         name: Coordinator
-    - rid: 5696154521004933979
+    - rid: 5696154521004934098
       type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
       data:
         id: 6a997572550ef6deab1c149d
         name: Actor
-    - rid: 5696154521004933980
+    - rid: 5696154521004934099
       type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
       data:
         id: 6a997572550ef6deab1c149d
         name: AD-Summary
-    - rid: 5696154521004933981
+    - rid: 5696154521004934100
       type: {class: 'PickOption`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         name: Model
         value:
-          rid: 5696154521004933982
+          rid: 5696154521004934101
         options:
-        - rid: 5696154521004933982
-        - rid: 5696154521004933983
-        - rid: 5696154521004933984
-    - rid: 5696154521004933982
+        - rid: 5696154521004934101
+        - rid: 5696154521004934102
+        - rid: 5696154521004934103
+    - rid: 5696154521004934101
       type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         value:
-          rid: 5696154521004933978
+          rid: 5696154521004934097
         displayName: Coordinator
-    - rid: 5696154521004933983
+    - rid: 5696154521004934102
       type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         value:
-          rid: 5696154521004933979
+          rid: 5696154521004934098
         displayName: Actor
-    - rid: 5696154521004933984
+    - rid: 5696154521004934103
       type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         value:
-          rid: 5696154521004933980
+          rid: 5696154521004934099
         displayName: AD-Summary
