@@ -10,12 +10,13 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
     private static readonly int NoddingHash = Animator.StringToHash("Actions.Nodding");
 
     private bool recording = false;
-
+    
+    [SerializeField]
+    private Agent agent;
+    
     private System.Random random = new();
     public new string name;
     
-    [SerializeField]
-    private Agent agent = new();
     public Environment.Actor actor = Environment.Actor.Employee;
     public AudioSource audioSource { get; private set; }
     public GameObject head;
@@ -95,7 +96,7 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
 
     public Agent GetAgent()
     {
-        return agent;
+        return null;
     }
 
     public void onMicrophoneStartRecording()

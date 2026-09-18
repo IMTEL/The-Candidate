@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 /// <summary>
 /// A set of options. Used to contain multiple different options and save their state
@@ -8,8 +9,8 @@ using UnityEngine;
 public class OptionSet
 {
 
-    [SerializeField]
-    private HashSet<OptionBase> optionBases = new();
+    [SerializeReference]
+    private List<OptionBase> optionBases = new();
 
     public OptionSet(){}
 
@@ -39,7 +40,7 @@ public class OptionSet
         }
         foreach (OptionBase option in options)
         {
-            optionBases.Add(option);
+            AddOption(option.Clone());
         }
     }
 
@@ -61,7 +62,12 @@ public class OptionSet
     /// <returns>If it got added</returns>
     public bool AddOption(OptionBase option)
     {
-        return optionBases.Add(option);
+        if (option == null || optionBases.Contains(option))
+        {
+            return false;
+        }
+        optionBases.Add(option);
+        return true;
     }
 
     /// <summary>
@@ -76,12 +82,14 @@ public class OptionSet
         if(optionSet == null) return merged;
         foreach (OptionBase item in optionSet.optionBases)
         {
-            if (merged.optionBases.TryGetValue(item, out OptionBase actualValue) || optionBases.TryGetValue(item, out actualValue))
+            if (ContainsOption(item, out OptionBase replicate))
             {
-                actualValue.TrySetValue(item.GetObjectValue());
-                if(merge == MergeMode.Intersect)
+                if (merged.ContainsOption(item, out OptionBase value))
                 {
-                    merged.AddOption(actualValue);
+                    value.TrySetValue(replicate.GetObjectValue());
+                } else 
+                {
+                    merged.AddOption(replicate.Clone());
                 }
             }
             else if (merge == MergeMode.CompleteMerge)
@@ -120,9 +128,9 @@ public class OptionSet
     public bool ContainsOption<T>(T option, out T replicate) where T : OptionBase
     {
         replicate = null;
-        if(optionBases.TryGetValue(option, out OptionBase test))
+        if(optionBases.Contains(option))
         {
-            replicate = test as T;
+            replicate = optionBases.First(value => value.Equals(option)) as T;
         }
         return replicate != null;
     } 

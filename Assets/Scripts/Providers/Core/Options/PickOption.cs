@@ -66,7 +66,7 @@ public class PickOption<T> : PickOption
     {
         if(value == null || !options.Contains(value))
         {
-            throw new ArgumentException("Value has to be within the list of options and not null");
+            return false;
         }
         this.value = value;
         return true;
@@ -148,13 +148,21 @@ public class OptionEntry<T> {
     [SerializeField] private string displayName;
 
     public OptionEntry(T value, string name)
-    {        
+    {
+        if(value == null || name == null)
+        {
+            throw new ArgumentException("Neither value can't be null");
+        }
         this.value = value;
         this.displayName = name; 
     }
 
     public OptionEntry(T value)
-    {        
+    {    
+        if(value == null)
+        {
+            throw new ArgumentException("Value can't be null");
+        }
         this.value = value;
         this.displayName = value.ToString(); 
     }
@@ -169,7 +177,7 @@ public class OptionEntry<T> {
 
     public override bool Equals(object obj)
     {   
-        if (obj == null || GetType() != obj.GetType())
+        if (obj == null || value == null || GetType() != obj.GetType())
         {
             return false;
         }

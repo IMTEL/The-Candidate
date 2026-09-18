@@ -12,7 +12,7 @@ using UnityEngine;
 [Serializable]
 public class LLMToolRegistry
 {
-    [SerializeReference]
+    [SerializeField]
     object owner;
 
     [SerializeField]

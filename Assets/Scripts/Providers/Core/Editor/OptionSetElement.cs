@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UIElements;
 
-public class OptionsetElement : PopupWindow, IEvent<IOptionChange>
+public class OptionsetElement : PopupWindow
 {
     Action<OptionSet> notify;
     OptionSet options;
@@ -20,7 +20,7 @@ public class OptionsetElement : PopupWindow, IEvent<IOptionChange>
     }
     private void GenerateOption(OptionBase original, OptionBase current = null)
     {
-        if(current != null && !original.GetType().Equals(current.GetType()))
+        if (current != null && !original.GetType().Equals(current.GetType()))
         {
             throw new ArgumentException("These are not the same type of Options");
         }
@@ -33,13 +33,14 @@ public class OptionsetElement : PopupWindow, IEvent<IOptionChange>
                 showInputField = true,
                 highValue = floatBoundOption.GetBounds().Item2,
                 direction = SliderDirection.Horizontal,
-                
+
             };
             field.RegisterValueChangedCallback(evt =>
             {
                 FloatBoundOption floatBound = (FloatBoundOption)GetOptionChange(floatBoundOption);
-                if (floatBound.TrySetValue(evt.newValue)) {notify?.Invoke(options);} 
-                else {field.value = floatBound.GetValue();};
+                if (floatBound.TrySetValue(evt.newValue)) { notify?.Invoke(options); }
+                else { field.value = floatBound.GetValue(); }
+                ;
             });
             Add(field);
         }
@@ -49,7 +50,7 @@ public class OptionsetElement : PopupWindow, IEvent<IOptionChange>
             {
                 choices = new(pickOption.GetOptionDisplayNames()),
                 //Fetch the index of the string that matched the display name of the current (if it is not null) or the default option
-                index = new List<string>(pickOption.GetOptionDisplayNames()).IndexOf(pickOption.GetOptionDisplayNames().First(value => value.Equals(current != null ?((PickOption)current).GetCurrentname() : pickOption.GetCurrentname()))),
+                index = new List<string>(pickOption.GetOptionDisplayNames()).IndexOf(GetCurrentDisplayName(pickOption, (PickOption)current)),
             };
             dropfield.RegisterCallback<ChangeEvent<string>>((evt) =>
             {
@@ -62,15 +63,16 @@ public class OptionsetElement : PopupWindow, IEvent<IOptionChange>
         }
         else if (original is TextOption textOption)
         {
+            TextOption currentTextOption = current as TextOption;
             TextField textField = new(textOption.GetName())
             {
-                value = textOption.GetObjectValue() as string,
+                value = (currentTextOption ?? textOption).GetObjectValue() as string,
                 multiline = true
             };
             textField.style.whiteSpace = WhiteSpace.PreWrap;
             textField.RegisterCallback<ChangeEvent<string>>(evt =>
             {
-               GetOptionChange(textOption).TrySetValue(evt.newValue);
+                GetOptionChange(textOption).TrySetValue(evt.newValue);
                 notify?.Invoke(options);
             });
             Add(textField);
@@ -89,14 +91,28 @@ public class OptionsetElement : PopupWindow, IEvent<IOptionChange>
         return first;
     }
 
-    public void AddListener(IOptionChange listener)
+    public void AddListener(Action<OptionSet> listener)
     {
-        notify += listener.OptionBaseChange;
+        notify += listener;
     }
 
-    public void RemoveListener(IOptionChange listener)
+    public void RemoveListener(Action<OptionSet> listener)
     {
-        notify -= listener.OptionBaseChange;
+        notify -= listener;
     }
 
+
+    private static string GetCurrentDisplayName(
+        PickOption original,
+        PickOption current)
+    {
+        if (current != null &&
+            current.GetOptionsObjects().Any() &&
+            current.GetOptionDisplayNames().Any())
+        {
+            return current.GetCurrentname();
+        }
+
+        return original.GetCurrentname();
+    }
 }
