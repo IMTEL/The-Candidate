@@ -142,104 +142,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28da1e652623f1442b96f40866c3d28e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
+  agent:
+    LLMServiceProvider: {fileID: 11400000, guid: 4512622d4b06a4661a4802bc99e6ace7, type: 2}
+    LLMOverrides:
+      rid: 5696154520218239138
+    TTServiceProvider: {fileID: 0}
+    TTSOVerrides:
+      rid: 5696154520218239136
+    lLMToolRegistry:
+      owner:
+        rid: -2
+      agentRole: 
   name: 
-  TTService: {fileID: 11400000, guid: c9a2c02402109f51b9924762e532ccbc, type: 2}
-  TTSOptions:
-  - rid: 8779510519695147025
-  - rid: 8779510519695147026
-  - rid: 8779510519695147027
-  - rid: 8779510519695147028
-  LLMService: {fileID: 11400000, guid: c38be792e74a11d45ba8ec8bf608b36d, type: 2}
-  LLMOptions:
-  - rid: 8779510519695147029
-  - rid: 8779510519695147030
   head: {fileID: 0}
-  voiceProfile:
-    displayName: 
-    id: 
-    models: []
-    language: 
   references:
     version: 2
     RefIds:
-    - rid: 8779510519695147025
-      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
-      data:
-        name: CommaDelay
-        value: 0
-        minBound: 0
-        maxBound: 3
-    - rid: 8779510519695147026
-      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
-      data:
-        name: PeriodDelay
-        value: 0
-        minBound: 0
-        maxBound: 3
-    - rid: 8779510519695147027
-      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
-      data:
-        name: QuestionExclamationDelay
-        value: 0
-        minBound: 0
-        maxBound: 3
-    - rid: 8779510519695147028
-      type: {class: 'PickOption`1[[ESpeakVoiceContainer, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
-      data:
-        name: voice
-        value:
-          value:
-            rid: 8779510519695147031
-          displayName: no_NO-talesyntese-medium.onnx
-        options:
-        - value:
-            rid: 8779510519695147031
-          displayName: no_NO-talesyntese-medium.onnx
-        - value:
-            rid: 8779510519695147032
-          displayName: no_NO-talesyntese-medium.danish
-        - value:
-            rid: 8779510519695147033
-          displayName: no_NO-talesyntese-medium.se
-    - rid: 8779510519695147029
-      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
-      data:
-        name: Temprature
-        value: 1
-        minBound: 0
-        maxBound: 2
-    - rid: 8779510519695147030
-      type: {class: 'PickOption`1[[OpenAICompletionRequest/Model, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
-      data:
-        name: Model
-        value:
-          value: 3
-          displayName: 120b, OpenAI
-        options:
-        - value: 3
-          displayName: 120b, OpenAI
-        - value: 4
-          displayName: Minstral 3
-        - value: 5
-          displayName: NorwAI 24B
-    - rid: 8779510519695147031
-      type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
-      data:
-        name: no_NO-talesyntese-medium.onnx
-        jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
-        modelAsset: {fileID: 5022602860645237092, guid: be1e8ff26d600ef60b8db8bcbcb1c47b, type: 3}
-    - rid: 8779510519695147032
-      type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
-      data:
-        name: no_NO-talesyntese-medium.danish
-        jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
-        modelAsset: {fileID: 5022602860645237092, guid: 59236cad42a7fc53e8fea1b57e04c997, type: 3}
-    - rid: 8779510519695147033
-      type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
-      data:
-        name: no_NO-talesyntese-medium.se
-        jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
-        modelAsset: {fileID: 5022602860645237092, guid: 9ace56bf0484d094b963dd964eed931d, type: 3}
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 5696154520218239136
+      type: {class: OptionSet, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5696154520218239138
+      type: {class: OptionSet, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!1 &6685602297755913791
 GameObject:
   m_ObjectHideFlags: 0
