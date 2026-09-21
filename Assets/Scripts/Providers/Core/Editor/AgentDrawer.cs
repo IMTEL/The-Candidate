@@ -11,9 +11,11 @@ public class AgentDrawer : PropertyDrawer
     SerializedProperty serialized;
     ScrollView LLMOptionsView;
     ScrollView TTSOptionsView;
+    
 
     public override VisualElement CreatePropertyGUI(SerializedProperty property)
     {
+        SerializedProperty nameProperty = property.FindPropertyRelative("name");
         serialized = property;
         agent = serialized.boxedValue as Agent;
         LLMOptionsView = new();
@@ -31,6 +33,20 @@ public class AgentDrawer : PropertyDrawer
         {
             text = $"{property.name} settings"
         };
+
+        TextField name = new()
+        {
+            value = nameProperty.stringValue,
+            label = "Name",
+        };
+        _ = name.RegisterValueChangedCallback((value) =>
+        {
+            RecordChange();
+            nameProperty.stringValue = value.newValue;
+            serialized.serializedObject.ApplyModifiedProperties();
+            WriteBack();
+        });
+        popupWindow.Add(name);
         popupWindow.Add(tabs);
         tabs.Add(CreateLLMSettings());
         tabs.Add(CreateTTSettings());
@@ -127,8 +143,6 @@ public class AgentDrawer : PropertyDrawer
                 TTSOptionsView.Add(element);
                 element.AddListener(OptionSetTTS);
             }
-
-
         }
         else
         {

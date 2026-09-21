@@ -116,7 +116,7 @@ public class LLMToolRegistry
 
         internal bool CanBeCalled(Dictionary<string, string> parameters, out Action<object> action)
         {
-            object[] callParams = new object[Parameters.Capacity];
+            object[] callParams = new object[Parameters.Count];
             bool valid = true;
             action = null;
             object castedObject;
@@ -129,7 +129,7 @@ public class LLMToolRegistry
                 }
                 try
                 {
-                    castedObject = value == null ? Type.Missing : Convert.ChangeType(value, item.GetType()); 
+                    castedObject = value == null ? Type.Missing : Convert.ChangeType(value, item.GetParameterType()); 
                     callParams = new[]{callParams.Append(value)};
                 }
                 catch(Exception e){Debug.Log(e.Message); return false;}

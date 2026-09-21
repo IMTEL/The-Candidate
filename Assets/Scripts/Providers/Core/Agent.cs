@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TMPro.EditorUtilities;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +9,9 @@ using UnityEngine;
 [Serializable]
 public class Agent
 {
+    [SerializeField]
+    string name;
+
     /// <summary>
     /// Provider used to LLMs
     /// </summary>
@@ -37,13 +39,20 @@ public class Agent
     [NonSerialized]
     LLMToolRegistry lLMToolRegistry;
 
+
+    public Agent() : this(""){}
+    public Agent(string name)
+    {
+        this.name = name;
+    }
+
     /// <summary>
     /// Initializes the methods for the agent to be used 
     /// </summary>
     /// <param name="owner">The object that has the tools</param>
     /// <param name="name">Role name for the filter</param>
     /// <exception cref="ArgumentException">If the owner is null</exception>
-    public void Initialize(object owner, string name = "")
+    public void Initialize(object owner)
     {
         if (owner == null)
         {
@@ -108,6 +117,7 @@ public class Agent
         }
         return LLMOverrides;
     }
+
     public OptionSet SetOptionsTTS(OptionSet optionSet)
     {
         if (TTServiceProvider != null)
@@ -117,6 +127,19 @@ public class Agent
         return TTSOverrides;
     }
 
+    /// <summary>
+    /// Sets the name of agent
+    /// </summary>
+    /// <param name="name">name</param>
+    public void SetName(string name)
+    {
+        this.name = name;
+    }
+
+    public string GetName()
+    {
+        return name;
+    }
 
 
     /// <summary>
