@@ -15,13 +15,21 @@ public class Dialog : LLMDialogue
     public Environment.Actor actor {get; private set;}
 
     /// <summary>
-    /// The audioclip of the dialog if created.
+    /// The AudioClip of the dialog if created.
     /// </summary>
     private readonly IAsyncEnumerator<AudioClip> _stream;
 
+    /// <summary>
+    /// If the audio function is done with the setup
+    /// </summary>
     public bool IsFinished {get; private set;} = false; 
 
-
+    /// <summary>
+    /// Creates a Dialog from a actor, dialogue and stream
+    /// </summary>
+    /// <param name="actor">The actor</param>
+    /// <param name="dialog">The dialogue of the string</param>
+    /// <param name="stream">A stream of AudioClips</param>
     public Dialog(
         Environment.Actor actor,
         string dialog,
@@ -41,6 +49,10 @@ public class Dialog : LLMDialogue
     /// <param name="audioClip">A optional AudioClip</param>
     public Dialog(Environment.Actor actor, string dialog, AudioClip audioClip): this(actor, dialog, SingleClip(audioClip)){}
 
+    /// <summary>
+    /// Fetches the next AudioClip for function
+    /// </summary>
+    /// <returns></returns>
     public async Task<AudioClip> Next()
     {
         if(IsFinished) return null;

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 
 /// <summary>
-/// Creates dialogues with the AI model and
+/// Creates dialogues with the AI models
 /// </summary>
 public class DialogueSystem : IEvent<IDialogueReady>
 {
@@ -15,8 +16,6 @@ public class DialogueSystem : IEvent<IDialogueReady>
 
     private readonly List<Dialog> dialogs = new();
     public Action<(NPC, Dialog)> onDialogueReady;
-
-    private readonly Random random = new();
 
     Agent coordinator;
 
@@ -28,6 +27,7 @@ public class DialogueSystem : IEvent<IDialogueReady>
         this.NPCRegistry = nPCRegistry;
         this.AdSummary = adSummary;
         this.coordinator = coordinator;
+        this.coordinator.Initialize(this);
     }
 
 
@@ -46,26 +46,29 @@ public class DialogueSystem : IEvent<IDialogueReady>
     /// <returns></returns>
     private async Task HandleUserDialog(Dialog userDialog, CancellationToken token)
     {
-        dialogs.Add(userDialog);
+        
+    }
 
-        List<NPC> listnpcs = NPCRegistry.GetNPCEnumerable().ToList().OrderBy((_) => random.Next()).ToList();
-        IEnumerator<NPC> npcs = listnpcs.GetEnumerator();
-        npcs.MoveNext();
-        while (npcs.Current)
+    [LLMTool("Creates a new dialogue for a specific NPC", agentRole = new string[]{"Coordinator"})]
+    private async Task CreateDialogue(
+        [LLMParameter("The NPC that is gonna talk")] string NPC, 
+        [LLMParameter("The context behind the dialogue")] string Context, 
+        [LLMParameter("What they are supposed to say in the dialogue")] string Direction)
+    {
+        try
         {
-            NPC npc = npcs.Current;
-            Agent agent = npc.GetAgent();
-            if (!agent.GetLLMSettings(out _, out _)){ return; }
-            LLMResponse dialogue = await agent.CallLLM(dialogs);
-            if(!agent.GetTTSSettings(out _, out _))
+            NPC npc = NPCRegistry.GetNPCEnumerable().First(npc => npc.name.Contains(NPC));
+            LLMResponse response = await npc.GetAgent().CallLLM(dialogs);
+
+            if(response == null)
             {
-                Dialog dialog = new(npc.actor, dialogue.Dialogue, agent.CreateDialog(dialogue.Dialogue));
-                token.ThrowIfCancellationRequested();
-                dialogs.Add(dialog);
-                onDialogueReady?.Invoke((npc, dialog));
+                Debug.LogWarning("LLM is missing in the NPC");
+                return;
             }
-
-
+        }
+        catch (Exception)
+        {
+            Debug.LogError($"Could not find NPC with name {NPC}");
         }
     }
 
