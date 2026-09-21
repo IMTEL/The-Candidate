@@ -78,7 +78,7 @@ public class DialogueSystem : IEvent<IDialogueReady>
     }
 
     [LLMTool("Creates a new dialogue for a specific NPC", agentRole = new string[] { "Coordinator" })]
-    private async Task CreateDialogue(
+    public async Task CreateDialogue(
         [LLMParameter("The NPC that is gonna talk")] string NPC,
         [LLMParameter("The context behind the dialogue")] string Context,
         [LLMParameter("What they are supposed to say in the dialogue")] string Direction)

@@ -34,7 +34,7 @@ public class Agent
     [SerializeReference]
     OptionSet TTSOverrides = new();
 
-    [SerializeField]
+    [NonSerialized]
     LLMToolRegistry lLMToolRegistry;
 
     /// <summary>

@@ -19,15 +19,15 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
     ScenarioSettingsWrapper scenarioSettings;
 
     SpawnManager spawnManager;
-    
+
     [Init]
     protected void Init(SpawnManager nPCRegistry, ScenarioSettingsWrapper scenarioSettingsWrapper, ExtendedWhisperManager extendedWhisperManager)
     {
         spawnManager = nPCRegistry;
         scenarioSettings = scenarioSettingsWrapper;
         dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), Cordinator, AdSummerazation);
-        dialogueSystem.AddListener(this);    
-        SceneManager.activeSceneChanged += (_, Scene2) => {spawnManager.UpdateScene(); ResetDialogueSystem(Scene2);};
+        dialogueSystem.AddListener(this);
+        SceneManager.activeSceneChanged += (_, Scene2) => { spawnManager.UpdateScene(); ResetDialogueSystem(Scene2); };
         ResetDialogueSystem(SceneManager.GetActiveScene());
         extendedWhisperManager.AddListener(this);
     }
@@ -37,15 +37,15 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
         if (!scene2.name.Equals("Start") && dialogueSystem != null)
         {
             onMicrophoneStopRecording(new(Environment.Actor.Director, "Introduce yourself"));
-        }    
+        }
         else
         {
             dialogueSystem?.RemoveListener(this);
             dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), Cordinator, AdSummerazation);
-            dialogueSystem.AddListener(this);    
+            dialogueSystem.AddListener(this);
         }
 
-        }
+    }
 
 
     public void onMicrophoneStartRecording()
@@ -57,10 +57,10 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
     {
         lock (_lock)
         {
-            if(cancellationToken != null && !cancellationToken.IsCancellationRequested) cancellationToken.Cancel();
-            (_, cancellationToken) = dialogueSystem.HandleUserDialog(recordedaudio);    
+            if (cancellationToken != null && !cancellationToken.IsCancellationRequested) cancellationToken.Cancel();
+            (_, cancellationToken) = dialogueSystem.HandleUserDialog(recordedaudio);
         }
-        
+
     }
 
     public void AddListener(IDialogueReady listener)

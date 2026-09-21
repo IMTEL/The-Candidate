@@ -44,10 +44,10 @@ public class RAGDOLLService : ILLMService
     private string apiKey;
 
     public RAGDOLLService() : this("")
-    {}
+    { }
 
     public RAGDOLLService(string apiKey) : this(apiKey, "https://iplvr.it.ntnu.no")
-    {}
+    { }
 
     public RAGDOLLService(string apiKey, string url)
     {
@@ -68,37 +68,41 @@ public class RAGDOLLService : ILLMService
         OptionSet set = GetLLMOptions().Merge(options);
         if (set.ContainsOption(OptionModel, out PickOption<RagAgent> value)) await simulationousRequests.WaitAsync();
         else { return null; }
-        RAGDOLLPacket requestBody = new(apiKey, ((RagAgent)value.GetObjectValue()).name, dialogs);
-        UnityWebRequest request = new(url, "POST")
+        OptionEntry<RagAgent> agentChoice = (OptionEntry<RagAgent>)value.GetObjectValue();
+        try
         {
-            uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JObject.FromObject(requestBody).ToString())),
-            downloadHandler = new DownloadHandlerBuffer()
-        };
-        request.SetRequestHeader("Content-Type", "application/json");
-        await request.SendWebRequest();
-        simulationousRequests.Release();
-        if (request.result != UnityWebRequest.Result.Success)
-        {
-            Debug.LogError($"Error: {request.error}");
-            return null;
-        }
-
-        JObject json = JObject.Parse(DownloadHandlerBuffer.GetContent(request));
-        JToken response = json["response"];
-        List<Action> actions = new();
-        if (lLMToolRegistry != null)
-        {
-            foreach (JToken item in response["function_calls"])
+            RAGDOLLPacket requestBody = new(apiKey, agentChoice.GetValue().id, dialogs, agentChoice.GetValue().name);
+            UnityWebRequest request = CreateRequest("/api/chat/ask");
+            request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JObject.FromObject(requestBody).ToString()));
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.method = "POST";
+            await request.SendWebRequest();
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                Dictionary<string, string> arguments = item["arguments"].ToObject<Dictionary<string, string>>();
-                if(lLMToolRegistry.IsMethodCallable(item["name"].ToString(), arguments, out Action callable))
+                Debug.LogError($"Error: {request.error}");
+                return null;
+            }
+
+            JObject json = JObject.Parse(DownloadHandlerBuffer.GetContent(request));
+            JToken response = json["response"];
+            List<Action> actions = new();
+            if (lLMToolRegistry != null)
+            {
+                foreach (JToken item in response["function_calls"])
                 {
-                    actions.Add(callable);
+                    Dictionary<string, string> arguments = item["arguments"].ToObject<Dictionary<string, string>>();
+                    if (lLMToolRegistry.IsMethodCallable(item["name"].ToString(), arguments, out Action callable))
+                    {
+                        actions.Add(callable);
+                    }
                 }
             }
+            return new LLMResponse(response["response"].ToString(), actions);
         }
-
-        return new LLMResponse(response["response"].ToString(), actions);
+        finally
+        {
+            simulationousRequests.Release();
+        }
     }
 
 
@@ -181,7 +185,7 @@ public class RAGDOLLService : ILLMService
 
         public override bool Equals(object obj)
         {
-            if(obj != null && obj is RagAgent ragAgent)
+            if (obj != null && obj is RagAgent ragAgent)
             {
                 return id != null && name != null && id.Equals(ragAgent.id) && name.Equals(ragAgent.name);
             }
@@ -194,29 +198,30 @@ public class RAGDOLLService : ILLMService
         }
     }
 
-    internal class RAGDOLLPacket
+    internal struct RAGDOLLPacket
     {
-        string access_key;
-        IEnumerable<RagDialogue> chat_log;
-        string agent_id;
-        string active_role_id = "user";
+        public string access_key;
+        public IEnumerable<RagDialogue> chat_log;
+        public string agent_id;
+        public string active_role_id;
 
-        public RAGDOLLPacket(string access_key, string agent_id, IEnumerable<RagDialogue> ragDialogues)
+        public RAGDOLLPacket(string access_key, string agent_id, IEnumerable<RagDialogue> ragDialogues, string active_role_id)
         {
             this.access_key = access_key;
             this.agent_id = agent_id;
             chat_log = ragDialogues;
+            this.active_role_id = active_role_id;
         }
 
-        public RAGDOLLPacket(string access_key, string agent_id, IEnumerable<LLMDialogue> Dialogues)
-            : this(access_key, agent_id, RagDialogue.FromDialogues(Dialogues)) { }
+        public RAGDOLLPacket(string access_key, string agent_id, IEnumerable<LLMDialogue> Dialogues, string active_role_id)
+            : this(access_key, agent_id, RagDialogue.FromDialogues(Dialogues), active_role_id) { }
 
     }
 
     internal class RagDialogue
     {
-        string role;
-        string content;
+        public string role;
+        public string content;
 
         public RagDialogue(LLMDialogue dialog)
         {

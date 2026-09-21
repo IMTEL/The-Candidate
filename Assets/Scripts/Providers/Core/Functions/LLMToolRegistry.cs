@@ -51,11 +51,11 @@ public class LLMToolRegistry
             return;
         }
         functionRegistry = new();
-        IEnumerable<MethodInfo> methods = owner.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(LLMToolParameter), false).Length > 0);
+        IEnumerable<MethodInfo> methods = owner.GetType().GetMethods();
         foreach (MethodInfo method in methods)
         {
             LLMToolAttribute toolDefinition = method.GetCustomAttribute<LLMToolAttribute>();
-            if (toolDefinition.agentRole.Length == 0 || toolDefinition.agentRole.Contains(agentRole))
+            if (toolDefinition != null && (toolDefinition.agentRole.Length == 0 || toolDefinition.agentRole.Contains(agentRole)))
             {
                 try { functionRegistry.Add(LLMToolFunction.FromMethodInfo(method)); }
                 catch (Exception) { }
