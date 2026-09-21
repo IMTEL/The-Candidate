@@ -73,7 +73,10 @@ public class DialogueSystem : IEvent<IDialogueReady>
         LLMResponse response = await coordinator.CallLLM(tempDialogs);
         foreach (Action item in response.GetFunctions())
         {
-            item.Invoke();
+            try{item.Invoke();} catch(Exception e)
+            {
+                Debug.LogWarning(e.Message);
+            }
         }
     }
 
@@ -101,9 +104,9 @@ public class DialogueSystem : IEvent<IDialogueReady>
             dialogs.Add(dialog);
             onDialogueReady.Invoke((npc, dialog));
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            Debug.LogError($"Could not find NPC with name {NPC}");
+            Debug.LogError(e.Message);
         }
         finally
         {

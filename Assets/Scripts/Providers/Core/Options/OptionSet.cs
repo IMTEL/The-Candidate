@@ -86,7 +86,7 @@ public class OptionSet
             {
                 if (merged.ContainsOption(item, out OptionBase value))
                 {
-                    value.TrySetValue(replicate.GetObjectValue());
+                    value.TrySetValue(item.GetObjectValue());
                 } else 
                 {
                     merged.AddOption(replicate.Clone());

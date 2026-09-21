@@ -11,15 +11,17 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
 
     private bool recording = false;
     
+    public new string name;
+
+    public GameObject head;
+
     [SerializeField]
     private Agent agent;
     
     private System.Random random = new();
-    public new string name;
-    
+
     public Environment.Actor actor = Environment.Actor.Employee;
     public AudioSource audioSource { get; private set; }
-    public GameObject head;
 
     private float timeForBlink;
     private float timeForNodding;
@@ -97,7 +99,7 @@ public class NPC : MonoBehaviour, IEvent<INPCEventListener>, IMicrophoneEventLis
 
     public Agent GetAgent()
     {
-        return null;
+        return agent;
     }
 
     public void onMicrophoneStartRecording()

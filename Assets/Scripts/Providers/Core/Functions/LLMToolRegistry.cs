@@ -120,8 +120,9 @@ public class LLMToolRegistry
             bool valid = true;
             action = null;
             object castedObject;
-            foreach (LLMToolParameter item in Parameters)
+            for(int i = 0; i < Parameters.Count; i++)
             {
+                LLMToolParameter item = Parameters[i];
                 //If it does not exist and is mandatory
                 if(!(parameters.TryGetValue(item.GetName(), out string value) || item.IsOptional()))
                 {
@@ -130,7 +131,7 @@ public class LLMToolRegistry
                 try
                 {
                     castedObject = value == null ? Type.Missing : Convert.ChangeType(value, item.GetParameterType()); 
-                    callParams = new[]{callParams.Append(value)};
+                    callParams[i] = castedObject;
                 }
                 catch(Exception e){Debug.Log(e.Message); return false;}
             }
