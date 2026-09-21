@@ -7,40 +7,38 @@ using UnityEngine;
 /// 
 /// It contains the information of who, what and how the dialog got said trough the attributes
 /// </summary>
-public class Dialog
+public class Dialog : LLMDialogue
 {
     /// <summary>
     /// The actor that said the dialog
     /// </summary>
     public Environment.Actor actor {get; private set;}
-    
-    /// <summary>
-    /// The content of the dialog
-    /// </summary>
-    public string dialog {get; private set;}
 
     /// <summary>
     /// The audioclip of the dialog if created.
     /// </summary>
-    private readonly IAsyncEnumerator<AudioClip> _stream ;
+    private readonly IAsyncEnumerator<AudioClip> _stream;
 
     public bool IsFinished {get; private set;} = false; 
 
 
-    public Dialog(Environment.Actor actor, string dialog, IAsyncEnumerator<AudioClip> stream = null)
+    public Dialog(
+        Environment.Actor actor,
+        string dialog,
+        IAsyncEnumerator<AudioClip> stream = null
+        ) : base(dialog, actor == Environment.Actor.Candidate ? RoleCategory.USER : RoleCategory.SYSTEM)
     {
         this.actor = actor;
-        this.dialog = dialog;
         _stream = stream;
     }
 
     /// <summary>
     /// Constructor of the dialog
-    /// This assumes the dialog is already finshed with creating and is ready to be sent
+    /// This assumes the dialog is already finished with creating and is ready to be sent
     /// </summary>
     /// <param name="actor">The actor of the dialog</param>
     /// <param name="dialog">The content of the dialog</param>
-    /// <param name="audioClip">A optional audioclip</param>
+    /// <param name="audioClip">A optional AudioClip</param>
     public Dialog(Environment.Actor actor, string dialog, AudioClip audioClip): this(actor, dialog, SingleClip(audioClip)){}
 
     public async Task<AudioClip> Next()

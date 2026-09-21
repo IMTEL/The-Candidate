@@ -124,7 +124,7 @@ public class Agent
     /// </summary>
     /// <param name="dialogs">The list of dialogs</param>
     /// <returns>The LLMResponse</returns>
-    public Task<LLMResponse> CallLLM(IEnumerable<Dialog> dialogs)
+    public Task<LLMResponse> CallLLM(IEnumerable<LLMDialogue> dialogs)
     {
         if (LLMServiceProvider != null)
         {

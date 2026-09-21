@@ -55,7 +55,7 @@ public class IdunLLMService : ILLMService
         UpdateModelOption();
     }
 
-    public async Task<LLMResponse> GetAIResponse(IEnumerable<Dialog> dialogs, OptionSet options, LLMToolRegistry lLMToolRegistry = null)
+    public async Task<LLMResponse> GetAIResponse(IEnumerable<LLMDialogue> dialogs, OptionSet options, LLMToolRegistry lLMToolRegistry = null)
     {
         OptionSet set = GetLLMOptions().Merge(options);
         await simulationousRequests.WaitAsync();

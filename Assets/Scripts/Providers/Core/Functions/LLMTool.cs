@@ -13,9 +13,6 @@ public class LLMToolAttribute : Attribute
         this.description = description;
     }
 
-    public LLMToolAttribute()
-    {
-    }
 
     /// <summary>
     /// What agent roles are allowed to use this method

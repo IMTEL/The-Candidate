@@ -66,7 +66,7 @@ public class RAGDOLLService : ILLMService
         });
     }
 
-    public async Task<LLMResponse> GetAIResponse(IEnumerable<Dialog> dialogs, OptionSet options, LLMToolRegistry lLMToolRegistry = null)
+    public async Task<LLMResponse> GetAIResponse(IEnumerable<LLMDialogue> dialogs, OptionSet options, LLMToolRegistry lLMToolRegistry = null)
     {
         OptionSet set = GetLLMOptions().Merge(options);
         if (set.ContainsOption(OptionModel, out PickOption<RagAgent> value)) await simulationousRequests.WaitAsync();
@@ -211,7 +211,7 @@ public class RAGDOLLService : ILLMService
             chat_log = ragDialogues;
         }
 
-        public RAGDOLLPacket(string access_key, string agent_id, IEnumerable<Dialog> Dialogues)
+        public RAGDOLLPacket(string access_key, string agent_id, IEnumerable<LLMDialogue> Dialogues)
             : this(access_key, agent_id, RagDialogue.FromDialogues(Dialogues)) { }
 
     }
@@ -221,16 +221,16 @@ public class RAGDOLLService : ILLMService
         string role;
         string content;
 
-        public RagDialogue(Dialog dialog)
+        public RagDialogue(LLMDialogue dialog)
         {
-            role = dialog.actor.getName();
-            content = dialog.dialog;
+            role = dialog.Role.ToString();
+            content = dialog.Dialogue;
         }
 
-        static public IEnumerable<RagDialogue> FromDialogues(IEnumerable<Dialog> dialogs)
+        static public IEnumerable<RagDialogue> FromDialogues(IEnumerable<LLMDialogue> dialogs)
         {
             List<RagDialogue> ragDialogues = new();
-            foreach (Dialog dialog in dialogs)
+            foreach (LLMDialogue dialog in dialogs)
             {
                 ragDialogues.Add(new(dialog));
             }
