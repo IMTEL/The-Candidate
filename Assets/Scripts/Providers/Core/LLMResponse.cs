@@ -11,5 +11,10 @@ public class LLMResponse
         Dialogue = response;
         functions = new(lLMFunctions);
     }
+
+    public List<Action> GetFunctions()
+    {
+        return functions;
+    }
     
 }

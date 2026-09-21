@@ -133,7 +133,7 @@ public class Agent
         return null;
     }
 
-    public IAsyncEnumerator<AudioClip> CreateDialog(string dialog)
+    public IAsyncEnumerator<AudioClip> CallTTS(string dialog)
     {
         if (TTServiceProvider != null)
         {

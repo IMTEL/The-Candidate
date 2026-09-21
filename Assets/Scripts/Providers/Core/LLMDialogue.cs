@@ -15,7 +15,7 @@ public class LLMDialogue
     }
 
     /// <summary>
-    /// The role the dialogue was on
+    /// The role the dialogue was creating
     /// </summary>
     public readonly RoleCategory Role;
 
