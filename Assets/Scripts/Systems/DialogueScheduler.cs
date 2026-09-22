@@ -6,9 +6,8 @@ using UnityEngine.SceneManagement;
 public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit, IDialogueReady, IEvent<IDialoguePlaying>, IPause
 {
     private readonly Queue<(NPC npc, Dialog dialog)> voiceQueue = new();
-    private (NPC npc, Dialog dialog) lastDialogue;
+    private (NPC npc, Dialog dialog) lastDialogue = (null, null);
     private bool micRecording = false;
-    private DialogUI dialogUI;
 
     private bool _fetchingClip = false;
 
@@ -39,7 +38,6 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
         {
             result.Invoke();
         }
-
         // 1. If we are paused, the microphone is recording or the the last npc. Don't do jack shit
         if (micRecording || (lastDialogue.npc && (lastDialogue.npc.audioSource.isPlaying || PauseAudio.paused || PauseAudio.audiopaused))) return;
         bool setText = false;
@@ -70,7 +68,6 @@ public class DialogueScheduler : MonoBehaviour, IMicrophoneEventListener, IInit,
             {
                 lastDialogue.npc.audioSource.clip = await lastDialogue.dialog.Next();
                 if (lastDialogue.npc.audioSource.clip) AudioActionQueue.Enqueue(() => { ModifyAudio(AudioActions.Play); });
-
             }
         }
         finally

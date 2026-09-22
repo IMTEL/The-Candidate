@@ -104,9 +104,9 @@ public class DialogueSystem : IEvent<IDialogueReady>
             dialogs.Add(dialog);
             onDialogueReady.Invoke((npc, dialog));
         }
-        catch (Exception e)
+        catch (InvalidOperationException)
         {
-            Debug.LogError(e.Message);
+            Debug.LogError($"NPC {NPC} not found. Are you sure it is in the registry?");
         }
         finally
         {
