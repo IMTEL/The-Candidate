@@ -44,7 +44,7 @@ public class LLMToolRegistry
 
     private void RegisterMethods()
     {
-        if (classFunctionRegistry.TryGetValue(owner.GetType(), out functionRegistry))
+        if (!classFunctionRegistry.TryGetValue(owner.GetType(), out functionRegistry))
         {
             functionRegistry = new();
             IEnumerable<MethodInfo> methods = owner.GetType().GetMethods();
