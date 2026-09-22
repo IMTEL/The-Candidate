@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, IEvent<IDialogueReady>, IInit, IDialogueReady
 {
     [SerializeField] private DialogueSystem dialogueSystem;
+    [SerializeField] private Agent AdSummerazation;
+    [SerializeField] private Agent Cordinator;
+
 
     private CancellationTokenSource cancellationToken;
 
@@ -13,21 +16,18 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
 
     private readonly object _lock = new();
 
-    [TextArea(10,30)]
-    public string prompt;
-
     ScenarioSettingsWrapper scenarioSettings;
 
     SpawnManager spawnManager;
-    
+
     [Init]
     protected void Init(SpawnManager nPCRegistry, ScenarioSettingsWrapper scenarioSettingsWrapper, ExtendedWhisperManager extendedWhisperManager)
     {
         spawnManager = nPCRegistry;
         scenarioSettings = scenarioSettingsWrapper;
-        dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), prompt);
-        dialogueSystem.AddListener(this);    
-        SceneManager.activeSceneChanged += (_, Scene2) => {spawnManager.UpdateScene(); ResetDialogueSystem(Scene2);};
+        dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), Cordinator, AdSummerazation);
+        dialogueSystem.AddListener(this);
+        SceneManager.activeSceneChanged += (_, Scene2) => { spawnManager.UpdateScene(); ResetDialogueSystem(Scene2); };
         ResetDialogueSystem(SceneManager.GetActiveScene());
         extendedWhisperManager.AddListener(this);
     }
@@ -37,15 +37,15 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
         if (!scene2.name.Equals("Start") && dialogueSystem != null)
         {
             onMicrophoneStopRecording(new(Environment.Actor.Director, "Introduce yourself"));
-        }    
+        }
         else
         {
             dialogueSystem?.RemoveListener(this);
-            dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), prompt);
-            dialogueSystem.AddListener(this);    
+            dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), Cordinator, AdSummerazation);
+            dialogueSystem.AddListener(this);
         }
 
-        }
+    }
 
 
     public void onMicrophoneStartRecording()
@@ -57,10 +57,10 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
     {
         lock (_lock)
         {
-            if(cancellationToken != null && !cancellationToken.IsCancellationRequested) cancellationToken.Cancel();
-            (_, cancellationToken) = dialogueSystem.HandleUserDialog(recordedaudio);    
+            if (cancellationToken != null && !cancellationToken.IsCancellationRequested) cancellationToken.Cancel();
+            (_, cancellationToken) = dialogueSystem.HandleUserDialog(recordedaudio);
         }
-        
+
     }
 
     public void AddListener(IDialogueReady listener)

@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be1c98c4dee09e7119558b5abcf60def, type: 3}
+  m_Name: MainRag
+  m_EditorClassIdentifier: 
+  service:
+    Models:
+    - value:
+        rid: 5696154641429692426
+      displayName: Coordinator
+    - value:
+        rid: 5696154641429692427
+      displayName: Actor
+    - value:
+        rid: 5696154641429692428
+      displayName: AD-Summary
+    OptionModel:
+      rid: 5696154641429692429
+    url: https://iplvr.it.ntnu.no
+    apiKey: RAGDOLL
+  references:
+    version: 2
+    RefIds:
+    - rid: 5696154641429692426
+      type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
+      data:
+        id: 6a997572550ef6deab1c149d
+        name: Coordinator
+    - rid: 5696154641429692427
+      type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
+      data:
+        id: 6a997572550ef6deab1c149d
+        name: Actor
+    - rid: 5696154641429692428
+      type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
+      data:
+        id: 6a997572550ef6deab1c149d
+        name: AD-Summary
+    - rid: 5696154641429692429
+      type: {class: 'PickOption`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        name: Model
+        value:
+          rid: 5696154641429692430
+        options:
+        - rid: 5696154641429692430
+        - rid: 5696154641429692431
+        - rid: 5696154641429692432
+    - rid: 5696154641429692430
+      type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692426
+        displayName: Coordinator
+    - rid: 5696154641429692431
+      type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692427
+        displayName: Actor
+    - rid: 5696154641429692432
+      type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692428
+        displayName: AD-Summary

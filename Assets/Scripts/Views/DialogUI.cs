@@ -111,7 +111,7 @@ public class DialogUI : MonoBehaviour, IDialoguePlaying, IMicrophoneEventListene
 
     public void OnDialoguePlaying(Dialog dialog)
     {
-        SetText(dialog.dialog);
+        SetText(dialog.Dialogue);
     }
 
     private void OnDestroy()

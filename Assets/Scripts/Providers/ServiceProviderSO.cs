@@ -1,9 +1,19 @@
-using System.Collections.Generic;
 using UnityEngine;
-
+#if UNITY_EDITOR
+using System.Threading.Tasks;
+using UnityEditor;
+#endif
 public abstract class ServiceProviderSO : ScriptableObject
 {
     public abstract object CreateService();
+    #if UNITY_EDITOR
+    protected async Task ChangeAndWrite(Task action)
+    {
+        await action;
+        EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssetIfDirty(this);
+    }
+    #endif
 }
 
 public abstract class ServiceProviderSO<T> : ServiceProviderSO
@@ -26,12 +36,12 @@ public abstract class JobSelection : ServiceProviderSO<IJobSelectionService>
 
 }
 
-public abstract class TTSserviceProvider : ServiceProviderSO<ITTService>
+public abstract class TTSServiceProvider : ServiceProviderSO<ITTService>
 {
     
     public override abstract ITTService CreateTypedService();
 
-    public abstract IEnumerable<OptionBase> GetTTSOptions();
+    public abstract OptionSet GetTTSOptions();
 
 }
 
@@ -39,6 +49,6 @@ public abstract class LLMServiceProvider : ServiceProviderSO<ILLMService>
 {   
     public override abstract ILLMService CreateTypedService();
 
-    public abstract IEnumerable<OptionBase> GetLLMOptions();
+    public abstract OptionSet GetLLMOptions();
 
 }

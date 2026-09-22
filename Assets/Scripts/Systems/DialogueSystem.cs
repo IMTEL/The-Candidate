@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 
 /// <summary>
-/// Creates dialogues with the AI model and
+/// Creates dialogues with the AI models
 /// </summary>
 public class DialogueSystem : IEvent<IDialogueReady>
 {
@@ -14,39 +15,34 @@ public class DialogueSystem : IEvent<IDialogueReady>
     private readonly NPCRegistry NPCRegistry;
 
     private readonly List<Dialog> dialogs = new();
+
+    private readonly SemaphoreSlim DialogueCreation = new(1);
     public Action<(NPC, Dialog)> onDialogueReady;
 
-    private readonly Random random = new();
+    readonly Agent coordinator;
 
-    private const int INTRODUCTION_LIMIT = 2;
+    readonly Agent AdSummary;
 
-    private const int MAIN_LIMIT = 5;
 
-    public DialogueSystem(ScenarioSettings scenario, NPCRegistry nPCRegistry, string startingprompt = "")
+    readonly string CoordinatorPrompt = @"Agents:";
+
+    public DialogueSystem(ScenarioSettings scenario, NPCRegistry nPCRegistry, Agent coordinator, Agent adSummary)
     {
         this.scenario = scenario;
         this.NPCRegistry = nPCRegistry;
-        this.startPrompt = startingprompt;
+        this.AdSummary = adSummary;
+        this.coordinator = coordinator;
+        this.coordinator.Initialize(this);
     }
 
     /// <summary>
-    /// The starting prompt within the message
+    /// Handles user dialog by assigning it to a private function. Returns a cancellation token to stop it
+    /// As well the task in progress
     /// </summary>
-    private readonly string startPrompt;
-
-    /// <summary>
-    /// Builds the prompt
-    /// </summary>
-    /// <param name="job"></param>
-    /// <param name="actor"></param>
+    /// <param name="userDialog">The user dialog that is created</param>
+    /// <param name="tokenSource">Token source for cancellation token. Will create a new one if null</param>
     /// <returns></returns>
-    string BuildPrompt(Environment.Job job, NPC npc)
-    {
-        string setting = job.ToString();
-        string actors = string.Join("\n - ", NPCRegistry.GetNPCEnumerable().Select((npc) => $"{npc.actor.getName()}: {npc.name}"));
-        return string.Format(startPrompt, setting, $"{npc.actor?.ToString()}\nYour name is: {npc.name}", actors);
-    }
-
+    /// <exception cref="ArgumentException"></exception>
     public (Task, CancellationTokenSource) HandleUserDialog(Dialog userDialog, CancellationTokenSource tokenSource = null)
     {
         if (userDialog == null) throw new ArgumentException("Dialog can't be null");
@@ -57,54 +53,65 @@ public class DialogueSystem : IEvent<IDialogueReady>
     /// <summary>
     /// Task to process the audio and start creating dialogues for the NPC
     /// </summary>
-    /// <param name="recordedAudio">The recorded audio from the microphone</param>
+    /// <param name="userDialog">Dialog from the user</param>
     /// <param name="token">A cancellation token that will be checked if it is suppose to stop</param>
     /// <returns></returns>
     private async Task HandleUserDialog(Dialog userDialog, CancellationToken token)
     {
-        if (IntermidateDialog(out string directorDialog))
+        string tempCoordinator = CoordinatorPrompt;
+        foreach (NPC item in NPCRegistry.GetNPCEnumerable())
         {
-            dialogs.Add(new(Environment.Actor.Director, directorDialog));
+            tempCoordinator += $"\n- {item.name}";
         }
+
         dialogs.Add(userDialog);
-
-        List<NPC> listnpcs = NPCRegistry.GetNPCEnumerable().ToList().OrderBy((_) => random.Next()).ToList();
-        IEnumerator<NPC> npcs = listnpcs.GetEnumerator();
-        npcs.MoveNext();
-        while(npcs.Current)
-        {
-            NPC npc = npcs.Current;
-            List<Dialog> dialogsCopy = new(dialogs)
+        List<LLMDialogue> tempDialogs = new(dialogs)
             {
-                new(Environment.Actor.Director, npcs.MoveNext() ? $"DON'T YOU DARE ask a question. ${npcs.Current.name} is after you" : "Ask ONLY 1 question IF relevant")
+                new LLMDialogue(tempCoordinator, LLMDialogue.RoleCategory.SYSTEM)
             };
-
-            string text = await ((ILLMService)npc.LLMService.CreateService()).GetAIResponse(BuildPrompt(scenario.job, npc), dialogsCopy, npc.GetLLMOptions());
-            Dialog dialog = new(npc.actor, text, ((ITTService)npc.TTService.CreateService()).getAudioClip(text, npc.GetTTSOptions()));
-            token.ThrowIfCancellationRequested();
-            dialogs.Add(dialog);
-            onDialogueReady?.Invoke((npc, dialog));
+        token.ThrowIfCancellationRequested();
+        LLMResponse response = await coordinator.CallLLM(tempDialogs);
+        foreach (Action item in response.GetFunctions())
+        {
+            try{item.Invoke();} catch(Exception e)
+            {
+                Debug.LogWarning(e.Message);
+            }
         }
     }
 
-    private bool IntermidateDialog(out string dialog)
+    [LLMTool("Creates a new dialogue for a specific NPC", agentRole = new string[] { "Coordinator" })]
+    public async Task CreateDialogue(
+        [LLMParameter("The NPC that is gonna talk")] string NPC,
+        [LLMParameter("The context behind the dialogue")] string Context,
+        [LLMParameter("What they are supposed to say in the dialogue")] string Direction)
     {
-        dialog = "";
-        if(dialogs.Count() == 0)
+        await DialogueCreation.WaitAsync();
+        try
         {
-            dialog = "Start introducing each other. Focus ONLY on subjective questions. NOT WORK RELATED. Examples are: How are you today?, How was it arriving here? Done anything excited lately?";
-        }  
-        //The amount of the candidate has answered + 1 (The empty one in the beginning)
-        else if(dialogs.Count(dialog => dialog.actor == Environment.Actor.Candidate) == INTRODUCTION_LIMIT)
-        {
-            dialog = $"Time to start the interview. Focus ONLY on job related questions";
+            NPC npc = NPCRegistry.GetNPCEnumerable().First(npc => npc.name.Contains(NPC));
+            List<LLMDialogue> tempDialogs = new(dialogs)
+            {
+                new LLMDialogue($"Context: {Context}\nDirection: {Direction}", LLMDialogue.RoleCategory.SYSTEM)
+            };
+            LLMResponse response = await npc.GetAgent().CallLLM(tempDialogs);
+            if (response == null)
+            {
+                Debug.LogWarning("LLM is missing in the NPC");
+                return;
+            }
+            Dialog dialog = new(npc.actor, response.Dialogue, npc.GetAgent().CallTTS(response.Dialogue));
+            dialogs.Add(dialog);
+            onDialogueReady.Invoke((npc, dialog));
         }
-        //Same thing as above 
-        else if (dialogs.Count(dialog => dialog.actor == Environment.Actor.Candidate) == MAIN_LIMIT+INTRODUCTION_LIMIT)
+        catch (InvalidOperationException)
         {
-            dialog = $"Start wrapping up the interview by allowing the candidate to ask some questions";
+            Debug.LogError($"NPC {NPC} not found. Are you sure it is in the registry?");
         }
-        return dialog != "";
+        finally
+        {
+            DialogueCreation.Release();
+        }
     }
 
     public void AddListener(IDialogueReady listener)

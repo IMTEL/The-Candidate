@@ -34,7 +34,7 @@ public class Transcript : MonoBehaviour, IMicrophoneEventListener, IDialoguePlay
 
     public void OnDialoguePlaying(Dialog dialog)
     {
-        text.text += $"[{dialog.actor.getName()}] <i>{dialog.dialog}</i>\n\n";
+        text.text += $"[{dialog.actor.getName()}] <i>{dialog.Dialogue}</i>\n\n";
         LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content); 
     }
     

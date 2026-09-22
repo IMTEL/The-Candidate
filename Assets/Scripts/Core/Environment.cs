@@ -69,7 +69,7 @@ public class Environment {
         public static readonly Actor Expert = new("Expert", "You are here to assess the persons skills. You are familiar with most of the tasks they will undertake and are interested in knowing what they would do in rare scenarios.");
         public static readonly Actor Employee = new("Ansatt", "");
 
-        public static readonly List<Actor> NPCactors = new() {Manager, HiringManger, HR, Expert, Employee}; 
+        public static readonly List<Actor> NPCActors = new() {Manager, HiringManger, HR, Expert, Employee}; 
         private readonly string name;
         private readonly string roleDescription;
 
