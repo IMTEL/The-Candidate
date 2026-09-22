@@ -144,23 +144,70 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
   name: Arne
-  agent:
-    LLMServiceProvider: {fileID: 11400000, guid: c38be792e74a11d45ba8ec8bf608b36d, type: 2}
-    LLMOverrides:
-      rid: 5696154349448986763
-    TTServiceProvider: {fileID: 11400000, guid: c9a2c02402109f51b9924762e532ccbc, type: 2}
-    TTSOVerrides:
-      rid: 5696154346667901350
   head: {fileID: 6357334982433173249}
+  agent:
+    name: 
+    LLMServiceProvider: {fileID: 11400000, guid: 4512622d4b06a4661a4802bc99e6ace7, type: 2}
+    LLMOverrides:
+      rid: 5696154521004933625
+    TTServiceProvider: {fileID: 11400000, guid: c9a2c02402109f51b9924762e532ccbc, type: 2}
+    TTSOverrides:
+      rid: 5696154632941469777
   references:
     version: 2
     RefIds:
-    - rid: 5696154346667901350
+    - rid: 5696154521004933625
       type: {class: OptionSet, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 5696154349448986763
+      data:
+        optionBases:
+        - rid: 5696154546600673373
+    - rid: 5696154546600673373
+      type: {class: 'PickOption`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        name: Model
+        value:
+          rid: 5696154546600673374
+        options:
+        - rid: 5696154546600673375
+        - rid: 5696154546600673374
+        - rid: 5696154546600673376
+    - rid: 5696154546600673374
+      type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546600673377
+        displayName: Actor
+    - rid: 5696154546600673375
+      type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546600673378
+        displayName: Coordinator
+    - rid: 5696154546600673376
+      type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546600673379
+        displayName: AD-Summary
+    - rid: 5696154546600673377
+      type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
+      data:
+        id: 6a997572550ef6deab1c149d
+        name: Actor
+    - rid: 5696154546600673378
+      type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
+      data:
+        id: 6a997572550ef6deab1c149d
+        name: Coordinator
+    - rid: 5696154546600673379
+      type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
+      data:
+        id: 6a997572550ef6deab1c149d
+        name: AD-Summary
+    - rid: 5696154632941469777
       type: {class: OptionSet, ns: , asm: Assembly-CSharp}
-      data: 
+      data:
+        optionBases: []
 --- !u!114 &3652275484217935633
 MonoBehaviour:
   m_ObjectHideFlags: 0

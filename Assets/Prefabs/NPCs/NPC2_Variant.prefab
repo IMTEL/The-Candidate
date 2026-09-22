@@ -144,97 +144,187 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
   name: Heidi
-  agent:
-    LLMServiceProvider: {fileID: 11400000, guid: c38be792e74a11d45ba8ec8bf608b36d, type: 2}
-    LLMOverrides:
-      rid: 5696154346667901259
-    TTServiceProvider: {fileID: 11400000, guid: 04044ea3e83824641aa9b63ac22d8707, type: 2}
-    TTSOVerrides:
-      rid: 5696154346667901244
   head: {fileID: 230769490402387665}
-  voiceProfile:
-    displayName: 
-    id: 
-    models: []
-    language: 
+  agent:
+    name: 
+    LLMServiceProvider: {fileID: 11400000, guid: 4512622d4b06a4661a4802bc99e6ace7, type: 2}
+    LLMOverrides:
+      rid: 5696154521004933645
+    TTServiceProvider: {fileID: 11400000, guid: c9a2c02402109f51b9924762e532ccbc, type: 2}
+    TTSOverrides:
+      rid: 5696154632941469780
   references:
     version: 2
     RefIds:
-    - rid: 4535282144663569350
-      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 5696154521004933645
+      type: {class: OptionSet, ns: , asm: Assembly-CSharp}
       data:
-        name: CommaDelay
-        value: 0
-        minBound: 0
-        maxBound: 3
-    - rid: 4535282144663569351
-      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
+        optionBases:
+        - rid: 5696154521004933646
+    - rid: 5696154521004933646
+      type: {class: 'PickOption`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
       data:
-        name: PeriodDelay
-        value: 0
-        minBound: 0
-        maxBound: 3
-    - rid: 4535282144663569352
-      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
+        name: Model
+        value:
+          rid: 5696154521004933647
+        options:
+        - rid: 5696154521004933647
+        - rid: 5696154521004933648
+        - rid: 5696154521004933649
+        - rid: 5696154521004933650
+        - rid: 5696154521004933651
+        - rid: 5696154521004933652
+        - rid: 5696154521004933653
+        - rid: 5696154521004933654
+        - rid: 5696154521004933655
+        - rid: 5696154521004933656
+        - rid: 5696154521004933657
+        - rid: 5696154521004933658
+        - rid: 5696154521004933659
+    - rid: 5696154521004933647
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
       data:
-        name: QuestionExclamationDelay
-        value: 0
-        minBound: 0
-        maxBound: 3
-    - rid: 4535282144663569353
+        value:
+          rid: -2
+        displayName: zai-org/GLM-5.3-Flash
+    - rid: 5696154521004933648
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: -2
+        displayName: deepseek-ai/DeepSeek-V4-Flash-Vision-Exp
+    - rid: 5696154521004933649
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: -2
+        displayName: Qwen/Qwen3.8-27B-FP8
+    - rid: 5696154521004933650
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: -2
+        displayName: Inferact/GLM-5.3-NVFP4
+    - rid: 5696154521004933651
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: -2
+        displayName: mistralai/Mistral-Medium-3.5-128B
+    - rid: 5696154521004933652
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: -2
+        displayName: moonshotai/Kimi-K2.6
+    - rid: 5696154521004933653
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: -2
+        displayName: moonshotai/Kimi-K2.6-instant
+    - rid: 5696154521004933654
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: -2
+        displayName: openai/gpt-oss-120b
+    - rid: 5696154521004933655
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: -2
+        displayName: Qwen/Qwen3-Embedding-8B
+    - rid: 5696154521004933656
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: -2
+        displayName: intfloat/multilingual-e5-large-instruct
+    - rid: 5696154521004933657
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: -2
+        displayName: NorwAI/NorwAI-Magistral-24B-reasoning
+    - rid: 5696154521004933658
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: -2
+        displayName: NbAiLab/borealis-27b
+    - rid: 5696154521004933659
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: -2
+        displayName: norallm/normistral-11b-thinking
+    - rid: 5696154632941469780
+      type: {class: OptionSet, ns: , asm: Assembly-CSharp}
+      data:
+        optionBases:
+        - rid: 5696154632941469781
+    - rid: 5696154632941469781
       type: {class: 'PickOption`1[[ESpeakVoiceContainer, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
         name: voice
         value:
-          value:
-            rid: 4535282144663569356
-          displayName: Alma
+          rid: 5696154632941469782
         options:
-        - value:
-            rid: 4535282144663569356
-          displayName: Alma
-        - value:
-            rid: 4535282144663569357
-          displayName: Eva
-    - rid: 4535282144663569354
-      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
+        - rid: 5696154632941469783
+        - rid: 5696154632941469784
+        - rid: 5696154632941469782
+        - rid: 5696154632941469785
+    - rid: 5696154632941469782
+      type: {class: 'OptionEntry`1[[ESpeakVoiceContainer, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
       data:
-        name: Temperature
-        value: 1
-        minBound: 0
-        maxBound: 2
-    - rid: 4535282144663569355
-      type: {class: 'PickOption`1[[OpenAICompletionRequest/Model, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
-      data:
-        name: Model
         value:
-          value: 3
-          displayName: 120b, OpenAI
-        options:
-        - value: 3
-          displayName: 120b, OpenAI
-        - value: 4
-          displayName: Minstral 3
-        - value: 5
-          displayName: NorwAI 24B
-    - rid: 4535282144663569356
+          rid: 5696154632941469786
+        displayName: Alma
+    - rid: 5696154632941469783
+      type: {class: 'OptionEntry`1[[ESpeakVoiceContainer, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154632941469787
+        displayName: no_NO-talesyntese-medium.onnx
+    - rid: 5696154632941469784
+      type: {class: 'OptionEntry`1[[ESpeakVoiceContainer, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154632941469788
+        displayName: Eva
+    - rid: 5696154632941469785
+      type: {class: 'OptionEntry`1[[ESpeakVoiceContainer, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154632941469789
+        displayName: Lisa
+    - rid: 5696154632941469786
       type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
       data:
         name: Alma
         jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
         modelAsset: {fileID: 5022602860645237092, guid: 571d6d52d0d81f04b834f1bc9c8a8a7b, type: 3}
-    - rid: 4535282144663569357
+    - rid: 5696154632941469787
+      type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
+      data:
+        name: no_NO-talesyntese-medium.onnx
+        jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
+        modelAsset: {fileID: 5022602860645237092, guid: be1e8ff26d600ef60b8db8bcbcb1c47b, type: 3}
+    - rid: 5696154632941469788
       type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
       data:
         name: Eva
         jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
+        modelAsset: {fileID: 5022602860645237092, guid: 6c7a709d0be4b264ebb6723ed67f7692, type: 3}
+    - rid: 5696154632941469789
+      type: {class: ESpeakVoiceContainer, ns: , asm: Assembly-CSharp}
+      data:
+        name: Lisa
+        jsonFile: {fileID: 4900000, guid: 659b31799eb99a97ea263942c21bc666, type: 3}
         modelAsset: {fileID: 5022602860645237092, guid: 7845a07c7f2218f45a8a8edbf6d1d02b, type: 3}
-    - rid: 5696154346667901244
-      type: {class: OptionSet, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 5696154346667901259
-      type: {class: OptionSet, ns: , asm: Assembly-CSharp}
-      data: 
 --- !u!114 &1099828547312552811
 MonoBehaviour:
   m_ObjectHideFlags: 0
