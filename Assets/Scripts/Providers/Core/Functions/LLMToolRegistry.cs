@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 /// <summary>
@@ -68,11 +67,11 @@ public class LLMToolRegistry
     {
         callable = null;
         LLMToolFunction function;
-        try{function = GetMethods().First(llmtool => llmtool.GetName().Equals(name));}
-        catch(Exception){return false;}
-        if(function.CanBeCalled(parameters, out Action<object> method))
+        try { function = GetMethods().First(llmtool => llmtool.GetName().Equals(name)); }
+        catch (Exception) { return false; }
+        if (function.CanBeCalled(parameters, out Action<object> method))
         {
-            callable = () => {method.Invoke(owner);};
+            callable = () => { method.Invoke(owner); };
         }
         return callable != null;
     }
@@ -84,13 +83,11 @@ public class LLMToolRegistry
     {
         readonly List<LLMToolParameter> Parameters = new();
         MethodInfo reference;
-        string name;
         string description;
 
         private LLMToolFunction(MethodInfo methodInfo)
         {
             this.reference = methodInfo;
-            this.name = methodInfo.Name;
             this.description = methodInfo.GetCustomAttribute<LLMToolAttribute>().description;
         }
 
@@ -111,32 +108,27 @@ public class LLMToolRegistry
 
         public string GetName()
         {
-            return name; 
+            return reference.Name;
         }
 
         internal bool CanBeCalled(Dictionary<string, string> parameters, out Action<object> action)
         {
             object[] callParams = new object[Parameters.Count];
-            bool valid = true;
             action = null;
-            object castedObject;
-            for(int i = 0; i < Parameters.Count; i++)
+            for (int i = 0; i < Parameters.Count; i++)
             {
                 LLMToolParameter item = Parameters[i];
                 //If it does not exist and is mandatory
-                if(!(parameters.TryGetValue(item.GetName(), out string value) || item.IsOptional()))
-                {
-                    return false;
-                }
+                if (!(parameters.TryGetValue(item.GetName(), out string value) || item.IsOptional()))
+                { return false; }
                 try
                 {
-                    castedObject = value == null ? Type.Missing : Convert.ChangeType(value, item.GetParameterType()); 
-                    callParams[i] = castedObject;
+                    callParams[i] = value == null ? Type.Missing : item.ConvertToType(value);
                 }
-                catch(Exception e){Debug.Log(e.Message); return false;}
+                catch (Exception e) { Debug.Log(e.Message); return false; }
             }
-            action = value => {reference.Invoke(value, callParams);}; 
-            return valid;
+            action = value => { reference.Invoke(value, callParams); };
+            return true;
         }
         public string GetDescription()
         {
@@ -147,9 +139,7 @@ public class LLMToolRegistry
     public class LLMToolParameter
     {
         string description;
-        string name;
-        bool optional = false;
-        Type type;
+        ParameterInfo parameter;
 
         static readonly Type[] supportedTyping = new Type[]
         {
@@ -159,40 +149,37 @@ public class LLMToolRegistry
             typeof(bool)
         };
 
-        private LLMToolParameter(string name, string description, Type type)
+        private LLMToolParameter(string description, ParameterInfo parameter)
         {
-            this.name = name;
+            this.parameter = parameter;
             this.description = description;
-            this.type = type;
-            this.optional = false;
-        }
-
-        private void SetOptional(bool optional)
-        {
-            this.optional = optional;
         }
 
         public static LLMToolParameter FromParameterInfo(ParameterInfo parameterInfo)
         {
+            if (!supportedTyping.Contains(parameterInfo.ParameterType)) throw new ArgumentException("This parameter type is not supported");
             LLMParameterAttribute info = parameterInfo.GetCustomAttribute<LLMParameterAttribute>() ?? throw new ArgumentException($"{parameterInfo.Name} is missing the attribute LLMParameter");
-            LLMToolParameter parameter = new(parameterInfo.Name, info.description, parameterInfo.ParameterType);
-            parameter.SetOptional(parameterInfo.IsOptional);
+            LLMToolParameter parameter = new(info.description, parameterInfo);
             return parameter;
+        }
 
+        public object ConvertToType(string text)
+        {
+            return text == null ? parameter.DefaultValue : Convert.ChangeType(text, GetParameterType());
         }
         public Type GetParameterType()
         {
-            return type;
+            return parameter.ParameterType;
         }
 
         internal string GetName()
         {
-            return name;
+            return parameter.Name;
         }
 
         internal bool IsOptional()
         {
-            return optional;
+            return parameter.IsOptional;
         }
 
         public string GetDescription()
