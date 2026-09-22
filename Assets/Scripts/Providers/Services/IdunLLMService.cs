@@ -120,7 +120,7 @@ public class IdunLLMService : ILLMService
         {
             downloadHandler = new DownloadHandlerBuffer(),
         };
-        request.SetRequestHeader("Authorization", $"Bearer {apiKey}");
+        request.SetRequestHeader("Authorization", $"Bearer {System.Environment.GetEnvironmentVariable(apiKey) ?? apiKey}");
         request.SetRequestHeader("Content-Type", "application/json");
         return request;
     }

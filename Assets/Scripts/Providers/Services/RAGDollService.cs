@@ -8,7 +8,6 @@ using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
-
 /// <summary>
 /// A single instance manager that allows for prompting to a LLM system to fetch a response.
 /// Uses the chatgpt structure of request
@@ -155,7 +154,7 @@ public class RAGDOLLService : ILLMService
         {
             downloadHandler = new DownloadHandlerBuffer(),
         };
-        request.SetRequestHeader("access-key", $"{apiKey}");
+        request.SetRequestHeader("access-key", $"{System.Environment.GetEnvironmentVariable(apiKey) ?? apiKey}");
         request.SetRequestHeader("Content-Type", "application/json");
         return request;
     }
