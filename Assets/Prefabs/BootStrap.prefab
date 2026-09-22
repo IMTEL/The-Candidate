@@ -54,7 +54,7 @@ GameObject:
   m_Component:
   - component: {fileID: 302797974741106896}
   - component: {fileID: 2936406837113809729}
-  - component: {fileID: 8887670477299499436}
+  - component: {fileID: 4933886090470110236}
   m_Layer: 0
   m_Name: DialogueScheduler
   m_TagString: Untagged
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7503c46b9b35134684c55e1bab5e099, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueScheduler
---- !u!114 &8887670477299499436
+--- !u!114 &4933886090470110236
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,34 +100,310 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e3bb618e946ee84bb2e9e6b3371dffe, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DialogSystemComponent
-  prompt: "# Context\r\nYou are an actor within a movie where you are with different
-    other people to interview a potential candidate. \r\nYour goal is to help the
-    candidate in performing well under the interview and try to get the best possible
-    answer out the candidate.\r\n\r\n## Setting\r\n{0}\r\n\r\n## Your Role\r\n{1}\r\n\r\n##
-    Actors\nThese actors are your fellow interviewers:\r\n{2}\r\n\r\n# Glossary\r\n-
-    Theme refers to subjects within the interview like, but not limited to, stress
-    handling, previous work experience, opinons and questions\r\n- Plain Text refers
-    to text that ONLY contains alphabetic letters, numbers, comma, slash, period
-    and question mark\r\n\r\n# Guidelines\r\n- Always follow the directors command.
-    \r\n- You are ONLY allowed up to 2 follow up question for a theme. NOTHING MORE
-    These should arrive after the candidate have answered and only if you are allowed
-    to. \r- The candidate might repond with not knowing or unsure about the answer,
-    try mentioning different examples as your next response\r\n- Focus on being friendly,
-    nice and human. This includes, but are not limited to, adding different remarks
-    to answers, saying hi back and introducing yourself.\n- Don't be overly friendly.
-    Behaviour like thanking for everything\r\n- IN ADDITION, give feedback on the
-    answers. These NEEDS to be constructive, BRIEF and contain your thought process.\r\n-
-    ALL DIALOGS SHOULD BE IN NORWEGIAN\r\n- You might sample a couple of questions
-    from the list within the question section, BUT it should be used as purely inspiration.\r\n-
-    Your reponse MUST be plain text as it is said verbally\r\n\r\n## Sample Questions\r\n-
-    Could you tell a bit about yourself?\r\n- What is your goal of getting a job?\r\n-
-    What is some of your positive qualitives?\r\n- What is some of your negative
-    qualitives?\r\n- How would your previous kolleages or friends describe you?\r\n-
-    Who is your inspiration?\r\n- Tell about a conflict or challange you have experienced
-    and how you handled that\r\n- Tell us about a situation where you got stressed.
-    How did you handle it? \r\n- What type of expectations do you have to the job?\r\n-
-    Why should we hire you specefically?\r\n- Is there anything else you are"
+  m_EditorClassIdentifier: 
+  AdSummerazation:
+    LLMServiceProvider: {fileID: 11400000, guid: 4512622d4b06a4661a4802bc99e6ace7, type: 2}
+    LLMOverrides:
+      rid: 5696154546306023424
+    TTServiceProvider: {fileID: 11400000, guid: e3c656d1f23cd4189918eec4f0a6c39d, type: 2}
+    TTSOVerrides:
+      rid: 5696154525463216212
+    lLMToolRegistry:
+      agentRole: 
+  Cordinator:
+    LLMServiceProvider: {fileID: 11400000, guid: 4512622d4b06a4661a4802bc99e6ace7, type: 2}
+    LLMOverrides:
+      rid: 5696154525463216215
+    TTServiceProvider: {fileID: 0}
+    TTSOVerrides:
+      rid: 1003
+    lLMToolRegistry:
+      agentRole: 
+  references:
+    version: 2
+    RefIds:
+    - rid: 1003
+      type: {class: OptionSet, ns: , asm: Assembly-CSharp}
+      data:
+        optionBases: []
+    - rid: 5696154525463216212
+      type: {class: OptionSet, ns: , asm: Assembly-CSharp}
+      data:
+        optionBases:
+        - rid: 5696154525463216213
+        - rid: 5696154525463216214
+    - rid: 5696154525463216213
+      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
+      data:
+        name: Stability
+        value: 0.293
+        minBound: 0
+        maxBound: 1
+    - rid: 5696154525463216214
+      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
+      data:
+        name: SimilarityBoost
+        value: 0.689
+        minBound: 0
+        maxBound: 1
+    - rid: 5696154525463216215
+      type: {class: OptionSet, ns: , asm: Assembly-CSharp}
+      data:
+        optionBases:
+        - rid: 5696154525463216216
+        - rid: 5696154546306023684
+        - rid: 5696154546306023713
+        - rid: 5696154546306023714
+    - rid: 5696154525463216216
+      type: {class: 'PickOption`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        name: Model
+        value:
+          rid: 5696154525463216217
+        options:
+        - rid: 5696154525463216217
+        - rid: 5696154525463216218
+        - rid: 5696154525463216219
+    - rid: 5696154525463216217
+      type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154525463216220
+        displayName: Coordinator
+    - rid: 5696154525463216218
+      type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154525463216221
+        displayName: Actor
+    - rid: 5696154525463216219
+      type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154525463216222
+        displayName: AD-Summary
+    - rid: 5696154525463216220
+      type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
+      data:
+        id: 6a997572550ef6deab1c149d
+        name: Coordinator
+    - rid: 5696154525463216221
+      type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
+      data:
+        id: 6a997572550ef6deab1c149d
+        name: Actor
+    - rid: 5696154525463216222
+      type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
+      data:
+        id: 6a997572550ef6deab1c149d
+        name: AD-Summary
+    - rid: 5696154546306023424
+      type: {class: OptionSet, ns: , asm: Assembly-CSharp}
+      data:
+        optionBases:
+        - rid: 5696154546306023425
+    - rid: 5696154546306023425
+      type: {class: 'PickOption`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        name: Model
+        value:
+          rid: 5696154546306023428
+        options:
+        - rid: 5696154546306023427
+        - rid: 5696154546306023426
+        - rid: 5696154546306023428
+    - rid: 5696154546306023426
+      type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023429
+        displayName: Actor
+    - rid: 5696154546306023427
+      type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023430
+        displayName: Coordinator
+    - rid: 5696154546306023428
+      type: {class: 'OptionEntry`1[[RAGDOLLService/RagAgent, Assembly-CSharp]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023431
+        displayName: AD-Summary
+    - rid: 5696154546306023429
+      type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
+      data:
+        id: 6a997572550ef6deab1c149d
+        name: Actor
+    - rid: 5696154546306023430
+      type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
+      data:
+        id: 6a997572550ef6deab1c149d
+        name: Coordinator
+    - rid: 5696154546306023431
+      type: {class: RAGDOLLService/RagAgent, ns: , asm: Assembly-CSharp}
+      data:
+        id: 6a997572550ef6deab1c149d
+        name: AD-Summary
+    - rid: 5696154546306023684
+      type: {class: 'PickOption`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        name: Model
+        value:
+          rid: 5696154546306023685
+        options:
+        - rid: 5696154546306023685
+        - rid: 5696154546306023686
+        - rid: 5696154546306023687
+        - rid: 5696154546306023688
+        - rid: 5696154546306023689
+        - rid: 5696154546306023690
+        - rid: 5696154546306023691
+        - rid: 5696154546306023692
+        - rid: 5696154546306023693
+        - rid: 5696154546306023694
+        - rid: 5696154546306023695
+        - rid: 5696154546306023696
+        - rid: 5696154546306023697
+        - rid: 5696154546306023698
+    - rid: 5696154546306023685
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023699
+        displayName: zai-org/GLM-5.3-Flash
+    - rid: 5696154546306023686
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023700
+        displayName: deepseek-ai/DeepSeek-V4-Flash-Vision-Exp
+    - rid: 5696154546306023687
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023701
+        displayName: deepseek-ai/DeepSeek-V4-Flash-Vision-Exp-instant
+    - rid: 5696154546306023688
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023702
+        displayName: Qwen/Qwen3.8-27B-FP8
+    - rid: 5696154546306023689
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023703
+        displayName: Inferact/GLM-5.3-NVFP4
+    - rid: 5696154546306023690
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023704
+        displayName: mistralai/Mistral-Medium-3.5-128B
+    - rid: 5696154546306023691
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023705
+        displayName: moonshotai/Kimi-K2.6
+    - rid: 5696154546306023692
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023706
+        displayName: moonshotai/Kimi-K2.6-instant
+    - rid: 5696154546306023693
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023707
+        displayName: openai/gpt-oss-120b
+    - rid: 5696154546306023694
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023708
+        displayName: Qwen/Qwen3-Embedding-8B
+    - rid: 5696154546306023695
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023709
+        displayName: intfloat/multilingual-e5-large-instruct
+    - rid: 5696154546306023696
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023710
+        displayName: NorwAI/NorwAI-Magistral-24B-reasoning
+    - rid: 5696154546306023697
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023711
+        displayName: NbAiLab/borealis-27b
+    - rid: 5696154546306023698
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154546306023712
+        displayName: norallm/normistral-11b-thinking
+    - rid: 5696154546306023699
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023700
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023701
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023702
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023703
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023704
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023705
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023706
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023707
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023708
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023709
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023710
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023711
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023712
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154546306023713
+      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
+      data:
+        name: Temperature
+        value: 1.56
+        minBound: 0
+        maxBound: 2
+    - rid: 5696154546306023714
+      type: {class: TextOption, ns: , asm: Assembly-CSharp}
+      data:
+        name: Prompt
+        value: A test of the prompting Field
 --- !u!1 &6204599631123743223
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,7 +497,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bc03a4c19604ea394e364f8fc632928, type: 3}
   m_Name: 
   m_EditorClassIdentifier: com.whisper.unity::Whisper.Utils.MicrophoneRecord
-  maxLengthSec: 60
+  maxLengthSec: 7
   loop: 1
   frequency: 16000
   chunksLengthSec: 0.5
@@ -263,11 +539,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: com.whisper.unity::Whisper.WhisperManager
   logLevel: 1
-  modelPath: Whisper/nb-whisper-tiny.bin
+  modelPath: Whisper/ggml-nb-whisper-tiny.bin
   isModelPathInStreamingAssets: 1
   initOnAwake: 1
   useGpu: 1
-  flashAttention: 0
+  flashAttention: 1
   language: no
   translateToEnglish: 0
   strategy: 0

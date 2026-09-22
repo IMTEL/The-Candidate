@@ -14,62 +14,194 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::IdunProvider
   service:
     Models:
-    - value: zai-org/GLM-5.3-Flash
+    - value:
+        rid: 5696154641429692601
       displayName: zai-org/GLM-5.3-Flash
-    - value: deepseek-ai/DeepSeek-V4-Flash-Vision-Exp
+    - value:
+        rid: 5696154641429692602
       displayName: deepseek-ai/DeepSeek-V4-Flash-Vision-Exp
-    - value: Qwen/Qwen3.8-27B-FP8
+    - value:
+        rid: 5696154641429692603
+      displayName: deepseek-ai/DeepSeek-V4-Flash-Vision-Exp-instant
+    - value:
+        rid: 5696154641429692604
       displayName: Qwen/Qwen3.8-27B-FP8
-    - value: Inferact/GLM-5.3-NVFP4
+    - value:
+        rid: 5696154641429692605
       displayName: Inferact/GLM-5.3-NVFP4
-    - value: mistralai/Mistral-Medium-3.5-128B
+    - value:
+        rid: 5696154641429692606
       displayName: mistralai/Mistral-Medium-3.5-128B
-    - value: moonshotai/Kimi-K2.6
+    - value:
+        rid: 5696154641429692607
       displayName: moonshotai/Kimi-K2.6
-    - value: moonshotai/Kimi-K2.6-instant
+    - value:
+        rid: 5696154641429692608
       displayName: moonshotai/Kimi-K2.6-instant
-    - value: openai/gpt-oss-120b
+    - value:
+        rid: 5696154641429692609
       displayName: openai/gpt-oss-120b
-    - value: Qwen/Qwen3-Embedding-8B
+    - value:
+        rid: 5696154641429692610
       displayName: Qwen/Qwen3-Embedding-8B
-    - value: intfloat/multilingual-e5-large-instruct
+    - value:
+        rid: 5696154641429692611
       displayName: intfloat/multilingual-e5-large-instruct
-    - value: NorwAI/NorwAI-Magistral-24B-reasoning
+    - value:
+        rid: 5696154641429692612
       displayName: NorwAI/NorwAI-Magistral-24B-reasoning
-    - value: NbAiLab/borealis-27b
+    - value:
+        rid: 5696154641429692613
       displayName: NbAiLab/borealis-27b
-    - value: norallm/normistral-11b-thinking
+    - value:
+        rid: 5696154641429692614
       displayName: norallm/normistral-11b-thinking
     OptionModel:
       name: Model
       value:
-        value: zai-org/GLM-5.3-Flash
-        displayName: zai-org/GLM-5.3-Flash
+        rid: 5696154641429692615
       options:
-      - value: zai-org/GLM-5.3-Flash
+      - rid: 5696154641429692615
+      - rid: 5696154641429692616
+      - rid: 5696154641429692617
+      - rid: 5696154641429692618
+      - rid: 5696154641429692619
+      - rid: 5696154641429692620
+      - rid: 5696154641429692621
+      - rid: 5696154641429692622
+      - rid: 5696154641429692623
+      - rid: 5696154641429692624
+      - rid: 5696154641429692625
+      - rid: 5696154641429692626
+      - rid: 5696154641429692627
+      - rid: 5696154641429692628
+    apiKey: IDUN
+  references:
+    version: 2
+    RefIds:
+    - rid: 5696154641429692601
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692602
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692603
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692604
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692605
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692606
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692607
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692608
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692609
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692610
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692611
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692612
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692613
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692614
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 5696154641429692615
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692601
         displayName: zai-org/GLM-5.3-Flash
-      - value: deepseek-ai/DeepSeek-V4-Flash-Vision-Exp
+    - rid: 5696154641429692616
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692602
         displayName: deepseek-ai/DeepSeek-V4-Flash-Vision-Exp
-      - value: Qwen/Qwen3.8-27B-FP8
+    - rid: 5696154641429692617
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692603
+        displayName: deepseek-ai/DeepSeek-V4-Flash-Vision-Exp-instant
+    - rid: 5696154641429692618
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692604
         displayName: Qwen/Qwen3.8-27B-FP8
-      - value: Inferact/GLM-5.3-NVFP4
+    - rid: 5696154641429692619
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692605
         displayName: Inferact/GLM-5.3-NVFP4
-      - value: mistralai/Mistral-Medium-3.5-128B
+    - rid: 5696154641429692620
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692606
         displayName: mistralai/Mistral-Medium-3.5-128B
-      - value: moonshotai/Kimi-K2.6
+    - rid: 5696154641429692621
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692607
         displayName: moonshotai/Kimi-K2.6
-      - value: moonshotai/Kimi-K2.6-instant
+    - rid: 5696154641429692622
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692608
         displayName: moonshotai/Kimi-K2.6-instant
-      - value: openai/gpt-oss-120b
+    - rid: 5696154641429692623
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692609
         displayName: openai/gpt-oss-120b
-      - value: Qwen/Qwen3-Embedding-8B
+    - rid: 5696154641429692624
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692610
         displayName: Qwen/Qwen3-Embedding-8B
-      - value: intfloat/multilingual-e5-large-instruct
+    - rid: 5696154641429692625
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692611
         displayName: intfloat/multilingual-e5-large-instruct
-      - value: NorwAI/NorwAI-Magistral-24B-reasoning
+    - rid: 5696154641429692626
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692612
         displayName: NorwAI/NorwAI-Magistral-24B-reasoning
-      - value: NbAiLab/borealis-27b
+    - rid: 5696154641429692627
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692613
         displayName: NbAiLab/borealis-27b
-      - value: norallm/normistral-11b-thinking
+    - rid: 5696154641429692628
+      type: {class: 'OptionEntry`1[[System.String, mscorlib]]', ns: , asm: Assembly-CSharp}
+      data:
+        value:
+          rid: 5696154641429692614
         displayName: norallm/normistral-11b-thinking
-    apiKey: sk-zDXMTECxGJuvl-R_7-C8zw

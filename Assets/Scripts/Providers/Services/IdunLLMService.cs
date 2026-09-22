@@ -24,6 +24,7 @@ public class IdunLLMService : ILLMService
     private TextOption prompt = new("Prompt");
     
     [SerializeField]
+    [HideInInspector]
     private PickOption<string> OptionModel;
 
     [NonSerialized]
@@ -43,6 +44,7 @@ public class IdunLLMService : ILLMService
     private readonly string url = "https://llm.hpc.ntnu.no";
 
     [SerializeField]
+    [HideInInspector]
     private string apiKey = "";
 
     public IdunLLMService(string apiKey)
