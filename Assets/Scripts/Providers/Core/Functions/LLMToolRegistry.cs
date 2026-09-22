@@ -42,25 +42,24 @@ public class LLMToolRegistry
         return functionRegistry;
     }
 
-
     private void RegisterMethods()
     {
         if (classFunctionRegistry.TryGetValue(owner.GetType(), out functionRegistry))
         {
-            return;
-        }
-        functionRegistry = new();
-        IEnumerable<MethodInfo> methods = owner.GetType().GetMethods();
-        foreach (MethodInfo method in methods)
-        {
-            LLMToolAttribute toolDefinition = method.GetCustomAttribute<LLMToolAttribute>();
-            if (toolDefinition != null && (toolDefinition.agentRole.Length == 0 || toolDefinition.agentRole.Contains(agentRole)))
+            functionRegistry = new();
+            IEnumerable<MethodInfo> methods = owner.GetType().GetMethods();
+            foreach (MethodInfo method in methods)
             {
-                try { functionRegistry.Add(LLMToolFunction.FromMethodInfo(method)); }
-                catch (Exception) { }
+                LLMToolAttribute toolDefinition = method.GetCustomAttribute<LLMToolAttribute>();
+                if (toolDefinition != null)
+                {
+                    try { functionRegistry.Add(LLMToolFunction.FromMethodInfo(method)); }
+                    catch (Exception) { }
+                }
             }
+            classFunctionRegistry.Add(owner.GetType(), functionRegistry);
         }
-        classFunctionRegistry.Add(owner.GetType(), functionRegistry);
+        functionRegistry = functionRegistry.Where(function => function.Accessible(agentRole)).ToHashSet();
     }
 
     public bool IsMethodCallable(string name, Dictionary<string, string> parameters, out Action callable)
@@ -85,10 +84,14 @@ public class LLMToolRegistry
         MethodInfo reference;
         string description;
 
+        string[] roles;
+
         private LLMToolFunction(MethodInfo methodInfo)
         {
+            LLMToolAttribute attribute = methodInfo.GetCustomAttribute<LLMToolAttribute>() ?? throw new ArgumentException("This method does not contain LLMTool");
             this.reference = methodInfo;
-            this.description = methodInfo.GetCustomAttribute<LLMToolAttribute>().description;
+            this.description = attribute.description;
+            this.roles = attribute.agentRole;
         }
 
         public static LLMToolFunction FromMethodInfo(MethodInfo method)
@@ -98,6 +101,7 @@ public class LLMToolRegistry
             {
                 function.AddParameter(LLMToolParameter.FromParameterInfo(info));
             }
+
             return function;
         }
 
@@ -134,6 +138,10 @@ public class LLMToolRegistry
         {
             return description;
         }
+        public bool Accessible(string role)
+        {
+            return roles.Contains(role) || roles.Length == 0;
+        }
     }
 
     public class LLMToolParameter
@@ -157,7 +165,7 @@ public class LLMToolRegistry
 
         public static LLMToolParameter FromParameterInfo(ParameterInfo parameterInfo)
         {
-            if (!supportedTyping.Contains(parameterInfo.ParameterType)) throw new ArgumentException("This parameter type is not supported");
+            if (!supportedTyping.Contains(parameterInfo.ParameterType)) throw new ArgumentException("This parameter type is not supported...yet");
             LLMParameterAttribute info = parameterInfo.GetCustomAttribute<LLMParameterAttribute>() ?? throw new ArgumentException($"{parameterInfo.Name} is missing the attribute LLMParameter");
             LLMToolParameter parameter = new(info.description, parameterInfo);
             return parameter;
@@ -188,4 +196,3 @@ public class LLMToolRegistry
         }
     }
 }
-
