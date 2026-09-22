@@ -59,7 +59,7 @@ public class LLMToolRegistry
             }
             classFunctionRegistry.Add(owner.GetType(), functionRegistry);
         }
-        functionRegistry = functionRegistry.Where(function => function.Accessible(agentRole)).ToHashSet();
+        functionRegistry = functionRegistry.Where(function => function.IsAccessible(agentRole)).ToHashSet();
     }
 
     public bool IsMethodCallable(string name, Dictionary<string, string> parameters, out Action callable)
@@ -138,7 +138,7 @@ public class LLMToolRegistry
         {
             return description;
         }
-        public bool Accessible(string role)
+        public bool IsAccessible(string role)
         {
             return roles.Contains(role) || roles.Length == 0;
         }
