@@ -7,9 +7,11 @@ public class IdunProvider : LLMServiceProvider
 
     [SerializeField] private IdunLLMService service = new();
 
+    #if UNITY_EDITOR
     [ShowInInspector]
-    public string ApiKey {get {return service.getAPIKey();} set { ChangeAndWrite(service.SetAPIKey(value));}}
-
+    public string ApiKey {get {return service.getAPIKey();} set { _ = ChangeAndWrite(service.SetAPIKey(value)); }}
+    #endif
+    
     public override ILLMService CreateTypedService()
         => service;
 

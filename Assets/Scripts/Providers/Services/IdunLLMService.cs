@@ -18,7 +18,7 @@ using UnityEngine.Networking;
 public class IdunLLMService : ILLMService
 {
     [SerializeField]
-    private List<OptionEntry<string>> Models = new() {new("", "No Models :(")};
+    private List<OptionEntry<string>> Models = new() {new("No Models :(")};
 
     [NonSerialized]
     private TextOption prompt = new("Prompt");

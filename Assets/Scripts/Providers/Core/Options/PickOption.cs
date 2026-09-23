@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Schema;
 using UnityEngine;
 
 [Serializable]
@@ -19,14 +20,14 @@ public class PickOption<T> : PickOption
     [SerializeReference] private OptionEntry<T> value;
     [SerializeReference] private List<OptionEntry<T>> options;
 
-    public PickOption(string name,  IEnumerable<OptionEntry<T>> values, OptionEntry<T> defualtValue = null) : base(name) {
+    public PickOption(string name,  IEnumerable<OptionEntry<T>> values, OptionEntry<T> defaultValue = null) : base(name) {
         if(values == null || values.Count() == 0)
         {
-            throw new ArgumentException("The values has to be a list of options with 1 or more options");    
+            values = new List<OptionEntry<T>>(){}; 
         }
         options = new(values);
-        defualtValue ??= values.First();
-        SetValue(defualtValue);
+        defaultValue ??= values.First();
+        SetValue(defaultValue);
     }
 
     public PickOption(string name,  IEnumerable<(T, string)> values, object defualtValue = null) : base(name) {
@@ -147,11 +148,12 @@ public class OptionEntry<T> {
     [SerializeReference] private object value;
     [SerializeField] private string displayName;
 
+
     public OptionEntry(T value, string name)
     {
-        if(value == null || name == null)
+        if(name == null || name == "")
         {
-            throw new ArgumentException("Neither value can't be null");
+            throw new ArgumentException("Name can't be null or blank");
         }
         this.value = value;
         this.displayName = name; 
@@ -159,12 +161,8 @@ public class OptionEntry<T> {
 
     public OptionEntry(T value)
     {    
-        if(value == null)
-        {
-            throw new ArgumentException("Value can't be null");
-        }
         this.value = value;
-        this.displayName = value.ToString(); 
+        this.displayName = value != null ? value.ToString() : "None"; 
     }
 
     public T GetValue(){

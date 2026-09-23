@@ -14,7 +14,7 @@ public class PiperProvider : TTSServiceProvider
 
     public override OptionSet GetTTSOptions()
     {
-        OptionSet options = new(PiperManager.GetTTSOptions());
+        OptionSet options = PiperManager.GetTTSOptions();
         List<OptionEntry<ESpeakVoiceContainer>> optionEntries = new();
         foreach(ESpeakVoiceContainer voiceContainer in values)
         {
@@ -25,7 +25,7 @@ public class PiperProvider : TTSServiceProvider
     }
 
     [Button]
-    public void addPipervoice(TextAsset textAsset, ModelAsset modelasset)
+    public void AddPipervoice(TextAsset textAsset, ModelAsset modelasset)
     {
         values.Add(new ESpeakVoiceContainer(textAsset, modelasset));
     }

@@ -28,4 +28,9 @@ public class VoiceProfile
     {
         return id;
     }
+
+    public string GetDisplayName()
+    {
+        return displayName;
+    }
 }

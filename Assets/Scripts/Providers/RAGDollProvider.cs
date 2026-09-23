@@ -6,10 +6,10 @@ public class RAGDOLLProvider : LLMServiceProvider
 {
     #if UNITY_EDITOR
     [ShowInInspector]
-    public string ApiKey {get {return service.GetAPIKey();} set {ChangeAndWrite(service.SetAPIKey(value));}}
+    public string ApiKey {get {return service.GetAPIKey();} set {_ = ChangeAndWrite(service.SetAPIKey(value));}}
 
     [ShowInInspector]
-    public string Url {get {return service.GetURL();} set {ChangeAndWrite(service.SetURL(value));}}
+    public string Url {get {return service.GetURL();} set {_ = ChangeAndWrite(service.SetURL(value));}}
 
     #endif
     [SerializeField]

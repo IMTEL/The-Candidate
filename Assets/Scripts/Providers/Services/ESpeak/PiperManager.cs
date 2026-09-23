@@ -37,9 +37,11 @@ public class PiperManager : ITTService
 
     private static PiperManager instance;
 
-    [Range(0.0f, 1.0f)] public float commaDelay = 0.1f;
-    [Range(0.0f, 1.0f)] public float periodDelay = 0.5f;
-    [Range(0.0f, 1.0f)] public float questionExclamationDelay = 0.6f;
+    private static readonly FloatBoundOption CommaDelay = new("CommaDelay", Minvalue: 0, MaxValue: 3);
+                
+    private static readonly FloatBoundOption PeriodDelay = new("PeriodDelay", Minvalue: 0, MaxValue: 3);
+    private static readonly FloatBoundOption QuestionExclamationDelay = new("QuestionExclamationDelay", Minvalue: 0, MaxValue: 3);
+
 
 
     private PiperManager(int capacity)
@@ -126,20 +128,16 @@ public class PiperManager : ITTService
         }
     }
 
-    public IAsyncEnumerator<AudioClip> getAudioClip(string dialogue, OptionSet options)
+    public async IAsyncEnumerator<AudioClip> getAudioClip(string dialogue, OptionSet options)
     {
-        Debug.Log("Creating audioclip from piper model");
         PickOption<ESpeakVoiceContainer> important = options.GetOptions().OfType<PickOption<ESpeakVoiceContainer>>().First() ?? throw new ArgumentException("Oy, we are missing a model information for this one. Plz fix");
-        return Synthesize(dialogue, important.GetCurrentValue().GetTokenizer(), important.GetCurrentValue().GetModelAsset());
-    }
+        OptionSet set = GetTTSOptions().Merge(options);
+        ESpeakTokenizer tokenizer = important.GetCurrentValue().GetTokenizer();
+        ModelAsset model = important.GetCurrentValue().GetModelAsset();
+        set.ContainsOption(PeriodDelay, out FloatBoundOption TempPeriodDelay);
+        set.ContainsOption(CommaDelay, out FloatBoundOption TempCommaDelay);
+        set.ContainsOption(QuestionExclamationDelay, out FloatBoundOption TempQuestionDelay);
 
-    /// <summary>
-    /// Creates a TTS audioclip from the text
-    /// </summary>
-    /// <param name="text">Things to be said</param>
-    /// <returns>A audioclip to be voiced</returns>s
-    private async IAsyncEnumerator<AudioClip> Synthesize(string text, ESpeakTokenizer tokenizer, ModelAsset model)
-    {
         if (tokenizer == null || string.IsNullOrEmpty(tokenizer.Voice))
         {
             Debug.LogError("[PiperManager] Tokenizer is not assigned or has no voice name.");
@@ -148,10 +146,10 @@ public class PiperManager : ITTService
         await initilize;
         string delayPunctuationPattern = @"([,.?!;:])";
         string nonDelayPunctuationPattern = @"[^\w\s,.?!;:]";
-        string[] parts = Regex.Split(text, delayPunctuationPattern);
+        string[] parts = Regex.Split(dialogue, delayPunctuationPattern);
         foreach (string part in parts)
         {
-            int voiceResult = ESpeakNG.espeak_SetVoiceByName(tokenizer.Voice);
+            _ = ESpeakNG.espeak_SetVoiceByName(tokenizer.Voice);
             (Model, Worker) lodedModel = FetchModel(model);
             if (string.IsNullOrEmpty(part.Trim()))
             {
@@ -167,14 +165,17 @@ public class PiperManager : ITTService
                     case ",":
                     case ";":
                     case ":":
-                        yield return AudioClip.Create("Silence1", (int)Math.Round(tokenizer.SampleRate * commaDelay, MidpointRounding.AwayFromZero), 1, tokenizer.SampleRate, false);
+                        if(TempCommaDelay.GetValue() > 0)
+                        yield return AudioClip.Create("Silence1", (int)Math.Round(tokenizer.SampleRate * TempCommaDelay.GetValue(), MidpointRounding.AwayFromZero), 1, tokenizer.SampleRate, false);
                         break;
                     case ".":
-                        yield return AudioClip.Create("Silence2", (int)Math.Round(tokenizer.SampleRate * periodDelay, MidpointRounding.AwayFromZero), 1, tokenizer.SampleRate, false);
+                        if(TempPeriodDelay.GetValue() > 0)
+                        yield return AudioClip.Create("Silence2", (int)Math.Round(tokenizer.SampleRate * TempPeriodDelay.GetValue(), MidpointRounding.AwayFromZero), 1, tokenizer.SampleRate, false);
                         break;
                     case "?":
                     case "!":
-                        yield return AudioClip.Create("Silence3", (int)Math.Round(tokenizer.SampleRate * questionExclamationDelay, MidpointRounding.AwayFromZero), 1, tokenizer.SampleRate, false);
+                        if(TempQuestionDelay.GetValue() > 0)
+                        yield return AudioClip.Create("Silence3", (int)Math.Round(tokenizer.SampleRate * TempQuestionDelay.GetValue(), MidpointRounding.AwayFromZero), 1, tokenizer.SampleRate, false);
                         break;
                 }
             }
@@ -225,7 +226,7 @@ public class PiperManager : ITTService
     }
 
     /// <summary>
-    /// A decorated function becouse lazyiness is such a wonder.
+    /// A decorated function because laziness is such a wonder.
     /// </summary>
     /// <param name="textChunk"></param>
     /// <param name="speakTokenizer"></param>
@@ -305,7 +306,6 @@ public class PiperManager : ITTService
             if (resultPtr != IntPtr.Zero)
             {
                 string phonemeString = PtrToUtf8String(resultPtr);
-                Debug.Log($"[PHONEMES] {phonemeString}");
                 return phonemeString;
             }
             else
@@ -338,15 +338,13 @@ public class PiperManager : ITTService
 
 
 
-    public static IEnumerable<OptionBase> GetTTSOptions()
+    public static OptionSet GetTTSOptions()
     {
-
-        return new List<OptionBase>()
-        {
-            new FloatBoundOption("CommaDelay", Minvalue: 0, MaxValue: 3),
-            new FloatBoundOption("PeriodDelay", Minvalue: 0, MaxValue: 3),
-            new FloatBoundOption("QuestionExclamationDelay", Minvalue: 0, MaxValue: 3)
-        };
+        OptionSet set = new();
+        set.AddOption(CommaDelay);
+        set.AddOption(PeriodDelay);
+        set.AddOption(QuestionExclamationDelay);
+        return set;    
     }
 
 
