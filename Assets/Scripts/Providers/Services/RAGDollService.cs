@@ -70,7 +70,7 @@ public class RAGDOLLService : ILLMService
         OptionEntry<RagAgent> agentChoice = (OptionEntry<RagAgent>)value.GetObjectValue();
         try
         {
-            RAGDOLLPacket requestBody = new(apiKey, agentChoice.GetValue().id, dialogs, agentChoice.GetValue().name);
+            RAGDOLLPacket requestBody = new(System.Environment.GetEnvironmentVariable(apiKey) ?? apiKey, agentChoice.GetValue().id, dialogs, agentChoice.GetValue().name);
             UnityWebRequest request = CreateRequest("/api/chat/ask");
             request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JObject.FromObject(requestBody).ToString()));
             request.downloadHandler = new DownloadHandlerBuffer();
