@@ -19,6 +19,11 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
     [LabelText("NPC Prefabs")]
     public List<GameObject> npcPrefabs = new();
 
+    /// <summary>
+    /// Used by the interviewer NPC when a published interviewer is picked
+    /// </summary>
+    public PublishedRagProvider publishedAgentProvider;
+
     private ScenarioSettings settings;
 
 
@@ -31,6 +36,7 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
         List<GameObject> npcCopies = new(npcPrefabs); 
         System.Random random = new();
         List<(Environment.Actor actor, int amount)> actors = new(settings.GetActors().Where(actor => actor.amount > 0));
+        NPC firstNpc = null;
         foreach (NPCSpawnPoint spawnPoint in spawnLocations)
         {
             if(npcCopies.Count > 0 && spawnPoint.GetComponentInChildren<NPC>() == null && actors.Count > 0)
@@ -40,12 +46,23 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
                 GameObject gameObject = Instantiate(npcCopies[index], spawnPoint.location);
                 NPC npc = gameObject.GetComponentInChildren<NPC>();
                 nPCRegistry.Add(npc);
+                firstNpc ??= npc;
                 npc.actor = actors[actorIndex].actor;
                 if(actors[actorIndex].amount - 1 == 0) actors.RemoveAt(actorIndex);
                 else actors[actorIndex] = (actors[actorIndex].actor, actors[actorIndex].amount - 1);
                 npcCopies.RemoveAt(index);
             }
         }
+        UsePublishedInterviewer(firstNpc);
+    }
+
+    /// <summary>
+    /// Lets the NPC talk as the published interviewer, if one is picked
+    /// </summary>
+    private void UsePublishedInterviewer(NPC npc)
+    {
+        if (npc == null || settings.interviewer == null || publishedAgentProvider == null) return;
+        npc.GetAgent().SetLLMServiceProvider(publishedAgentProvider);
     }
 
     void Awake()
