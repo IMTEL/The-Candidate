@@ -21,8 +21,11 @@ public class PublishedRagService : ILLMService
     [NonSerialized]
     private readonly SemaphoreSlim simulationousRequests = new(1);
 
+    /// <summary>
+    /// RAGdoll's API base, with /backend on the server. A local RAGdoll is http://localhost:8000
+    /// </summary>
     [SerializeField]
-    private string url = "https://iplvr.it.ntnu.no";
+    private string url = "https://iplvr.it.ntnu.no/backend";
 
     /// <summary>
     /// The name of the environment variable that holds the client key, or the key itself
@@ -43,7 +46,7 @@ public class PublishedRagService : ILLMService
     public async Task<List<PublishedAgent>> GetPublishedAgents()
     {
         List<PublishedAgent> agents = new();
-        UnityWebRequest request = CreateRequest("/published-agents");
+        UnityWebRequest request = CreateRequest("/agents/published");
         await request.SendWebRequest();
         if (request.result != UnityWebRequest.Result.Success)
         {
@@ -132,11 +135,12 @@ public class PublishedRagService : ILLMService
 
     private UnityWebRequest CreateRequest(string path)
     {
-        UnityWebRequest request = new(url + "/backend" + path)
+        UnityWebRequest request = new(url + path)
         {
             downloadHandler = new DownloadHandlerBuffer(),
         };
-        request.SetRequestHeader("access-key", GetKey());
+        // RAGdoll takes every credential, the client key too, as a bearer token
+        request.SetRequestHeader("Authorization", $"Bearer {GetKey()}");
         request.SetRequestHeader("Content-Type", "application/json");
         return request;
     }
