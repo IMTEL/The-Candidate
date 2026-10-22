@@ -1,6 +1,7 @@
 /// <summary>
 /// An interviewer a counsellor has published to The Candidate from the agent configurator.
-/// Only holds what RAGdoll shares publicly: never the prompt or anything about the job seeker.
+/// Only holds what RAGdoll shares publicly: the name and short description the counsellor
+/// wrote when publishing. Never the prompt or anything about the job seeker.
 /// </summary>
 public class PublishedAgent
 {
@@ -8,16 +9,10 @@ public class PublishedAgent
     public string Name { get; }
     public string Description { get; }
 
-    /// <summary>
-    /// The RAGdoll role to chat as. Null if the agent has no roles.
-    /// </summary>
-    public string Role { get; }
-
-    public PublishedAgent(string id, string name, string description, string role)
+    public PublishedAgent(string id, string name, string description)
     {
         Id = id;
         Name = name;
         Description = description ?? "";
-        Role = role;
     }
 }

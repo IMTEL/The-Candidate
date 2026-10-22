@@ -36,7 +36,7 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
         List<GameObject> npcCopies = new(npcPrefabs); 
         System.Random random = new();
         List<(Environment.Actor actor, int amount)> actors = new(settings.GetActors().Where(actor => actor.amount > 0));
-        NPC firstNpc = null;
+        List<NPC> spawned = new();
         foreach (NPCSpawnPoint spawnPoint in spawnLocations)
         {
             if(npcCopies.Count > 0 && spawnPoint.GetComponentInChildren<NPC>() == null && actors.Count > 0)
@@ -46,23 +46,34 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
                 GameObject gameObject = Instantiate(npcCopies[index], spawnPoint.location);
                 NPC npc = gameObject.GetComponentInChildren<NPC>();
                 nPCRegistry.Add(npc);
-                firstNpc ??= npc;
+                spawned.Add(npc);
                 npc.actor = actors[actorIndex].actor;
                 if(actors[actorIndex].amount - 1 == 0) actors.RemoveAt(actorIndex);
                 else actors[actorIndex] = (actors[actorIndex].actor, actors[actorIndex].amount - 1);
                 npcCopies.RemoveAt(index);
             }
         }
-        UsePublishedInterviewer(firstNpc);
+        UsePublishedInterviewer(spawned);
     }
 
     /// <summary>
-    /// Lets the NPC talk as the published interviewer, if one is picked
+    /// The actors that lead an interview, most fitting first
     /// </summary>
-    private void UsePublishedInterviewer(NPC npc)
+    private static readonly Environment.Actor[] InterviewerActors =
+        { Environment.Actor.HiringManger, Environment.Actor.Manager, Environment.Actor.HR };
+
+    /// <summary>
+    /// If a published interviewer is picked, one NPC talks as it: the one whose actor leads
+    /// the interview (see InterviewerActors), or the first one spawned if none does.
+    /// The other NPCs keep their own agent.
+    /// </summary>
+    private void UsePublishedInterviewer(List<NPC> spawned)
     {
-        if (npc == null || settings.interviewer == null || publishedAgentProvider == null) return;
-        npc.GetAgent().SetLLMServiceProvider(publishedAgentProvider);
+        if (spawned.Count == 0 || settings.interviewer == null || publishedAgentProvider == null) return;
+        NPC interviewer = InterviewerActors
+            .Select(actor => spawned.FirstOrDefault(npc => npc.actor == actor))
+            .FirstOrDefault(npc => npc != null) ?? spawned[0];
+        interviewer.GetAgent().SetLLMServiceProvider(publishedAgentProvider);
     }
 
     void Awake()

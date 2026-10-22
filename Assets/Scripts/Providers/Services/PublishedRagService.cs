@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -46,7 +47,7 @@ public class PublishedRagService : ILLMService
     public async Task<List<PublishedAgent>> GetPublishedAgents()
     {
         List<PublishedAgent> agents = new();
-        UnityWebRequest request = CreateRequest("/agents/published");
+        using UnityWebRequest request = CreateRequest("/agents/published");
         await request.SendWebRequest();
         if (request.result != UnityWebRequest.Result.Success)
         {
@@ -54,11 +55,17 @@ public class PublishedRagService : ILLMService
             return agents;
         }
 
-        foreach (JToken item in JArray.Parse(DownloadHandlerBuffer.GetContent(request)))
+        try
         {
-            JArray roles = item["roles"] as JArray;
-            string role = roles != null && roles.Count > 0 ? roles[0].ToString() : null;
-            agents.Add(new(item["agent_id"].ToString(), item["name"].ToString(), item["description"]?.ToString(), role));
+            foreach (JToken item in JArray.Parse(DownloadHandlerBuffer.GetContent(request)))
+            {
+                agents.Add(new(item["agent_id"].ToString(), item["name"].ToString(), item["description"]?.ToString()));
+            }
+        }
+        catch (Exception e) when (e is JsonException || e is NullReferenceException)
+        {
+            Debug.LogWarning($"RAGdoll sent an unexpected list of published agents: {e.Message}");
+            agents.Clear();
         }
         return agents;
     }
@@ -75,14 +82,15 @@ public class PublishedRagService : ILLMService
         await simulationousRequests.WaitAsync();
         try
         {
-            RAGDOLLService.RAGDOLLPacket requestBody = new(GetKey(), agent.Id, dialogs, agent.Role);
-            UnityWebRequest request = CreateRequest("/api/chat/ask");
+            // No role: RAGdoll picks the agent's own role for the client key
+            RAGDOLLService.RAGDOLLPacket requestBody = new(GetKey(), agent.Id, dialogs, null);
+            using UnityWebRequest request = CreateRequest("/api/chat/ask");
             request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JObject.FromObject(requestBody).ToString()));
             request.method = "POST";
             await request.SendWebRequest();
             if (request.result != UnityWebRequest.Result.Success)
             {
-                // 401 here usually means the counsellor has hidden the agent
+                // 403 here usually means the counsellor has hidden the agent
                 Debug.LogError($"Error: {request.error}");
                 return null;
             }
