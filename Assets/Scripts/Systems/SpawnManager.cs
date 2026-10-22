@@ -19,6 +19,11 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
     [LabelText("NPC Prefabs")]
     public List<GameObject> npcPrefabs = new();
 
+    /// <summary>
+    /// Used by the interviewer NPC when a published interviewer is picked
+    /// </summary>
+    public PublishedRagProvider publishedAgentProvider;
+
     private ScenarioSettings settings;
 
 
@@ -28,8 +33,13 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
         if(spawnLocations.Count() == 0) return;
         nPCRegistry.Clear();
 
-        List<GameObject> npcCopies = new(npcPrefabs); 
+        List<GameObject> npcCopies = new(npcPrefabs);
         System.Random random = new();
+        if (settings.interviewer != null && publishedAgentProvider != null)
+        {
+            SpawnPublishedInterviewer(npcCopies, random);
+            return;
+        }
         List<(Environment.Actor actor, int amount)> actors = new(settings.GetActors().Where(actor => actor.amount > 0));
         foreach (NPCSpawnPoint spawnPoint in spawnLocations)
         {
@@ -46,6 +56,21 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
                 npcCopies.RemoveAt(index);
             }
         }
+    }
+
+    /// <summary>
+    /// A published interviewer was configured by a counsellor for one interview with one
+    /// interviewer, so exactly one NPC spawns and talks as it. The actor amounts are not used.
+    /// </summary>
+    private void SpawnPublishedInterviewer(List<GameObject> npcCopies, System.Random random)
+    {
+        NPCSpawnPoint spawnPoint = spawnLocations.FirstOrDefault(point => point.GetComponentInChildren<NPC>() == null);
+        if (spawnPoint == null || npcCopies.Count == 0) return;
+        GameObject gameObject = Instantiate(npcCopies[random.Next(npcCopies.Count)], spawnPoint.location);
+        NPC npc = gameObject.GetComponentInChildren<NPC>();
+        nPCRegistry.Add(npc);
+        npc.actor = Environment.Actor.HiringManger;
+        npc.GetAgent().SetLLMServiceProvider(publishedAgentProvider);
     }
 
     void Awake()

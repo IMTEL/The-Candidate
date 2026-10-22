@@ -7,6 +7,11 @@ public class ScenarioSettings {
 
     public Environment.Job job {get; private set;} = Environment.Job.Store;
 
+    /// <summary>
+    /// The published interviewer the user picked. Null means the standard interviewer.
+    /// </summary>
+    public PublishedAgent interviewer {get; private set;} = null;
+
     private readonly Dictionary<Environment.Actor, int> actors = new();
 
 
@@ -26,6 +31,15 @@ public class ScenarioSettings {
     public void SetJob(Environment.Job job)
     {
         this.job = job ?? this.job;
+    }
+
+    /// <summary>
+    /// Sets the published interviewer for the scenario. Null goes back to the standard interviewer.
+    /// </summary>
+    /// <param name="interviewer"></param>
+    public void SetInterviewer(PublishedAgent interviewer)
+    {
+        this.interviewer = interviewer;
     }
 
     public void SetAmount(Environment.Actor actorType, int amount)
