@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// UI for picking one of the interviewers counsellors have published, or the standard interviewer.
-/// The pick is saved in the ScenarioSettings and used when the NPCs spawn (see SpawnManager).
+/// A published interviewer already has its job and interviewer from the counsellor, so picking one
+/// starts the interview right away (see SpawnManager). Picking the standard interviewer keeps the
+/// usual flow: choose the actors and a job.
 /// </summary>
 public class InterviewerSelectionManager : MonoBehaviour
 {
@@ -20,6 +23,11 @@ public class InterviewerSelectionManager : MonoBehaviour
     public Transform buttonContainer;
 
     public string standardInterviewerName = "Standard intervjuer";
+
+    /// <summary>
+    /// The scene a published interviewer starts, the same one the job buttons load
+    /// </summary>
+    public string interviewScene = "ConferanceRoom";
 
     private readonly List<InterviewerButton> buttons = new();
 
@@ -46,6 +54,7 @@ public class InterviewerSelectionManager : MonoBehaviour
         {
             settings.SetInterviewer(clicked.Agent);
             MarkSelected(clicked.Agent);
+            if (clicked.Agent != null) SceneManager.LoadScene(interviewScene);
         });
         buttons.Add(button);
         MarkSelected(settings.interviewer);

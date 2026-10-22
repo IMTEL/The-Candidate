@@ -33,10 +33,14 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
         if(spawnLocations.Count() == 0) return;
         nPCRegistry.Clear();
 
-        List<GameObject> npcCopies = new(npcPrefabs); 
+        List<GameObject> npcCopies = new(npcPrefabs);
         System.Random random = new();
+        if (settings.interviewer != null && publishedAgentProvider != null)
+        {
+            SpawnPublishedInterviewer(npcCopies, random);
+            return;
+        }
         List<(Environment.Actor actor, int amount)> actors = new(settings.GetActors().Where(actor => actor.amount > 0));
-        List<NPC> spawned = new();
         foreach (NPCSpawnPoint spawnPoint in spawnLocations)
         {
             if(npcCopies.Count > 0 && spawnPoint.GetComponentInChildren<NPC>() == null && actors.Count > 0)
@@ -46,34 +50,27 @@ public class SpawnManager : MonoBehaviour, INPCEventListener, IInit
                 GameObject gameObject = Instantiate(npcCopies[index], spawnPoint.location);
                 NPC npc = gameObject.GetComponentInChildren<NPC>();
                 nPCRegistry.Add(npc);
-                spawned.Add(npc);
                 npc.actor = actors[actorIndex].actor;
                 if(actors[actorIndex].amount - 1 == 0) actors.RemoveAt(actorIndex);
                 else actors[actorIndex] = (actors[actorIndex].actor, actors[actorIndex].amount - 1);
                 npcCopies.RemoveAt(index);
             }
         }
-        UsePublishedInterviewer(spawned);
     }
 
     /// <summary>
-    /// The actors that lead an interview, most fitting first
+    /// A published interviewer was configured by a counsellor for one interview with one
+    /// interviewer, so exactly one NPC spawns and talks as it. The actor amounts are not used.
     /// </summary>
-    private static readonly Environment.Actor[] InterviewerActors =
-        { Environment.Actor.HiringManger, Environment.Actor.Manager, Environment.Actor.HR };
-
-    /// <summary>
-    /// If a published interviewer is picked, one NPC talks as it: the one whose actor leads
-    /// the interview (see InterviewerActors), or the first one spawned if none does.
-    /// The other NPCs keep their own agent.
-    /// </summary>
-    private void UsePublishedInterviewer(List<NPC> spawned)
+    private void SpawnPublishedInterviewer(List<GameObject> npcCopies, System.Random random)
     {
-        if (spawned.Count == 0 || settings.interviewer == null || publishedAgentProvider == null) return;
-        NPC interviewer = InterviewerActors
-            .Select(actor => spawned.FirstOrDefault(npc => npc.actor == actor))
-            .FirstOrDefault(npc => npc != null) ?? spawned[0];
-        interviewer.GetAgent().SetLLMServiceProvider(publishedAgentProvider);
+        NPCSpawnPoint spawnPoint = spawnLocations.FirstOrDefault(point => point.GetComponentInChildren<NPC>() == null);
+        if (spawnPoint == null || npcCopies.Count == 0) return;
+        GameObject gameObject = Instantiate(npcCopies[random.Next(npcCopies.Count)], spawnPoint.location);
+        NPC npc = gameObject.GetComponentInChildren<NPC>();
+        nPCRegistry.Add(npc);
+        npc.actor = Environment.Actor.HiringManger;
+        npc.GetAgent().SetLLMServiceProvider(publishedAgentProvider);
     }
 
     void Awake()
