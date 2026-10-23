@@ -102,50 +102,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AdSummerazation:
+    name: 
     LLMServiceProvider: {fileID: 11400000, guid: 4512622d4b06a4661a4802bc99e6ace7, type: 2}
     LLMOverrides:
       rid: 5696154546306023424
     TTServiceProvider: {fileID: 11400000, guid: e3c656d1f23cd4189918eec4f0a6c39d, type: 2}
-    TTSOVerrides:
-      rid: 5696154525463216212
-    lLMToolRegistry:
-      agentRole: 
+    TTSOverrides:
+      rid: 2124118461391568896
   Cordinator:
+    name: Coordinator
     LLMServiceProvider: {fileID: 11400000, guid: 4512622d4b06a4661a4802bc99e6ace7, type: 2}
     LLMOverrides:
       rid: 5696154525463216215
     TTServiceProvider: {fileID: 0}
-    TTSOVerrides:
-      rid: 1003
-    lLMToolRegistry:
-      agentRole: 
+    TTSOverrides:
+      rid: 2124118461391568897
   references:
     version: 2
     RefIds:
-    - rid: 1003
+    - rid: 2124118461391568896
       type: {class: OptionSet, ns: , asm: Assembly-CSharp}
       data:
         optionBases: []
-    - rid: 5696154525463216212
+    - rid: 2124118461391568897
       type: {class: OptionSet, ns: , asm: Assembly-CSharp}
       data:
-        optionBases:
-        - rid: 5696154525463216213
-        - rid: 5696154525463216214
-    - rid: 5696154525463216213
-      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
-      data:
-        name: Stability
-        value: 0.293
-        minBound: 0
-        maxBound: 1
-    - rid: 5696154525463216214
-      type: {class: FloatBoundOption, ns: , asm: Assembly-CSharp}
-      data:
-        name: SimilarityBoost
-        value: 0.689
-        minBound: 0
-        maxBound: 1
+        optionBases: []
     - rid: 5696154525463216215
       type: {class: OptionSet, ns: , asm: Assembly-CSharp}
       data:

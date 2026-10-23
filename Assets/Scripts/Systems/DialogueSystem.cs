@@ -63,7 +63,6 @@ public class DialogueSystem : IEvent<IDialogueReady>
         {
             tempCoordinator += $"\n- {item.name}";
         }
-
         dialogs.Add(userDialog);
         List<LLMDialogue> tempDialogs = new(dialogs)
             {
@@ -73,7 +72,8 @@ public class DialogueSystem : IEvent<IDialogueReady>
         LLMResponse response = await coordinator.CallLLM(tempDialogs);
         foreach (Action item in response.GetFunctions())
         {
-            try{item.Invoke();} catch(Exception e)
+            try { item.Invoke(); }
+            catch (Exception e)
             {
                 Debug.LogWarning(e.Message);
             }

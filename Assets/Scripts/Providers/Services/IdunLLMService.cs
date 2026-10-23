@@ -10,19 +10,17 @@ using UnityEngine.Networking;
 
 
 /// <summary>
-/// A single instance manager that allows for prompting to a LLM system to fetch a response.
-/// Uses the chatgpt structure of request
-/// To access, call the GetInstance function on the class
+/// API calls towards IDUN as a service for LLM calls
 /// </summary>
 [Serializable]
 public class IdunLLMService : ILLMService
 {
     [SerializeField]
-    private List<OptionEntry<string>> Models = new() {new("No Models :(")};
+    private List<OptionEntry<string>> Models = new() { new("No Models :(") };
 
     [NonSerialized]
     private TextOption prompt = new("Prompt");
-    
+
     [SerializeField]
     [HideInInspector]
     private PickOption<string> OptionModel;
@@ -93,7 +91,7 @@ public class IdunLLMService : ILLMService
         Models.Clear();
         UnityWebRequest request = CreateRequest("/models");
         await request.SendWebRequest();
-        if(request.result != UnityWebRequest.Result.Success)
+        if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.LogWarning("API key or the service is not accessible");
             return;
@@ -111,7 +109,7 @@ public class IdunLLMService : ILLMService
 
         if (Models.Count == 0)
         {
-            Models = new() {new("", "No Models :(")};
+            Models = new() { new("", "No Models :(") };
         }
         OptionModel = new("Model", Models);
     }

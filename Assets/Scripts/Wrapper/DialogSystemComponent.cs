@@ -9,7 +9,6 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
     [SerializeField] private Agent AdSummerazation;
     [SerializeField] private Agent Cordinator;
 
-
     private CancellationTokenSource cancellationToken;
 
     private Action<(NPC, Dialog)> buffer;
@@ -36,7 +35,7 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
     {
         if (!scene2.name.Equals("Start") && dialogueSystem != null)
         {
-            onMicrophoneStopRecording(new(Environment.Actor.Director, "Introduce yourself"));
+            onMicrophoneStopRecording(null);
         }
         else
         {
@@ -44,9 +43,7 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
             dialogueSystem = new DialogueSystem(scenarioSettings.getScenarioSettings(), spawnManager.GetNPCRegistry(), Cordinator, AdSummerazation);
             dialogueSystem.AddListener(this);
         }
-
     }
-
 
     public void onMicrophoneStartRecording()
     {

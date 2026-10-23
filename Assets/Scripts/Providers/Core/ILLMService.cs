@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,8 +10,9 @@ public interface ILLMService
     /// <summary>
     /// Sends a request to the service and gives back the response for the text
     /// </summary>
-    /// <param name="startingPrompt">the starting prompt</param>
     /// <param name="dialogs">the previous dialogs</param>
+    /// <param name="options">A OptionSet meant to be used</param>
+    /// <param name="lLMToolRegistry">A registry of tools available for the LLMService</param>
     /// <returns>The next dialog from the AI</returns>
     public Task<LLMResponse> GetAIResponse(IEnumerable<LLMDialogue> dialogs, OptionSet options, LLMToolRegistry lLMToolRegistry = null);
 
