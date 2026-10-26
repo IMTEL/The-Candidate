@@ -108,7 +108,7 @@ MonoBehaviour:
       rid: 5696154546306023424
     TTServiceProvider: {fileID: 11400000, guid: e3c656d1f23cd4189918eec4f0a6c39d, type: 2}
     TTSOverrides:
-      rid: 2124118461391568896
+      rid: 533818902353543383
   Cordinator:
     name: Coordinator
     LLMServiceProvider: {fileID: 11400000, guid: 4512622d4b06a4661a4802bc99e6ace7, type: 2}
@@ -116,15 +116,15 @@ MonoBehaviour:
       rid: 5696154525463216215
     TTServiceProvider: {fileID: 0}
     TTSOverrides:
-      rid: 2124118461391568897
+      rid: 533818902353543384
   references:
     version: 2
     RefIds:
-    - rid: 2124118461391568896
+    - rid: 533818902353543383
       type: {class: OptionSet, ns: , asm: Assembly-CSharp}
       data:
         optionBases: []
-    - rid: 2124118461391568897
+    - rid: 533818902353543384
       type: {class: OptionSet, ns: , asm: Assembly-CSharp}
       data:
         optionBases: []
@@ -433,6 +433,7 @@ MonoBehaviour:
   npcPrefabs:
   - {fileID: 6685602297755913791, guid: b4c97f92643e1c34e80261becd46c2fe, type: 3}
   - {fileID: 6685602297755913791, guid: dde7c0f1422623e4f8ff249c40924bbd, type: 3}
+  publishedAgentProvider: {fileID: 11400000, guid: 8d36db56ba5f89d41b9a58c932e6149a, type: 2}
 --- !u!1 &6901510977062062484
 GameObject:
   m_ObjectHideFlags: 0

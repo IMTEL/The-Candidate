@@ -130,8 +130,14 @@ public class RAGDOLLService : ILLMService
     public async Task RefreshModels()
     {
         Models.Clear();
-        UnityWebRequest request = CreateRequest("/agent-info-by-accesskey");
+        UnityWebRequest request = CreateRequest("/agents/agent-info-by-accesskey");
         await request.SendWebRequest();
+        if (request.responseCode == 404)
+        {
+            // A RAGdoll from before the routes moved under /agents
+            request = CreateRequest("/agent-info-by-accesskey");
+            await request.SendWebRequest();
+        }
         if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.LogWarning("API key or the service is not accessible");
@@ -154,7 +160,11 @@ public class RAGDOLLService : ILLMService
         {
             downloadHandler = new DownloadHandlerBuffer(),
         };
-        request.SetRequestHeader("access-key", $"{System.Environment.GetEnvironmentVariable(apiKey) ?? apiKey}");
+        string key = System.Environment.GetEnvironmentVariable(apiKey) ?? apiKey;
+        // RAGdoll now reads the access key as a bearer token. The old access-key
+        // header is kept for RAGdoll servers from before that change.
+        request.SetRequestHeader("Authorization", $"Bearer {key}");
+        request.SetRequestHeader("access-key", key);
         request.SetRequestHeader("Content-Type", "application/json");
         return request;
     }
