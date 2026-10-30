@@ -34,6 +34,13 @@ public class PublishedRagService : ILLMService
     [SerializeField]
     private string apiKey = "CANDIDATE";
 
+    /// <summary>
+    /// The observer agent that gives feedback after the interview. Not a secret: RAGdoll only lets
+    /// the client key chat with the agent set in its CANDIDATE_OBSERVER_AGENT_ID.
+    /// </summary>
+    [SerializeField]
+    private string observerAgentId = "";
+
     public OptionSet GetLLMOptions()
     {
         // The agent is picked at runtime, so there is nothing to choose in the inspector
@@ -116,6 +123,44 @@ public class PublishedRagService : ILLMService
         }
     }
 
+    /// <summary>
+    /// Asks the observer for feedback on a finished interview
+    /// </summary>
+    /// <param name="transcript">The whole interview, see ObserverFeedback.FormatTranscript</param>
+    /// <returns>The observer's reply, or null if RAGdoll can't be reached or gives no answer</returns>
+    public async Task<string> AskObserver(string transcript)
+    {
+        if (string.IsNullOrWhiteSpace(observerAgentId))
+        {
+            Debug.LogWarning("No observer agent is set");
+            return null;
+        }
+
+        // The whole interview as one user message, so RAGdoll's mapping of the roles doesn't matter
+        List<LLMDialogue> dialogs = new() { new(transcript, LLMDialogue.RoleCategory.USER) };
+        RAGDOLLService.RAGDOLLPacket requestBody = new(GetKey(), observerAgentId, dialogs, null);
+        using UnityWebRequest request = CreateRequest("/api/chat/ask");
+        request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JObject.FromObject(requestBody).ToString()));
+        request.method = "POST";
+        await request.SendWebRequest();
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            // 403 here usually means CANDIDATE_OBSERVER_AGENT_ID is not set on RAGdoll
+            Debug.LogWarning($"Could not get feedback from the observer: {request.error}");
+            return null;
+        }
+
+        try
+        {
+            return JObject.Parse(DownloadHandlerBuffer.GetContent(request))["response"]?["response"]?.ToString();
+        }
+        catch (Exception e) when (e is JsonException || e is InvalidOperationException)
+        {
+            Debug.LogWarning($"RAGdoll sent an unexpected answer from the observer: {e.Message}");
+            return null;
+        }
+    }
+
     public string GetAPIKey()
     {
         return apiKey;
@@ -134,6 +179,16 @@ public class PublishedRagService : ILLMService
     public void SetURL(string url)
     {
         this.url = url.TrimEnd('/');
+    }
+
+    public string GetObserverAgentId()
+    {
+        return observerAgentId;
+    }
+
+    public void SetObserverAgentId(string id)
+    {
+        observerAgentId = id.Trim();
     }
 
     private string GetKey()

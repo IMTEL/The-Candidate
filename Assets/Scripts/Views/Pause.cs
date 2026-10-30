@@ -17,6 +17,10 @@ public class Pause : MonoBehaviour, IPauseMenuEventListener, IEvent<IPause>
 
     bool paused = false;
 
+    /// <summary>
+    /// Only the interview scene has one, so only there can the interview be ended
+    /// </summary>
+    private ObserverFeedbackPanel feedbackPanel;
 
     void Awake()
     {
@@ -61,6 +65,14 @@ public class Pause : MonoBehaviour, IPauseMenuEventListener, IEvent<IPause>
     void Start()
     {
         this.AddListener(BootStrap.Instance.GetComponentInChildren<DialogueScheduler>());
+        feedbackPanel = FindAnyObjectByType<ObserverFeedbackPanel>(FindObjectsInactive.Include);
+        foreach (GameObject menu in instatiesMenues)
+        {
+            if (menu.TryGetComponent(out PauseMenu pauseMenu))
+            {
+                pauseMenu.EndInterviewButton.gameObject.SetActive(feedbackPanel != null);
+            }
+        }
     }
 
     void OnPauseClick(InputAction.CallbackContext action)
@@ -92,6 +104,19 @@ public class Pause : MonoBehaviour, IPauseMenuEventListener, IEvent<IPause>
         paused = !paused;
         Time.timeScale = paused ? 0 : 1;
         SceneManager.LoadScene("Start");
+    }
+
+    /// <summary>
+    /// Ends the interview: the menus close and the feedback shows. The NPCs stay paused and the
+    /// pause button does nothing more, so the interview can't go on behind the feedback.
+    /// </summary>
+    public void OnEndInterviewButton()
+    {
+        if (feedbackPanel == null) return;
+        pause.action.performed -= OnPauseClick;
+        Time.timeScale = 1;
+        instatiesMenues.ForEach(menu => menu.SetActive(false));
+        feedbackPanel.Show();
     }
 
     public void OnSettingButton()

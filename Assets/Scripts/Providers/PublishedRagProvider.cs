@@ -14,6 +14,9 @@ public class PublishedRagProvider : LLMServiceProvider
 
     [ShowInInspector]
     public string Url {get {return service.GetURL();} set {service.SetURL(value); _ = ChangeAndWrite(System.Threading.Tasks.Task.CompletedTask);}}
+
+    [ShowInInspector]
+    public string ObserverAgentId {get {return service.GetObserverAgentId();} set {service.SetObserverAgentId(value); _ = ChangeAndWrite(System.Threading.Tasks.Task.CompletedTask);}}
     #endif
 
     [SerializeField]
