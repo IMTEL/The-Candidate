@@ -7,9 +7,17 @@ public class PauseMenu : MonoBehaviour, IEvent<IPauseMenuEventListener>
     public Button ResumeButton;
     public Button SettingsButton;
     public Button ExitButton;
+    /// <summary>
+    /// Ends the interview and shows the observer's feedback. Hidden where there is no interview.
+    /// </summary>
+    public Button EndInterviewButton;
 
     void OnValidate()
     {
+        if(EndInterviewButton == null)
+        {
+            Debug.LogError("EndInterviewButton is missing");
+        }
         if(ResumeButton == null)
         {
             Debug.LogError("ResumeButton is missing");
@@ -29,6 +37,7 @@ public class PauseMenu : MonoBehaviour, IEvent<IPauseMenuEventListener>
         ResumeButton.onClick.AddListener(listener.OnResumeButton);
         SettingsButton.onClick.AddListener(listener.OnSettingButton);
         ExitButton.onClick.AddListener(listener.OnExitButton);
+        EndInterviewButton.onClick.AddListener(listener.OnEndInterviewButton);
     }
 
     public void RemoveListener(IPauseMenuEventListener listener)
@@ -36,5 +45,6 @@ public class PauseMenu : MonoBehaviour, IEvent<IPauseMenuEventListener>
         ResumeButton.onClick.RemoveListener(listener.OnResumeButton);
         SettingsButton.onClick.RemoveListener(listener.OnSettingButton);
         ExitButton.onClick.RemoveListener(listener.OnExitButton);
+        EndInterviewButton.onClick.RemoveListener(listener.OnEndInterviewButton);
     }
 }

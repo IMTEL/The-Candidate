@@ -24,3 +24,10 @@ This projects uses some environmental variables to hide them from the repo. Thes
 
 ### Using .env file
 After Installing unity hub and cloning the project, copy the `.env.example` file and set the prerequisite keys. After that, run either the `Start.command` for UNIX systems (Linux & MAC) or the `Start.ps1`.
+
+## Feedback after the interview
+In the interview, the pause menu has an «Avslutt intervju» button. It ends the interview and shows feedback from an observer agent: what went well and what can be better, each point with a quote of what the job seeker said. The observer is the shared agent from the agent configurator, and the rules for reading its reply are copied from there (`ObserverFeedback.cs`). Nothing is saved: the conversation and the feedback are gone when the job seeker goes back to the start.
+
+To turn it on:
+- Set `ObserverAgentId` on the `PublishedRag` provider asset to the observer agent's id. It is not a secret.
+- On RAGdoll, set `CANDIDATE_OBSERVER_AGENT_ID` to the same id, so the `CANDIDATE` client key may chat with it.

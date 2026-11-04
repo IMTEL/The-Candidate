@@ -114,6 +114,14 @@ public class DialogueSystem : IEvent<IDialogueReady>
         }
     }
 
+    /// <summary>
+    /// Everything said in the interview so far, in order
+    /// </summary>
+    public IReadOnlyList<Dialog> GetDialogs()
+    {
+        return dialogs;
+    }
+
     public void AddListener(IDialogueReady listener)
     {
         onDialogueReady += listener.onDialogueReady;

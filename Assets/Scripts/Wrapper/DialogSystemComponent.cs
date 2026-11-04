@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -58,6 +59,14 @@ public class DialogueSystemComponent : MonoBehaviour, IMicrophoneEventListener, 
             (_, cancellationToken) = dialogueSystem.HandleUserDialog(recordedaudio);
         }
 
+    }
+
+    /// <summary>
+    /// Everything said in the current interview. It is dropped when the Start scene loads.
+    /// </summary>
+    public IReadOnlyList<Dialog> GetDialogs()
+    {
+        return dialogueSystem.GetDialogs();
     }
 
     public void AddListener(IDialogueReady listener)
