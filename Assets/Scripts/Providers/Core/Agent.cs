@@ -160,8 +160,11 @@ public class Agent
     {
         if (TTServiceProvider != null)
         {
-            return TTServiceProvider.CreateTypedService().getAudioClip(dialog, TTSOverrides);
+            GetTTSSettings(out TTSServiceProvider provider, out OptionSet options);
+
+            return provider.CreateTypedService().getAudioClip(dialog, options);
         }
+
         return null;
     }
 }

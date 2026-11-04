@@ -23,4 +23,6 @@ if (Test-Path -LiteralPath $envFile) {
     }
 }
 
-Start-Process -FilePath 'unityhub'
+Write-Host "RAGDOLL loaded:" ($null -ne $env:RAGDOLL)
+
+Start-Process -FilePath 'C:\Program Files\Unity Hub\Unity Hub.exe'
