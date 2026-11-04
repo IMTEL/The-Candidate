@@ -162,7 +162,10 @@ public class Agent
         {
             GetTTSSettings(out TTSServiceProvider provider, out OptionSet options);
 
-            return provider.CreateTypedService().getAudioClip(dialog, options);
+            if (provider != null)
+            {
+                return provider.CreateTypedService().getAudioClip(dialog, options);
+            }
         }
 
         return null;
