@@ -130,7 +130,7 @@ public class PiperManager : ITTService
 
     public async IAsyncEnumerator<AudioClip> getAudioClip(string dialogue, OptionSet options)
     {
-        PickOption<ESpeakVoiceContainer> important = options.GetOptions().OfType<PickOption<ESpeakVoiceContainer>>().First() ?? throw new ArgumentException("Oy, we are missing a model information for this one. Plz fix");
+        PickOption<ESpeakVoiceContainer> important = options.GetOptions().OfType<PickOption<ESpeakVoiceContainer>>().FirstOrDefault() ?? throw new ArgumentException("Oy, we are missing a model information for this one. Plz fix");
         OptionSet set = GetTTSOptions().Merge(options);
         ESpeakTokenizer tokenizer = important.GetCurrentValue().GetTokenizer();
         ModelAsset model = important.GetCurrentValue().GetModelAsset();

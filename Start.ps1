@@ -23,4 +23,5 @@ if (Test-Path -LiteralPath $envFile) {
     }
 }
 
-Start-Process -FilePath 'unityhub'
+
+Start-Process -FilePath 'C:\Program Files\Unity Hub\Unity Hub.exe'

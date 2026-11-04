@@ -26,7 +26,7 @@ public class PickOption<T> : PickOption
             values = new List<OptionEntry<T>>(){}; 
         }
         options = new(values);
-        defaultValue ??= values.First();
+        defaultValue ??= values.FirstOrDefault();
         SetValue(defaultValue);
     }
 
@@ -41,7 +41,7 @@ public class PickOption<T> : PickOption
             OptionEntry<T> optionEntry = new(item.Item1, item.Item2);
             options.Add(optionEntry);
         }
-        defualtValue ??= values.First();
+        defualtValue ??= values.FirstOrDefault();
         TrySetValue(defualtValue);
     }
 
