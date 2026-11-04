@@ -158,14 +158,11 @@ public class Agent
 
     public IAsyncEnumerator<AudioClip> CallTTS(string dialog)
     {
-        if (TTServiceProvider != null)
-        {
-            GetTTSSettings(out TTSServiceProvider provider, out OptionSet options);
+        GetTTSSettings(out TTSServiceProvider provider, out OptionSet options);
 
-            if (provider != null)
-            {
-                return provider.CreateTypedService().getAudioClip(dialog, options);
-            }
+        if (provider != null)
+        {
+            return provider.CreateTypedService().getAudioClip(dialog, options);
         }
 
         return null;
